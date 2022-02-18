@@ -1,7 +1,7 @@
-let projectDivs = document.getElementsByClassName('project-div');
+let projectDivs = document.getElementsByTagName('project-div');
 
 for (let i = 0; i < projectDivs.length; i++) {
-    projectDivs[i].addEventListener('click', function () {
-        window.location = projectDivs[i].src;
-    });
+    projectDivs[i].onclick = function () {
+        console.log('cleck')
+    }
 }

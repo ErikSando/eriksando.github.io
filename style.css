@@ -17,16 +17,14 @@ body {
     overflow: auto;
 }
 
-.project-div:hover {
-    font-size: 20px;
-}
-
 .project-name {
+    font-size: 25px;
     margin: 0;
     position: relative;
     line-height: 100px;
     top: 0;
     bottom: 0;
+    text-decoration: none;
 }
 
 #left {
