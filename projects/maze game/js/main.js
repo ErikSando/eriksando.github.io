@@ -57,6 +57,8 @@ function jumpscare() {
     document.body.style.background = 'black';
     jumpscareSound.play();
     jumpscareImg.classList.remove('hidden');
+
+    level = 1;
 }
 
 function resize(width, height) {
@@ -138,6 +140,7 @@ function update() {
     }
 
     draw();
+    mouse.update(world.tiles);
 }
 
 function draw() {

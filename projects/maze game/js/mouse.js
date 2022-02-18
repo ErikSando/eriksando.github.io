@@ -6,6 +6,8 @@ class Mouse {
 
     update(tiles) {
         for (let i = 0; i < tiles.length; i++) {
+            ctx.strokeRect(tiles[i][0].x, tiles[i][0].y, tileSize * tiles[i][0].wm, tileSize * tiles[i][0].hm)
+
             let tileRect = {
                 x: tiles[i][0].x,
                 y: tiles[i][0].y,
@@ -21,9 +23,17 @@ class Mouse {
             }
 
             if (rectIntersection(tileRect, mouseRect)) {
-                if (!hitTile) hitTile = true;
+                if (tiles[i][1] == 'tile' && !hitTile) {
+                    console.log('u died');
+
+                    hitTile = true;
+                }
             }
         }
+        
+        if (this.y < 100 && level == 3) {
+            jumpscare();
+        } 
     }
 
     draw() {

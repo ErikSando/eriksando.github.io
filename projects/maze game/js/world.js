@@ -3,11 +3,11 @@ class World {
         this.level = level;
         this.tiles = [];
 
-        let x = 1;
-        let y = 1;
+        let x = 0;
+        let y = 0;
 
         for (let i = 0; i < data.length; i++) {
-            x = 1;
+            x = 0;
             
             for (let j = 0; j < data[i].length; j++) {
                 if (data[i][j] == 1) {

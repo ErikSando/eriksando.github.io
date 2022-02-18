@@ -3,22 +3,23 @@ class Tile {
         this.x = x;
         this.y = y;
         this.widthMultiplier = wm;
-        this.heightsMultiplier = hm;
+        this.heightMultiplier = hm;
     }
 
     draw(colour) {
-        console.log(this.x * tileSize, this.y * tileSize);
-
-        ctx.fillStyle = 'rgb(50, 120, 200)';
+        ctx.fillStyle = colour;
         ctx.fillRect(this.x * tileSize, this.y * tileSize, tileSize * this.widthMultiplier, tileSize * this.heightMultiplier);
     }
 }
 
-class Finish extends Tile {
+class Finish {
     constructor(x, y) {
-        super(x, y);
+        this.x = x;
+        this.y = y;
+        this.img = new Image(src='assets/finish.png');
+    }
 
-        this.wm = tileSize,
-        this.hm = tileSize
+    draw() {
+        ctx.drawImage(this.img, this.x * tileSize, this.y * tileSize, tileSize, tileSize);
     }
 }
