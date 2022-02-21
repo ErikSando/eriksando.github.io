@@ -12,7 +12,7 @@ body {
     width: 70%
 }
 
-#info {
+#updates {
     width: 25%;
     height: 90vh;
     float: right;
@@ -21,6 +21,6 @@ body {
     overflow-y: auto;
 }
 
-#info-title {
+#updates-title {
     text-align: center;
 }

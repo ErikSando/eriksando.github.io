@@ -1,4 +1,4 @@
-class Timer {
+class Stopwatch {
     constructor() {
         this.millisecs = 0;
         this.seconds = 0;
@@ -34,10 +34,8 @@ class Timer {
             this.minutes += 1;
         }
 
-        ctx.font = '30px Arial';
-
         // Call updateTime every 10 milliseconds
-        setTimeout('timer.updateTime()', 10);
+        setTimeout('stopwatch.updateTime()', 10);
     }
 
     getTime() {

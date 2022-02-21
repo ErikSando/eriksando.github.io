@@ -51,7 +51,7 @@ function rectIntersection(rect1, rect2) {
 function victory() {
     gameWon = true;
 
-    timer.stop();
+    stopwatch.stop();
 }
 
 window.onload = function () {
@@ -67,7 +67,7 @@ window.onload = function () {
 
     world = new World(levelData[level - 1], level);
     player = new Player(canvas.width / 3, canvas.height / 2 - 104, 39, 96);
-    timer = new Timer();
+    stopwatch = new Stopwatch();
 
     cameraOffset[0] = -player.x + tileSize;
 
@@ -112,7 +112,7 @@ window.onload = function () {
                 if (!started) {
                     clickSound.play();
                     started = true;
-                    timer.start();
+                    stopwatch.start();
                     music.play();
 
                     music.onended = function() {
@@ -178,7 +178,7 @@ window.onload = function () {
 
                 clickSound.play();
                 started = true;
-                timer.start();
+                stopwatch.start();
                 music.play();
 
                 music.onended = function() {
@@ -192,8 +192,6 @@ window.onload = function () {
 }
 
 function tick() {
-    console.log(totalCoins);
-
     player.tick();
 
     if (world.level != level) {
@@ -220,7 +218,7 @@ function draw() {
         ctx.fillText('You win!', canvas.width / 2 - 184, canvas.height / 3);
         ctx.font = '60px Arial';
         ctx.fillText('Total coins: ' + totalCoins + '/' + maxTotalCoins, canvas.width / 2 - 198, canvas.height / 2.2);
-        ctx.fillText('Time: ' + timer.getTime(), canvas.width / 2 - 197, canvas.height / 1.8);
+        ctx.fillText('Time: ' + stopwatch.getTime(), canvas.width / 2 - 197, canvas.height / 1.8);
 
         //clearInterval(gameLoop);
 
@@ -245,7 +243,7 @@ function draw() {
     ctx.fillStyle = 'white';
     ctx.fillText('Level: ' + level, 10, 30);
     ctx.fillText('Coins: ' + coins + '/' + maxCoins, 10, 70)
-    ctx.fillText(timer.getTime(), 10, 110);
+    ctx.fillText(stopwatch.getTime(), 10, 110);
 
     if (!player.alive) {
         world.draw();
