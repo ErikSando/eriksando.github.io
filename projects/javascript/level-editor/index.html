@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Level Editor</title>
+        <script src="js/main.js"></script>
+        <script src="js/blocks.js"></script>
+        <script src="js/world.js"></script>
+        <script src="js/tiles.js"></script>
+        <link rel="stylesheet" type="text/css" href="style.css">
+    </head>
+    <body>
+        <div id="options">
+            Amont: <input type="number" id="amount" value="1">
+            <button id="add-length">Add world length</button> <br> <br>
+            <img src="assets/dirt.png" onclick="setID(1)" width="48" height="48">
+            <img src="assets/grass.png" onclick="setID(2)" width="48" height="48">
+            <img src="assets/enemy.png" onclick="setID(3)" width="48" height="33">
+            <img src="assets/moving enemy.png" onclick="setID(4)" width="48" height="33">
+            <img src="assets/lava.png" onclick="setID(5)" width="48" height="48">
+            <img src="assets/coin.png" onclick="setID(6)" width="48" height="48">
+            <img src="assets/portal.png" onclick="setID(7)" width="48" height="96">
+            <img src="assets/delete.png" onclick="setID(8)" width="48" height="48">
+        </div>
+        <canvas id="canvas"></canvas>
+    </body>
+</html>
