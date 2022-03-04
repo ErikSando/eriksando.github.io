@@ -16,6 +16,15 @@ function getMousePos(canvas, e) {
     };
 }
 
+function rectIntersection(rect1, rect2) {
+    if (rect1.x + rect1.w <= rect2.x
+    || rect1.x >= rect2.x + rect2.w
+    || rect1.y + rect1.h <= rect2.y
+    || rect1.y >= rect2.y + rect2.h) return false;
+    
+    return true;
+}
+
 function update() {
     ctx.fillStyle = 'rgb(69, 180, 250)';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
