@@ -1,7 +1,6 @@
 let canvas;
 let ctx;
 let mousePos;
-let worldLength = 25;
 let world;
 let Tiles;
 
@@ -39,7 +38,7 @@ function update() {
     for (let i = 0; i < 9; i++) {
         x = 0;
 
-        for (let i = 0; i < worldLength; i++) {
+        for (let i = 0; i < blankData[0].length; i++) {
             ctx.strokeRect(x * tileSize, y * tileSize, tileSize, tileSize);
 
             x++;
@@ -49,6 +48,18 @@ function update() {
     }
 }
 
+let blankData = [
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+]
+
 function setID(id) {
     ID = id;
 }
@@ -57,16 +68,25 @@ window.onload = function () {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
 
-    world = new World([]);
+    world = new World(blankData);
     Tiles = new TileManager();
 
-    canvas.width = tileSize * worldLength;
+    canvas.width = tileSize * blankData[0].length;
     canvas.height = tileSize * 9;
 
     ctx.imageSmoothingEnabled = false;
 
     document.getElementById('add-length').onclick = function () {
-        worldLength += document.getElementById('amount').value ? typeof document.getElementById('amount').value == Number : null;
+        if (!typeof document.getElementById('amount').value == Number) return;
+
+        for (i = 0; i < document.getElementById('amount').value; i++) {
+            for (let i = 0; i < blankData.length; i++) {
+                blankData[i].push(0);
+            }
+        }
+
+        canvas.width += document.getElementById('amount').value * tileSize;
+        world.load(blankData);
     }
 
     canvas.addEventListener('click', (e) => {

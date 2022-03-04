@@ -13,16 +13,20 @@
     </head>
     <body>
         <div id="options">
-            Amont: <input type="number" id="amount" value="1">
-            <button id="add-length">Add world length</button> <br> <br>
-            <img src="assets/dirt.png" onclick="setID(1)" width="48" height="48">
-            <img src="assets/grass.png" onclick="setID(2)" width="48" height="48">
-            <img src="assets/enemy.png" onclick="setID(3)" width="48" height="33">
-            <img src="assets/moving enemy.png" onclick="setID(4)" width="48" height="33">
-            <img src="assets/lava.png" onclick="setID(5)" width="48" height="48">
-            <img src="assets/coin.png" onclick="setID(6)" width="48" height="48">
-            <img src="assets/portal.png" onclick="setID(7)" width="48" height="96">
-            <img src="assets/delete.png" onclick="setID(8)" width="48" height="48">
+            Amount: <input type="number" id="amount" value="1">
+            <button id="add-length">Add world length</button>
+            <button id="import">Import</button>
+            <button id="export">Export</button>
+            <div id="images">
+                <img src="assets/dirt.png" onclick="setID(1)" width="48" height="48">
+                <img src="assets/grass.png" onclick="setID(2)" width="48" height="48">
+                <img src="assets/enemy.png" onclick="setID(3)" width="48" height="33">
+                <img src="assets/moving enemy.png" onclick="setID(4)" width="48" height="33">
+                <img src="assets/lava.png" onclick="setID(5)" width="48" height="48">
+                <img src="assets/coin.png" onclick="setID(6)" width="48" height="48">
+                <img src="assets/portal.png" onclick="setID(7)" width="48" height="96">
+                <img src="assets/delete.png" onclick="setID(8)" width="48" height="48">
+            </div>
         </div>
         <canvas id="canvas"></canvas>
     </body>

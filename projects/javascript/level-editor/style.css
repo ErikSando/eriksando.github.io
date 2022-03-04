@@ -14,6 +14,14 @@ body {
     padding: 5px;
 }
 
+/* #left {
+    float: left;
+}
+
+#right {
+    float: right;
+} */
+
 #canvas {
     margin: auto;
     position: absolute;
@@ -21,6 +29,13 @@ body {
     left: 0;
     right: 0;
     border: 2px solid white;
+}
+
+#images {
+    position: absolute;
+    top: 8vh;
+    left: 0;
+    right: 0;
 }
 
 img { 
