@@ -1,14 +1,17 @@
 class WorldTile {
-    constructor(x, y, w, h, img) {
+    constructor(x, y, w, h, xOffset, yOffset, img, id) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
         this.img = img;
+        this.id = id;
     }
 
     draw() {
-        ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
+        ctx.drawImage(this.img, this.x + this.xOffset, this.y + this.yOffset, this.w, this.h);
     }
 }
 

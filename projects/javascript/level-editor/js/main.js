@@ -48,6 +48,33 @@ function update() {
     }
 }
 
+function addLength(amount) {
+    if (amount > 100) return document.getElementById('error').innerHTML = 'Cannot add more than 100 rows'; setTimeout(document.getElementById('error').innerHTML = '', 1);
+
+    let inc = 1;
+    if (amount < 0) inc = -1;
+
+    for (i = 0; i < amount; i++) {
+        for (let i = 0; i < blankData.length; i++) {
+            if (inc == 1) blankData[i].push(0);
+            else blankData[i].splice(blankData[i].length, 1);
+        }
+        
+        worldLength += inc;
+    }
+
+    canvas.width += document.getElementById('amount').value * tileSize * inc;
+    
+    let tiles = [];
+
+    for (let i = 0; i < world.tiles.length; i++) {
+        tiles.push(world.tiles[i]);
+    }
+
+    world.reload(blankData);
+    world.tiles = tiles;
+}
+
 let blankData = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -60,11 +87,13 @@ let blankData = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ]
 
+let worldLength = blankData[0].length;
+
 function setID(id) {
     ID = id;
 }
 
-window.onload = function () {
+window.onload = () => {
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
 
@@ -76,24 +105,71 @@ window.onload = function () {
 
     ctx.imageSmoothingEnabled = false;
 
-    document.getElementById('add-length').onclick = function () {
-        if (!typeof document.getElementById('amount').value == Number) return;
-
-        for (i = 0; i < document.getElementById('amount').value; i++) {
-            for (let i = 0; i < blankData.length; i++) {
-                blankData[i].push(0);
-            }
-        }
-
-        canvas.width += document.getElementById('amount').value * tileSize;
-        world.load(blankData);
+    canvas.onresize = () => {
+        ctx.imageSmoothingEnabled = false;
     }
 
-    canvas.addEventListener('click', (e) => {
+    canvas.onclick = (e) => {
         mousePos = getMousePos(canvas, e);
 
         Tiles.addTile(getMousePos, ID)
-    });
+    };
+
+    document.getElementById('file-import').onchange = (e) => {
+        let file = e.target.files[0];
+
+        let reader = new FileReader();
+        reader.readAsText(file,'UTF-8');
+
+        reader.onload = (readerEvent) => {
+            let data = JSON.parse(readerEvent.target.result)
+            let length = data[0].length;
+            let diff = length - blankData[0].length;
+
+            addLength(diff);
+
+            world.reload(data);
+        }
+    }
+    
+    document.getElementById('export').onclick = () => {
+        let template = [
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            [],
+            []
+        ]
+
+        for (let i = 0; i < worldLength; i++) {
+            for (let i = 0; i < template.length; i++) {
+                template[i].push(0);
+            }
+        }
+
+        for (let i = 0; i < world.tiles.length; i++) {
+            if (world.tiles[i] == 0) continue;
+
+            let x = world.tiles[i].x / tileSize;
+            let y = world.tiles[i].y / tileSize;
+
+            template[y][x] = world.tiles[i].id;
+        }
+
+        let levelData = JSON.stringify(template);
+        let element = document.createElement('a');
+        element.href = 'data:attachment/text,' + encodeURI(levelData);
+        element.target = '_blank';
+        element.download = 'level-data.txt';
+        element.click();
+    }
 
     setInterval(update, 1000 / 60);
 }
+
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]

@@ -226,15 +226,27 @@ function draw() {
     }
 
     if (!started) {
+        // Start button
         ctx.fillStyle = 'white';
-        ctx.fillRect(canvas.width / 2 - 59, canvas.height / 2 - 26, 118, 56);
+        ctx.fillRect(canvas.width / 2 - 64, canvas.height / 2 - 27, 128, 58);
         ctx.fillStyle = 'black';
-        ctx.fillRect(canvas.width / 2 - 57, canvas.height / 2 - 24, 114, 52);
+        ctx.fillRect(canvas.width / 2 - 62, canvas.height / 2 - 25, 124, 54);
         ctx.fillStyle = 'white';
+        ctx.font = '50px Arial';
+        ctx.fillText('Start', canvas.width / 2 - 54, canvas.height / 2 + 18);
+        
+        // Game by Erik title
         ctx.font = '100px Arial';
         ctx.fillText('Game by Erik', canvas.width / 2 - 301, canvas.height / 4);
+        
+        // Import level button
+        ctx.fillStyle = 'white';
+        ctx.fillRect(canvas.width / 2 - 133, canvas.height / 2 + 59, 266, 58);
+        ctx.fillStyle = 'black';
+        ctx.fillRect(canvas.width / 2 - 131, canvas.height / 2 + 61, 262, 54);
+        ctx.fillStyle = 'white';
         ctx.font = '50px Arial'
-        ctx.fillText('Start', canvas.width / 2 - 54, canvas.height / 2 + 18);
+        ctx.fillText('Import level', canvas.width / 2 - 128, canvas.height / 2 + 100);
         ctx.font = '30px Arial';
 
         return;

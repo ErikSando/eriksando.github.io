@@ -14,9 +14,11 @@
     <body>
         <div id="options">
             Amount: <input type="number" id="amount" value="1">
-            <button id="add-length">Add world length</button>
-            <button id="import">Import</button>
-            <button id="export">Export</button>
+            <button id="add-length" onclick="addLength(document.getElementById('amount').value);">Add world length</button>
+            <button id="import" onclick="document.getElementById('file-import').click();">Import</button>
+            <input id="file-import" type="file" style="display: none;">
+            <button id="export">Export</button> <br>
+            <span id="error"></span>
             <div id="images">
                 <img src="assets/dirt.png" onclick="setID(1)" width="48" height="48">
                 <img src="assets/grass.png" onclick="setID(2)" width="48" height="48">
