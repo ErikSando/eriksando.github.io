@@ -1,6 +1,3 @@
-let movingEnemyImg = new Image();
-movingEnemyImg.src = 'assets/moving enemy.png';
-
 let tiles = {
     // ID: [Class, Width Multiplier, Height Multiplier, X Offset, Y Offset]
     1: [Dirt, 0, 0, 1, 1, dirtImg],

@@ -2,12 +2,14 @@
 let dirtImg = new Image();
 let grassImg = new Image();
 let enemyImg = new Image();
+let movingEnemyImg = new Image();
 let lavaImg = new Image();
 let coinImg = new Image();
 let portalImg = new Image();
 dirtImg.src = 'assets/dirt.png';
 grassImg.src = 'assets/grass.png';
 enemyImg.src = 'assets/enemy.png';
+movingEnemyImg.src = 'assets/moving enemy.png';
 lavaImg.src = 'assets/lava.png'
 coinImg.src = 'assets/coin.png';
 portalImg.src = 'assets/portal.png';
@@ -44,7 +46,7 @@ class World {
                     this.tiles.push(tile);
 
                 } else if (data[i][j] == 4) {
-                    tile = new Enemy(x * tileSize, y * tileSize, tileSize, tileSize / 1.6, 0, Math.floor(tileSize / 2.66), enemyImg, 4);
+                    tile = new Enemy(x * tileSize, y * tileSize, tileSize, tileSize / 1.6, 0, Math.floor(tileSize / 2.66), movingEnemyImg, 4);
                     this.tiles.push(tile);
                 
                 } else if (data[i][j] == 5) {
