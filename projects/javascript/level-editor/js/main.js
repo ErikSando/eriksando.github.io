@@ -61,9 +61,8 @@ function addLength(amount) {
         }
         
         worldLength += inc;
+        canvas.width += document.getElementById('amount').value * tileSize * inc;
     }
-
-    canvas.width += document.getElementById('amount').value * tileSize * inc;
     
     let tiles = [];
 
@@ -170,6 +169,3 @@ window.onload = () => {
 
     setInterval(update, 1000 / 60);
 }
-
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
