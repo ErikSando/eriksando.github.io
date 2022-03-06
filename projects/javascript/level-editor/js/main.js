@@ -49,15 +49,20 @@ function update() {
 }
 
 function addLength(amount) {
+    console.log(amount);
     if (amount > 100) return document.getElementById('error').innerHTML = 'Cannot add more than 100 rows'; setTimeout(document.getElementById('error').innerHTML = '', 1);
 
     let inc = 1;
     if (amount < 0) inc = -1;
 
     for (i = 0; i < amount; i++) {
+        console.log(i, amount);
         for (let i = 0; i < blankData.length; i++) {
+            console.log("adding 1", i);
+            console.log("before", blankData[i].length);
             if (inc == 1) blankData[i].push(0);
             else blankData[i].splice(blankData[i].length, 1);
+            console.log("after", blankData[i].length);
         }
         
         worldLength += inc;
@@ -69,6 +74,8 @@ function addLength(amount) {
     for (let i = 0; i < world.tiles.length; i++) {
         tiles.push(world.tiles[i]);
     }
+
+    console.log(worldLength);
 
     world.reload(blankData);
     world.tiles = tiles;
@@ -118,17 +125,17 @@ window.onload = () => {
         let file = e.target.files[0];
 
         let reader = new FileReader();
-        reader.readAsText(file,'UTF-8');
-
         reader.onload = (readerEvent) => {
             let data = JSON.parse(readerEvent.target.result)
             let length = data[0].length;
             let diff = length - blankData[0].length;
-
+            console.log(length);
+            console.log(diff);
             addLength(diff);
 
             world.reload(data);
         }
+        reader.readAsText(file,'UTF-8');
     }
     
     document.getElementById('export').onclick = () => {
@@ -143,6 +150,9 @@ window.onload = () => {
             [],
             []
         ]
+
+        console.log(worldLength);
+        console.log(world.tiles.length);
 
         for (let i = 0; i < worldLength; i++) {
             for (let i = 0; i < template.length; i++) {
