@@ -108,10 +108,10 @@ class Player {
                 w: world.tiles[i].w,
                 h: world.tiles[i].h,
                 top: () => {
-                    return world.tiles[i].top()
+                    return world.tiles[i].top() - camOffset.y;
                 },
                 bottom: () => {
-                    return world.tiles[i].bottom()
+                    return world.tiles[i].bottom() - camOffset.y;
                 }
             }
 

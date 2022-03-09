@@ -1,5 +1,3 @@
-let paused = false;
-
 class InputHandler {
     constructor() {
         this.left = false;

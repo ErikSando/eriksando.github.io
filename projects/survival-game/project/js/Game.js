@@ -7,11 +7,12 @@ let world;
 let player;
 let playerUI;
 let gameLoop;
+let enemySpawner;
 let saveName;
 let startMenu;
 let pauseMenu;
 let paused = false;
-let zombies = [];
+let enemies = [];
 let camOffset = {
     x: 0,
     y: 0
@@ -60,6 +61,15 @@ function startGame(newSave) {
 
     worldGenerator = new WorldGenerator();
 
+    enemySpawner = setInterval(() => {
+        let enemyClasses = [Zombie];
+
+        enemies.push(new enemyClasses[Math.floor(Math.random() * enemyClasses.length)](Math.floor(Math.random() * ((worldLength - 1) * tileSize), 280, playerW, playerH, null, 5)));
+    }, 15000);
+
+    // Zombie test
+    enemies.push(new Zombie(800, 280, playerW, playerH, null, 5));
+
     window.onresize = () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
@@ -75,7 +85,8 @@ function startGame(newSave) {
     player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 6, 18);
     playerUI = new PlayerUI(Math.floor(canvas.height / 20) * 6, Math.floor(canvas.height / 20), 'Arial');
 
-    update();
+    gameLoop = setInterval(update, 1000 / fps);
+    // update();
 
     Save();
 }
@@ -98,7 +109,9 @@ function LoadSave() {
     player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 6, 18);
     playerUI = new PlayerUI(Math.floor(canvas.width / 5), Math.floor(canvas.height / 20), 'Arial');
 
-    update();
+    gameLoop = setInterval(update, 1000 / fps);
+
+    //update();
 }
 
 function Save() {
@@ -117,14 +130,14 @@ function SaveAndQuit() {
 }
 
 function PauseGame() {
-    clearInterval(gameLoop);
+    paused = true;
     canvas.classList.add('hidden');
     pauseMenu.classList.remove('hidden');
     Input.disable();
 }
 
 function ResumeGame() {
-    gameLoop = setInterval(update, 1000 / fps);
+    paused = false;
     canvas.classList.remove('hidden');
     pauseMenu.classList.add('hidden');
     Input.enable();
@@ -135,9 +148,13 @@ function update() {
 
     player.update();
 
+    for (let i = 0; i < enemies.length; i++) {
+        enemies[i].update();
+    }
+
     draw();
 
-    requestAnimationFrame(update());
+    // requestAnimationFrame(update());
 }
 
 function draw() {
@@ -147,4 +164,8 @@ function draw() {
     world.draw();
     player.draw();
     playerUI.draw();
+
+    for (let i = 0; i < enemies.length; i++) {
+        enemies[i].draw();
+    }
 }
