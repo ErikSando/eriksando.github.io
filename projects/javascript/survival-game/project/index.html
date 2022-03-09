@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script src="js/Start.js"></script>
+        <script src="js/Game.js"></script>
+        <script src="js/Blocks.js"></script>
+        <script src="js/WorldGenerator.js"></script>
+        <script src="js/World.js"></script>
+        <script src="js/Player.js"></script>
+        <script src="js/InputHandler.js"></script>
+        <title>Random World Game</title>
+    </head>
+    <body>
+        <div id="start-menu">
+            <h1>Start new game or load existing game</h1> <hr> <br>
+            <div id="new-save"><p>New Game</p></div> <div id="load-save"><p>Load Game</p></div>
+        </div>
+        <div id="pause-menu" class="hidden">
+            <h1>Game paused; press Escape to resume</h1>
+            <button id="save" onclick="Save()">Save</button>
+            <span class="hidden" id="saved">Saved!</span> <br>
+            <button id="quit" onclick="SaveAndQuit()">Save and Quit</button>
+        </div>
+        <canvas id="canvas">Your browser does not support HTML5</canvas>
+    </body>
+</html>
