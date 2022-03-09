@@ -1,5 +1,5 @@
 class Zombie {
-    constructor(x, y, w, h, img) {
+    constructor(x, y, w, h, img, senseRadius) {
         this.x = x;
         this.y = y;
         this.dx = 0;
@@ -12,6 +12,7 @@ class Zombie {
         this.speed = 5;
         this.jumpForce = 16;
         this.direction = 0;
+        this.senseRadius = senseRadius;
         this.chasingPlayer = false;
     
         setInterval(() => {
@@ -23,7 +24,7 @@ class Zombie {
         this.dx = 0;
         this.dy = 0;
 
-        
+        if (player.x - this.x < tileSize * this.senseRadius || player.x + this.x < tileSize * this.senseRadius)
 
         this.x += this.dx;
         this.y += this.dy;

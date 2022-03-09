@@ -7,11 +7,21 @@ class Player {
         this.w = w;
         this.h = h;
         this.defence = defence;
+        this.maxDefence = defence;
+        this.hunger = 10;
+        this.spawnLocation = {
+            x: worldLength * tileSize / 2,
+            y: 0
+        }
         this.attack = attack;
         this.speed = speed;
         this.jumpForce = jumpForce;
         this.grounded = false;
         this.gravity = 0;
+        this.healing = setInterval(() => {
+            if (this.defence < this.maxDefence) this.defence += this.maxDefence / 30;
+            if (this.defence > this.maxDefence) this.defence = this.maxDefence;
+        }, 1000);
     }
 
     top() {
@@ -30,8 +40,24 @@ class Player {
         return this.x + this.w;
     }
 
-    damage() {
+    damage(amount) {
+        this.defence -= amount;
 
+        if (this.defence <= 0) {
+            this.kill();
+        }
+    }
+
+    kill() {
+        this.alive = false;
+    }
+
+    respawn() {
+        this.alive = true;
+        this.defence = this.maxDefence;
+
+        camOffset.x = this.spawnLocation.x;
+        camOffset.y = this.spawnLocation.y;
     }
 
     update() {

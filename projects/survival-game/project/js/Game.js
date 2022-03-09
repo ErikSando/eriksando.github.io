@@ -10,6 +10,8 @@ let gameLoop;
 let saveName;
 let startMenu;
 let pauseMenu;
+let paused = false;
+let zombies = [];
 let camOffset = {
     x: 0,
     y: 0
@@ -73,7 +75,7 @@ function startGame(newSave) {
     player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 6, 18);
     playerUI = new PlayerUI(Math.floor(canvas.height / 20) * 6, Math.floor(canvas.height / 20), 'Arial');
 
-    gameLoop = setInterval(update, 1000 / fps);
+    update();
 
     Save();
 }
@@ -96,7 +98,7 @@ function LoadSave() {
     player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 6, 18);
     playerUI = new PlayerUI(Math.floor(canvas.width / 5), Math.floor(canvas.height / 20), 'Arial');
 
-    gameLoop = setInterval(update, 1000 / fps);
+    update();
 }
 
 function Save() {
@@ -129,17 +131,20 @@ function ResumeGame() {
 }
 
 function update() {
+    if (paused) return;
+
     player.update();
 
     draw();
+
+    requestAnimationFrame(update());
 }
 
 function draw() {
     ctx.fillStyle = bgColour;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-    playerUI.draw();
-
+ 
     world.draw();
     player.draw();
+    playerUI.draw();
 }
