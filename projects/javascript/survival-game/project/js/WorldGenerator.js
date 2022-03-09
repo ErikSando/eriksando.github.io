@@ -5,6 +5,7 @@ class WorldGenerator {
         this.worldData = [
             [], [], [], [], [], [], [], [], [], [],
             [], [], [], [], [], [], [], [], [], [],
+            [], [], [], [], [], [], [], [], [], [],
             [], [], [], [], [], [], [], [], [], []
         ]
 
@@ -18,7 +19,7 @@ class WorldGenerator {
     createWorld() {
         let totalElevation = 0;
 
-        let halfWayY = Math.floor(this.worldData.length / 2);
+        let halfWayY = Math.floor(this.worldData.length / 2) + 5;
         let halfWayX = Math.floor(worldLength / 2);
 
         this.worldData[halfWayY][halfWayX] = 2;
@@ -46,7 +47,7 @@ class WorldGenerator {
                 this.worldData[halfWayY + totalElevation][i - j] = 2;
 
                 for (let k = j + 1; k < this.worldData.length - (halfWayY + totalElevation); k++) {
-                    this.worldData[halfWayY + totalElevation + k][i - j] = 1;
+                    this.worldData[halfWayY + totalElevation - j + k][i - j] = 1;
                 }
             }
 
@@ -75,7 +76,7 @@ class WorldGenerator {
                 this.worldData[halfWayY + totalElevation][i + j] = 2;
 
                 for (let k = j + 1; k < this.worldData.length - (halfWayY + totalElevation); k++) {
-                    this.worldData[halfWayY + totalElevation + k][i + j] = 1;
+                    this.worldData[halfWayY + totalElevation + k - j][i + j] = 1;
                 }
             }
 

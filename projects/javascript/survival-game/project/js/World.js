@@ -11,7 +11,7 @@ class World {
         this.tiles = [];
 
         let x;
-        let y = -10//-(Math.floor(data.length / 2)) * tileSize;
+        let y = -15//-(Math.floor(data.length / 2)) * tileSize;
 
         for (let i = 0; i < data.length; i++) {
             x = -Math.floor(worldLength / 2) + Math.floor(canvas.width / tileSize / 2);

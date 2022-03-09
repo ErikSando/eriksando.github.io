@@ -5,6 +5,7 @@ let sprites;
 let worldGenerator;
 let world;
 let player;
+let playerUI;
 let gameLoop;
 let saveName;
 let startMenu;
@@ -69,7 +70,8 @@ function startGame(newSave) {
     worldGenerator.createWorld();
 
     world = new World(worldGenerator.worldData);
-    player = new Player(0, Math.floor(canvas.height / 2), playerW, playerH);
+    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 6, 18);
+    playerUI = new PlayerUI(Math.floor(canvas.height / 20) * 6, Math.floor(canvas.height / 20), 'Arial');
 
     gameLoop = setInterval(update, 1000 / fps);
 
@@ -81,20 +83,24 @@ function LoadSave() {
 
     if (!save) return;
 
+    console.log(camOffset);
+    console.log(save.camOffset);
+    
     camOffset = save.camOffset;
+    
+    console.log(camOffset)
 
     worldGenerator.worldData = save.worldData;
 
     world = new World(save.worldData);
-    player = new Player(save.playerX, save.playerY, playerW, playerH);
+    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 6, 18);
+    playerUI = new PlayerUI(Math.floor(canvas.width / 5), Math.floor(canvas.height / 20), 'Arial');
 
     gameLoop = setInterval(update, 1000 / fps);
 }
 
 function Save() {
     window.localStorage.setItem('save', JSON.stringify({
-        playerX: player.x,
-        playerY: player.y,
         camOffset: camOffset,
         worldData: worldGenerator.worldData
     }));
@@ -131,6 +137,8 @@ function update() {
 function draw() {
     ctx.fillStyle = bgColour;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    playerUI.draw();
 
     world.draw();
     player.draw();

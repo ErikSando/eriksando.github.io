@@ -1,0 +1,3 @@
+- Fix dirt placement during world generation
+- Create player sprites
+- Add zombies

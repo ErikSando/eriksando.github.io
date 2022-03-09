@@ -9,19 +9,19 @@ class Block {
     }
 
     top() {
-        return this.y;
+        return this.y - camOffset.y;
     }
 
     bottom() {
-        return this.y + this.h;
+        return this.y + this.h - camOffset.y;
     }
 
     left() {
-        return this.x;
+        return this.x - camOffset.x;
     }
 
     right() {
-        return this.x + this.w;
+        return this.x + this.w - camOffset.x;
     }
 
     draw() {
