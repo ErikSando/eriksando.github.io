@@ -39,7 +39,7 @@ class Zombie {
         return this.x + this.w;
     }
 
-    update() {
+    update(dt) {
         this.dx = 0;
         this.dy = 0;
 
@@ -117,15 +117,15 @@ class Zombie {
                 } else {
                     this.dx = tile.x + tile.w - this.x;
                 }
-    
+
                 if (this.grounded) {
                     this.gravity = -this.jumpForce;
                 }
             }
         }
 
-        this.x += this.dx;
-        this.y += this.dy;
+        this.x += this.dx * dt;
+        this.y += this.dy * dt;
     }
 
     draw() {

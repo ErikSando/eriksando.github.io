@@ -60,7 +60,7 @@ class Player {
         camOffset.y = this.spawnLocation.y;
     }
 
-    update() {
+    update(dt) {
         this.dx = 0;
         this.dy = 0;
 
@@ -135,8 +135,8 @@ class Player {
             }
         }
 
-        camOffset.x += this.dx;
-        camOffset.y += this.dy;
+        camOffset.x += this.dx * dt;
+        camOffset.y += this.dy * dt;
     }
 
     draw() {

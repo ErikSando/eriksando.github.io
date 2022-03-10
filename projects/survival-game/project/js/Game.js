@@ -17,6 +17,7 @@ let camOffset = {
     x: 0,
     y: 0
 }
+let previousUpdate = Date.now();
 
 const tileSize = 64;
 const fps = 60;
@@ -64,11 +65,11 @@ function startGame(newSave) {
     enemySpawner = setInterval(() => {
         let enemyClasses = [Zombie];
 
-        enemies.push(new enemyClasses[Math.floor(Math.random() * enemyClasses.length)](Math.floor(Math.random() * ((worldLength - 1) * tileSize), 280, playerW, playerH, null, 5)));
+        enemies.push(new enemyClasses[Math.floor(Math.random() * enemyClasses.length)](Math.floor(Math.random() * ((worldLength - 1) * tileSize), 280, playerW, playerH, null, 4)));
     }, 15000);
 
     // Zombie test
-    enemies.push(new Zombie(800, 280, playerW, playerH, null, 5));
+    enemies.push(new Zombie(800, 280, playerW, playerH, null, 4));
 
     window.onresize = () => {
         canvas.width = window.innerWidth;
@@ -109,9 +110,9 @@ function LoadSave() {
     player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 6, 18);
     playerUI = new PlayerUI(Math.floor(canvas.width / 5), Math.floor(canvas.height / 20), 'Arial');
 
-    gameLoop = setInterval(update, 1000 / fps);
+    //gameLoop = setInterval(update, 1000 / fps);
 
-    //update();
+    update(Date.now());
 }
 
 function Save() {
@@ -143,18 +144,21 @@ function ResumeGame() {
     Input.enable();
 }
 
-function update() {
+function update(time) {
     if (paused) return;
 
-    player.update();
+    let dt = (time - previousUpdate) / 10;
+    previousUpdate = time;
+
+    player.update(dt);
 
     for (let i = 0; i < enemies.length; i++) {
-        enemies[i].update();
+        enemies[i].update(dt);
     }
 
     draw();
 
-    // requestAnimationFrame(update());
+    requestAnimationFrame(update);
 }
 
 function draw() {
