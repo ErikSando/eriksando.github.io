@@ -1,23 +1,24 @@
 class Player {
-    constructor(x, y, w, h, defence, attack, speed, jumpForce) {
+    constructor(x, y, w, h, img, defence, attack, speed, jumpForce) {
         this.x = x;
         this.y = y;
         this.dx = 0;
         this.dy = 0;
         this.w = w;
         this.h = h;
+        this.img = img;
         this.defence = defence;
         this.maxDefence = defence;
         this.hunger = 10;
-        this.spawnLocation = {
-            x: worldLength * tileSize / 2,
-            y: 0
-        }
         this.attack = attack;
         this.speed = speed;
         this.jumpForce = jumpForce;
         this.grounded = false;
         this.gravity = 0;
+        this.spawnLocation = {
+            x: worldLength * tileSize / 2,
+            y: 0
+        }
         this.healing = setInterval(() => {
             if (this.defence < this.maxDefence) this.defence += this.maxDefence / 30;
             if (this.defence > this.maxDefence) this.defence = this.maxDefence;
@@ -78,8 +79,9 @@ class Player {
             this.dx += this.speed;
         }
 
-        if (this.gravity < 15) {
-            this.gravity += 1;
+        if (this.gravity < 1500) {
+            console.log(this.gravity * dt)
+            this.gravity += 1000 * dt;
         }
 
         this.dy += this.gravity;
@@ -134,6 +136,8 @@ class Player {
                 }
             }
         }
+
+        console.log('Delta Y:' + this.dy, 'Delta time:' + dt, 'dx * dt: ' + this.dy * dt)
 
         camOffset.x += this.dx * dt;
         camOffset.y += this.dy * dt;

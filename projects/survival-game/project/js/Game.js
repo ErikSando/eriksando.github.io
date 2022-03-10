@@ -65,7 +65,7 @@ function startGame(newSave) {
     enemySpawner = setInterval(() => {
         let enemyClasses = [Zombie];
 
-        enemies.push(new enemyClasses[Math.floor(Math.random() * enemyClasses.length)](Math.floor(Math.random() * ((worldLength - 1) * tileSize), 280, playerW, playerH, null, 4)));
+        enemies.push(new enemyClasses[Math.floor(Math.random() * enemyClasses.length)](Math.floor(Math.random() * ((worldLength - 1) * tileSize), 280, playerW, playerH, null, 4000)));
     }, 15000);
 
     // Zombie test
@@ -83,7 +83,7 @@ function startGame(newSave) {
     worldGenerator.createWorld();
 
     world = new World(worldGenerator.worldData);
-    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 6, 18);
+    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 300, 900);
     playerUI = new PlayerUI(Math.floor(canvas.height / 20) * 6, Math.floor(canvas.height / 20), 'Arial');
 
     gameLoop = setInterval(update, 1000 / fps);
@@ -107,7 +107,7 @@ function LoadSave() {
     worldGenerator.worldData = save.worldData;
 
     world = new World(save.worldData);
-    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 6, 18);
+    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, null, 100, 10, 300, 900);
     playerUI = new PlayerUI(Math.floor(canvas.width / 5), Math.floor(canvas.height / 20), 'Arial');
 
     //gameLoop = setInterval(update, 1000 / fps);
@@ -147,7 +147,7 @@ function ResumeGame() {
 function update(time) {
     if (paused) return;
 
-    let dt = (time - previousUpdate) / 10;
+    let dt = (time - previousUpdate) / 1000;
     previousUpdate = time;
 
     player.update(dt);

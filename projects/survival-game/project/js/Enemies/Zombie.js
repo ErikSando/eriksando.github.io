@@ -1,5 +1,5 @@
 class Zombie {
-    constructor(x, y, w, h, img, senseDistance) {
+    constructor(x, y, w, h, img, defence, attack, speed, jumpForce, senseDistance) {
         this.x = x;
         this.y = y;
         this.dx = 0;
@@ -7,10 +7,11 @@ class Zombie {
         this.w = w;
         this.h = h;
         this.img = img;
-        this.defence = 100;
-        this.attack = 20;
-        this.speed = 5;
-        this.jumpForce = 16;
+        this.defence = defence;
+        this.maxDefence = defence;
+        this.attack = attack;
+        this.speed = speed;
+        this.jumpForce = jumpForce;
         this.grounded = false;
         this.gravity = 0;
         this.direction = 0;
@@ -131,6 +132,17 @@ class Zombie {
     draw() {
         ctx.fillStyle = 'darkgreen';
         ctx.fillRect(this.x - camOffset.x, this.y - camOffset.y, this.w, this.h);
+
+        // Draw healthbar above head
+        if (this.defence < this.maxDefence) {
+            // White oultine
+            ctx.fillStyle = 'white';
+            ctx.fillRect(this.x - camOffset - 20, this.y - camOffset.y - 20, this.w + 40, 10);
+
+            // Grey background
+            ctx.fillStyle = 'darkgray';
+            ctx.fillRect(this.x - camOffset - 20, this.y - camOffset.y - 20, this.w + 40, 10);
+        }
 
         //ctx.drawImage(this.img, this.x, this.y, this.w, this.h)
     }
