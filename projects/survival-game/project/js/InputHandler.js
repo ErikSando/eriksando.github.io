@@ -4,6 +4,12 @@ class InputHandler {
         this.right = false;
         this.up = false;
 
+        this.buttons = {
+            left: document.getElementById('left'),
+            right: document.getElementById('right'),
+            up: document.getElementById('up')
+        }
+
         document.onkeydown = (e) => {
             switch(e.key) {
                 case 'a':
@@ -70,6 +76,32 @@ class InputHandler {
                     this.up = false;
                     break;
             }
+        }
+
+        this.buttons.up.onmousedown = () => {
+            this.buttons.up.style.background = 'rgb(40, 50, 70)'
+            this.up = true;
+        }
+
+        this.buttons.up.onmouseup = () => {
+            this.buttons.up.style.background = 'rgb(50, 60, 80)'
+            this.up = false;
+        }
+
+        this.buttons.left.onmousedown = () => {
+            this.left = true;
+        }
+
+        this.buttons.right.onmouseup = () => {
+            this.right = false;
+        }
+
+        this.buttons.right.onmousedown = () => {
+            this.right = true;
+        }
+
+        this.buttons.right.onmouseup = () => {
+            this.right = false;
         }
     }
 }

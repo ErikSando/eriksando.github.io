@@ -11,6 +11,7 @@ canvas {
     bottom: 0;
     left: 0;
     right: 0;
+    z-index: 1;
 }
 
 hr {
@@ -32,7 +33,7 @@ hr {
     text-align: center;
 }
 
-#new-save {
+.start-button {
     display: inline-flex;
     width: 22vh;
     height: 5vh;
@@ -45,17 +46,45 @@ hr {
     margin: 1vw;
 }
 
-#load-save {
-    display: inline-flex;
-    width: 22vh;
-    height: 5vh;
-    margin: auto;
-    font-size: 3vh;
+.start-button:hover {
+    background: rgb(50, 60, 80);
+}
+
+#mobile-gui {
+    z-index: 9999;
+}
+
+.move-button {
+    display: flex;
+    width: 10vh;
+    height: 10vh;
     border: 2px solid white;
+    background: black;
     align-items: center;
     justify-content: center;
-    border-radius: 15px;
-    margin: 1vw;
+    font-size: 5vh;
+}
+
+.move-button:hover {
+    background: rgb(60, 60, 60);
+}
+
+#up {
+    position: absolute;
+    bottom: 4vh;
+    right: 2vh;
+}
+
+#left {
+    position: absolute;
+    bottom: 4vh;
+    left: 2vh;
+}
+
+#right {
+    position: absolute;
+    bottom: 4vh;
+    left: 14vh;
 }
 
 /* .save-div {

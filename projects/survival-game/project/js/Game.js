@@ -63,6 +63,12 @@ const _enemies = [
     }
 ]
 
+let mobileGui = document.getElementById('mobile-gui');
+
+// if ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0) {
+//     mobileGui.classList.remove('hidden');
+// }
+
 function GetMousePos(canvas, e) {
     let rect = canvas.getBoundingClientRect();
     
@@ -129,9 +135,8 @@ function startGame(newSave) {
         if (time + 0.02 > 1) timeReversed = true;
         if (time - 0.02 < 0.02) timeReversed = false;
 
-        if (timeReversed) return time -= 0.02;
-
-        time += 0.02;
+        if (timeReversed) return time += 0.02;
+        time -= 0.02;
     }, 14400)
 
     if (!newSave && window.localStorage.getItem('save')) return LoadSave();
