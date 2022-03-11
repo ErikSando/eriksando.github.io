@@ -33,7 +33,7 @@ class WorldGenerator {
 
             if (i - planeLength < 0) planeLength = i;
 
-            let elevation = 1//Math.floor(Math.random() * (2 + 1) - 1);
+            let elevation = -1//Math.floor(Math.random() * (2 + 1) - 1);
 
             if (totalElevation + elevation == 5) {
                 elevation = 0;
@@ -62,7 +62,7 @@ class WorldGenerator {
 
             if (planeLength + i > worldLength) planeLength = worldLength - i;
             
-            let elevation = 1//Math.floor(Math.random() * (2 + 1) - 1);
+            let elevation = -1//Math.floor(Math.random() * (2 + 1) - 1);
 
             if (totalElevation + elevation == 5) {
                 elevation = 0;

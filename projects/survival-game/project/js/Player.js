@@ -21,9 +21,9 @@ class Player {
             y: 0
         }
         this.healing = setInterval(() => {
-            if (this.defence < this.maxDefence) this.defence += this.maxDefence / 30;
+            if (this.defence < this.maxDefence) this.defence += this.maxDefence / 100;
             if (this.defence > this.maxDefence) this.defence = this.maxDefence;
-        }, 1000);
+        }, 500);
     }
 
     top() {
@@ -62,7 +62,7 @@ class Player {
         camOffset.y = this.spawnLocation.y;
     }
 
-    update(/*dt*/) {
+    update(dt) {
         this.dx = 0;
         this.dy = 0;
 
@@ -137,11 +137,8 @@ class Player {
             }
         }
 
-        // console.log('Delta X:' + this.dx, 'Delta time:' + dt, 'dx * dt: ' + this.dx * dt)
-        // console.log('Delta Y:' + this.dy, 'Delta time:' + dt, 'dx * dt: ' + this.dy * dt)
-
-        camOffset.x += this.dx// * dt;
-        camOffset.y += this.dy// * dt;
+        camOffset.x += this.dx * dt;
+        camOffset.y += this.dy * dt;
 
         if (camOffset.y > 1000) this.kill();
     }

@@ -4,9 +4,7 @@ class InputHandler {
         this.right = false;
         this.up = false;
         this.sprint = false;
-    }
 
-    enable() {
         document.onkeydown = (e) => {
             switch(e.key) {
                 case 'a' || 'ArrowLeft':
@@ -50,16 +48,5 @@ class InputHandler {
                     break;
             }
         }
-    }
-
-    disable() {
-        document.onkeydown = (e) => {
-            switch (e.key) {
-                case 'Escape':
-                    ResumeGame();
-                    break;
-            }
-        }
-        document.onkeyup = () => {}
     }
 }
