@@ -1,5 +1,5 @@
 class Player {
-    constructor(x, y, w, h, img, defence = 100, attack = 10, speed = 400, jumpForce = 1200) {
+    constructor(x, y, w, h, img, defence = 100, attack = 10, speed = 300, jumpForce = 600) {
         this.x = x;
         this.y = y;
         this.dx = 0;
@@ -80,22 +80,22 @@ class Player {
             this.dx += this.speed;
         }
 
-        if (this.gravity < 15) { // 2000
-            this.gravity += gravity// * dt;
+        if (this.gravity < 4000) {
+            this.gravity += gravity;
         }
 
         this.dy += this.gravity;
 
         this.hitboxes = {
             x: {
-                x: this.x + this.dx,// * dt,
+                x: this.x + this.dx * dt,
                 y: this.y,
                 w: this.w,
                 h: this.h
             },
             y: {
                 x: this.x,
-                y: this.y + this.dy,// * dt,
+                y: this.y + this.dy * dt,
                 w: this.w,
                 h: this.h
             }

@@ -1,5 +1,5 @@
 class Zombie extends Enemy {
-    constructor(x, y, w, h, img, defence = 100, attack = 20, speed = 4, jumpForce = 18, senseDistance = 5) {
+    constructor(x, y, w, h, img, defence = 100, attack = 20, speed = 200, jumpForce = 600, senseDistance = 5) {
         super(x, y, w, h, img, defence, attack, speed, jumpForce, senseDistance);
         
         this.dx = 0;
@@ -26,22 +26,22 @@ class Zombie extends Enemy {
         this.dx = this.direction * this.speed;
         this.dy = 0;
 
-        if (this.gravity < 15) {
-            this.gravity += 1;
+        if (this.gravity < 4000) {
+            this.gravity += gravity;
         }
 
         this.dy += this.gravity;
 
         this.hitboxes = {
             x: {
-                x: this.x + this.dx,
+                x: this.x + this.dx * dt,
                 y: this.y,
                 w: this.w,
                 h: this.h
             },
             y: {
                 x: this.x,
-                y: this.y + this.dy,
+                y: this.y + this.dy * dt,
                 w: this.w,
                 h: this.h
             }
@@ -108,8 +108,8 @@ class Zombie extends Enemy {
             }
         }
 
-        this.x += this.dx// * dt;
-        this.y += this.dy// * dt;
+        this.x += this.dx * dt;
+        this.y += this.dy * dt;
 
         if (camOffset.y > 1000) this.kill();
     }

@@ -3,15 +3,22 @@ class InputHandler {
         this.left = false;
         this.right = false;
         this.up = false;
-        this.sprint = false;
 
         document.onkeydown = (e) => {
             switch(e.key) {
-                case 'a' || 'ArrowLeft':
+                case 'a':
                     this.left = true;
                     break;
 
-                case 'd' || 'ArrowRight':
+                case 'ArrowLeft':
+                    this.left = true;
+                    break;
+
+                case 'd':
+                    this.right = true;
+                    break;
+
+                case 'ArrowRight':
                     this.right = true;
                     break;
 
@@ -19,10 +26,14 @@ class InputHandler {
                     this.up = true;
                     break;
 
-                case 'Control':
-                    this.sprint = true;
+                case 'w':
+                    this.up = true;
                     break;
 
+                case 'ArrowUp':
+                    this.up = true;
+                    break;
+                
                 case 'Escape':
                     PauseGame();
                     break;
@@ -31,20 +42,32 @@ class InputHandler {
 
         document.onkeyup = (e) => {
             switch(e.key) {
-                case 'a' || 'ArrowLeft':
+                case 'a':
                     this.left = false;
                     break;
 
-                case 'd' || 'ArrowRight':
+                case 'ArrowLeft':
+                    this.left = false;
+                    break;
+
+                case 'd':
+                    this.right = false;
+                    break;
+
+                case 'ArrowRight':
                     this.right = false;
                     break;
 
                 case ' ':
                     this.up = false;
                     break;
-                    
-                case 'Control':
-                    this.sprint = false;
+
+                case 'w':
+                    this.up = false;
+                    break;
+
+                case 'ArrowUp':
+                    this.up = false;
                     break;
             }
         }
