@@ -16,7 +16,10 @@ let camOffset = {
     x: 0,
     y: -192
 }
+let time = 1;
 let lastUpdate = Date.now();
+let timeCycle;
+let timeReversed = false;
 
 let music = new Audio('assets/sounds/music.wav');
 music.loop = 'loop';
@@ -24,7 +27,12 @@ music.autoplay = 'autoplay';
 
 const tileSize = 64;
 const fps = 60;
-const bgColour = 'rgb(50, 180, 250)';
+
+const bgColour = {
+    r: 50,
+    g: 180,
+    b: 250    
+}
 
 const gravity = 30;
 const maxFall = 4020;
@@ -117,6 +125,15 @@ function startGame(newSave) {
 
     music.play();
 
+    timeCycle = setInterval(() => {
+        if (time + 0.02 > 1) timeReversed = true;
+        if (time - 0.02 < 0.02) timeReversed = false;
+
+        if (timeReversed) return time -= 0.02;
+
+        time += 0.02;
+    }, 14400)
+
     if (!newSave && window.localStorage.getItem('save')) return LoadSave();
     
     worldGenerator.createWorld();
@@ -196,7 +213,7 @@ function update(time) {
 }
 
 function draw() {
-    ctx.fillStyle = bgColour;
+    ctx.fillStyle = `rgb(${bgColour.r * time}, ${bgColour.g * time}, ${bgColour.b * time}`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
  
     world.draw();
