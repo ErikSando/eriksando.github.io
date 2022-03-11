@@ -26,10 +26,7 @@ class Zombie extends Enemy {
         this.dx = this.direction * this.speed;
         this.dy = 0;
 
-        if (this.gravity < 4000) {
-            this.gravity += gravity;
-        }
-
+        if (this.gravity < maxFall) this.gravity += gravity;
         this.dy += this.gravity;
 
         this.hitboxes = {
@@ -76,35 +73,26 @@ class Zombie extends Enemy {
                 y: world.tiles[i].y,
                 w: world.tiles[i].w,
                 h: world.tiles[i].h,
-                top: () => {
-                    return world.tiles[i].top()
-                },
-                bottom: () => {
-                    return world.tiles[i].bottom()
-                }
+                top: () => { return world.tiles[i].top() },
+                bottom: () => { return world.tiles[i].bottom() }
             }
 
             if (RectIntersection(this.hitboxes.y, tile)) {
                 if (this.gravity >= 0) {
                     this.grounded = true;
                     this.gravity = 0;
-                    this.dy = tile.top() - this.bottom();
+                    this.dy = (tile.top() - this.bottom()) / dt;
                 } else {
                     this.gravity = 0;
-                    this.dy = tile.bottom() - this.top();
+                    this.dy = (tile.bottom() - this.top()) / dt;
                 }
             }
-            
-            if (RectIntersection(this.hitboxes.x, tile)) {
-                if (this.dx >= 0) {
-                    this.dx = tile.x - (this.x + this.w);
-                } else {
-                    this.dx = tile.x + tile.w - this.x;
-                }
 
-                if (this.grounded) {
-                    this.gravity = -this.jumpForce;
-                }
+            if (RectIntersection(this.hitboxes.x, tile)) {
+                if (this.dx >= 0) this.dx = (tile.x - (this.x + this.w)) / dt;
+                else this.dx = (tile.x + tile.w - this.x) / dt;
+
+                if (this.grounded) this.gravity = -jumpForce;
             }
         }
 

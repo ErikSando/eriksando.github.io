@@ -66,24 +66,11 @@ class Player {
         this.dx = 0;
         this.dy = 0;
 
-        if (Input.up && this.grounded) {
-            this.gravity = -this.jumpForce;
-        }
+        if (Input.up && this.grounded)this.gravity = -this.jumpForce;
+        if (Input.left) this.dx -= this.speed;
+        if (Input.right) this.dx += this.speed;
 
-        // Input.sprint ? this.speed = 8 : this.speed = 5;
-
-        if (Input.left) {
-            this.dx -= this.speed;
-        }
-
-        if (Input.right) {
-            this.dx += this.speed;
-        }
-
-        if (this.gravity < 4000) {
-            this.gravity += gravity;
-        }
-
+        if (this.gravity < maxFall) this.gravity += gravity;
         this.dy += this.gravity;
 
         this.hitboxes = {
@@ -109,31 +96,24 @@ class Player {
                 y: world.tiles[i].y - camOffset.y,
                 w: world.tiles[i].w,
                 h: world.tiles[i].h,
-                top: () => {
-                    return world.tiles[i].top() - camOffset.y;
-                },
-                bottom: () => {
-                    return world.tiles[i].bottom() - camOffset.y;
-                }
-            }
-
-            if (RectIntersection(this.hitboxes.x, tile)) {
-                if (this.dx >= 0) {
-                    this.dx = tile.x - (this.x + this.w);
-                } else {
-                    this.dx = tile.x + tile.w - this.x;
-                }
+                top: () => { return world.tiles[i].top() - camOffset.y },
+                bottom: () => { return world.tiles[i].bottom() - camOffset.y }
             }
 
             if (RectIntersection(this.hitboxes.y, tile)) {
                 if (this.gravity >= 0) {
                     this.grounded = true;
                     this.gravity = 0;
-                    this.dy = tile.top() - this.bottom();
+                    this.dy = (tile.top() - this.bottom()) / dt;
                 } else {
                     this.gravity = 0;
-                    this.dy = tile.bottom() - this.top();
+                    this.dy = (tile.bottom() - this.top()) / dt;
                 }
+            }
+            
+            if (RectIntersection(this.hitboxes.x, tile)) {
+                if (this.dx >= 0) this.dx = (tile.x - (this.x + this.w)) / dt;
+                else this.dx = (tile.x + tile.w - this.x) / dt;
             }
         }
 

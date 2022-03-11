@@ -26,12 +26,13 @@ const tileSize = 64;
 const fps = 60;
 const bgColour = 'rgb(50, 180, 250)';
 
-const gravity = 20;
+const gravity = 30;
+const maxFall = 4020;
 
 const playerW = 48;
 const playerH = 115;
 const speed = 300;
-const jumpForce = 600;
+const jumpForce = 720;
 
 const _enemies = [
     {
@@ -41,7 +42,7 @@ const _enemies = [
         def: 100,
         atk: 20,
         speed: 200,
-        jump: 600
+        jump: 720
     },
     {
         class: Slime,
@@ -50,7 +51,7 @@ const _enemies = [
         def: 50,
         atk: 15,
         speed: 200,
-        jump: 750
+        jump: 800
     }
 ]
 
@@ -187,9 +188,7 @@ function update(time) {
 
     player.update(dt);
 
-    for (let i = 0; i < enemies.length; i++) {
-        enemies[i].update(dt);
-    }
+    for (let i = 0; i < enemies.length; i++) enemies[i].update(dt);
     
     draw();
 
@@ -204,7 +203,5 @@ function draw() {
     player.draw();
     playerUI.draw();
 
-    for (let i = 0; i < enemies.length; i++) {
-        enemies[i].draw();
-    }
+    for (let i = 0; i < enemies.length; i++) enemies[i].draw();
 }

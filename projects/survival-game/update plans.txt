@@ -1,13 +1,15 @@
 Possible updates:
-- Player movement, collision
 - Multiple world saves
+- Enemy health + health bars (health completed)
 
 Maybe possible updates:
-- Enemies (zombies, slimes)
-- Enemy health + health bars
-- Enemy attacks
-- Enemy AI
 - Weapons, tools
 
 Not possible at the moment:
 - Multiplayer
+
+Previous updates:
+- Add player + collision
+- Enemies (zombies, slimes)
+- Enemy AI
+- Enemy attacks
