@@ -7,8 +7,13 @@ class InputHandler {
         this.buttons = {
             left: document.getElementById('left'),
             right: document.getElementById('right'),
-            up: document.getElementById('up')
+            up: document.getElementById('up'),
+            pause: document.getElementById('pause')
         }
+
+        document.getElementById('up').addEventListener('mousedown', () => {
+            console.log('mouse down on the up button')
+        })
 
         document.onkeydown = (e) => {
             switch(e.key) {
@@ -41,7 +46,8 @@ class InputHandler {
                     break;
                 
                 case 'Escape':
-                    PauseGame();
+                    if (!paused) return PauseGame();
+                    ResumeGame();
                     break;
             }
         }
@@ -78,30 +84,49 @@ class InputHandler {
             }
         }
 
-        this.buttons.up.onmousedown = () => {
-            this.buttons.up.style.background = 'rgb(40, 50, 70)'
-            this.up = true;
+        this.buttons.up.onmousedown = (e) => {
+            switch(e.buttton) {
+                case '0':
+                    this.up = true;
+                    break;
+            }
         }
 
-        this.buttons.up.onmouseup = () => {
-            this.buttons.up.style.background = 'rgb(50, 60, 80)'
-            this.up = false;
+        this.buttons.up.onmouseup = (e) => {
+            switch(e.buttton) {
+                case '0':
+                    this.up = false;
+                    break;
+            }
         }
 
-        this.buttons.left.onmousedown = () => {
-            this.left = true;
+        this.buttons.left.onmousedown = (e) => {
+            switch(e.buttton) {
+                case '0':
+                    this.left = true;
+                    break;
+            }
         }
 
-        this.buttons.right.onmouseup = () => {
-            this.right = false;
+        this.buttons.left.onmouseup = (e) => {
+            switch(e.buttton) {
+                case '0':
+                    this.left = false;
+                    break;
+            }
         }
 
-        this.buttons.right.onmousedown = () => {
+        this.buttons.right.onmousedown = (e) => {
             this.right = true;
         }
 
-        this.buttons.right.onmouseup = () => {
+        this.buttons.right.onmouseup = (e) => {
             this.right = false;
+        }
+
+        this.buttons.pause.onclick = () => {
+            if (!paused) return PauseGame();
+            ResumeGame();
         }
     }
 }

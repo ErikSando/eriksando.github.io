@@ -72,7 +72,7 @@ hr {
 #pause {
     position: absolute;
     top: 2vh;
-    left: 49vw;
+    right: 2vh;
 }
 
 .move-button {
@@ -93,19 +93,19 @@ hr {
 
 #up {
     position: absolute;
-    bottom: 4vh;
+    bottom: 2vh;
     right: 2vh;
 }
 
 #left {
     position: absolute;
-    bottom: 4vh;
+    bottom: 2vh;
     left: 2vh;
 }
 
 #right {
     position: absolute;
-    bottom: 4vh;
+    bottom: 2vh;
     left: 14vh;
 }
 
