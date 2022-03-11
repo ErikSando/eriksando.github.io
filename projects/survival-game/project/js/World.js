@@ -1,10 +1,12 @@
 const Sprites = {
     dirt: new Image(),
-    grass: new Image()
+    grass: new Image(),
+    stone: new Image()
 }
 
 Sprites.dirt.src = 'assets/sprites/dirt.png';
 Sprites.grass.src = 'assets/sprites/grass.png';
+Sprites.stone.src = 'assets/sprites/stone.png';
 
 class World {
     constructor(data) {
@@ -18,12 +20,16 @@ class World {
 
             for (let j = 0; j < data[i].length; j++) {
                 if (data[i][j] == 1) {
-                    let dirt = new Dirt(x * tileSize, y * tileSize, tileSize, tileSize, Sprites.dirt, 'dirt');
-                    this.tiles.push(dirt);
+                    let tile = new Dirt(x * tileSize, y * tileSize, tileSize, tileSize, Sprites.dirt, 'dirt');
+                    this.tiles.push(tile);
 
                 } else if (data[i][j] == 2) {
-                    let grass = new Grass(x * tileSize, y * tileSize, tileSize, tileSize, Sprites.grass, 'grass');
-                    this.tiles.push(grass);
+                    let tile = new Grass(x * tileSize, y * tileSize, tileSize, tileSize, Sprites.grass, 'grass');
+                    this.tiles.push(tile);
+                
+                } else if (data[i][j] == 3) {
+                    let tile = new Stone(x * tileSize, y * tileSize, tileSize, tileSize, Sprites.stone, 'stone');
+                    this.tiles.push(tile);
                 }
 
                 x++;

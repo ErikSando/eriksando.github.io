@@ -179,12 +179,9 @@ function ResumeGame() {
 
 function update(time) {
     if (paused) return;
-
     
     let dt = (time - lastUpdate) / 1000;
     lastUpdate = time;
-
-    console.log(dt)
 
     if (!dt || isNaN(dt) || dt > 1 || dt < 0) return requestAnimationFrame(update);
 

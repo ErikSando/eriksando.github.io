@@ -31,3 +31,4 @@ class Block {
 
 class Dirt extends Block {}
 class Grass extends Block {}
+class Stone extends Block {}
