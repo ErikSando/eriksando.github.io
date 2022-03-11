@@ -51,7 +51,28 @@ hr {
 }
 
 #mobile-gui {
-    z-index: 9999;
+    z-index: 99999999;
+}
+
+.mobile-button {
+    display: flex;
+    width: 5vh;
+    height: 5vh;
+    border: 2px solid white;
+    background: black;
+    align-items: top;
+    justify-content: center;
+    font-size: 3.2vh;
+}
+
+.mobile-button:hover {
+    background: rgb(60, 60, 60);
+}
+
+#pause {
+    position: absolute;
+    top: 2vh;
+    left: 49vw;
 }
 
 .move-button {
@@ -63,6 +84,7 @@ hr {
     align-items: center;
     justify-content: center;
     font-size: 5vh;
+    font-weight: bolder;
 }
 
 .move-button:hover {

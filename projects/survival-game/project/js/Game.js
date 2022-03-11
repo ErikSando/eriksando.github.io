@@ -10,6 +10,7 @@ let enemySpawner;
 let saveName;
 let startMenu;
 let pauseMenu;
+let savedStatus;
 let paused = false;
 let enemies = [];
 let camOffset = {
@@ -63,11 +64,7 @@ const _enemies = [
     }
 ]
 
-let mobileGui = document.getElementById('mobile-gui');
-
-// if ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0) {
-//     mobileGui.classList.remove('hidden');
-// }
+let mobileGui;
 
 function GetMousePos(canvas, e) {
     let rect = canvas.getBoundingClientRect();
@@ -90,8 +87,14 @@ function RectIntersection(rect1, rect2) {
 function startGame(newSave) {
     startMenu = document.getElementById('start-menu');
     pauseMenu = document.getElementById('pause-menu');
+    mobileGui = document.getElementById('mobile-gui');
+    savedStatus = document.getElementById('saved-status');
 
     startMenu.classList.add('hidden');
+
+    if ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0) {
+        mobileGui.classList.remove('hidden');
+    }
 
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
@@ -171,10 +174,22 @@ function LoadSave() {
 }
 
 function Save() {
-    window.localStorage.setItem('save', JSON.stringify({
-        camOffset: camOffset,
-        worldData: worldGenerator.worldData
-    }));
+    try {
+        window.localStorage.setItem('save', JSON.stringify({
+            camOffset: camOffset,
+            worldData: worldGenerator.worldData
+        }));
+
+        savedStatus.innerHTML = 'Saved!';
+
+        setTimeout(() => { savedStatus.innerHTML = '' }, 2000);
+    } catch (e) {
+        savedStatus.innerHTML = 'Couldn\'t save';
+
+        console.log(e)
+
+        setTimeout(() => { savedStatus.innerHTML = '' }, 2000);
+    }
 }
 
 function SaveAndQuit() {
