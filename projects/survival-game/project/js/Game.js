@@ -1,7 +1,6 @@
 let canvas;
 let ctx;
 let Input;
-let sprites;
 let worldGenerator;
 let world;
 let player;
@@ -11,13 +10,18 @@ let enemySpawner;
 let saveName;
 let startMenu;
 let pauseMenu;
+let gravity = 1 // 18;
 let paused = false;
 let enemies = [];
 let camOffset = {
     x: 0,
     y: 0
 }
-let previousUpdate = Date.now();
+let lastUpdate = Date.now();
+
+let music = new Audio('assets/sounds/Music.wav');
+music.loop = 'loop';
+music.autoplay = 'autoplay';
 
 const tileSize = 64;
 const fps = 60;
@@ -69,7 +73,7 @@ function startGame(newSave) {
     }, 15000);
 
     // Zombie test
-    enemies.push(new Zombie(800, 280, playerW, playerH, null, 4));
+    enemies.push(new Zombie(800, 280, playerW, playerH, null, 100, 10, 4, 18, 5));
 
     window.onresize = () => {
         canvas.width = window.innerWidth;
@@ -78,41 +82,37 @@ function startGame(newSave) {
         ctx.imageSmoothingEnabled = false;
     }
 
+    music.play();
+
     if (!newSave && window.localStorage.getItem('save')) return LoadSave();
     
     worldGenerator.createWorld();
 
     world = new World(worldGenerator.worldData);
-    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, 100, 10, 300, 900);
+    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, null, 100, 10, 6, 18);
     playerUI = new PlayerUI(Math.floor(canvas.height / 20) * 6, Math.floor(canvas.height / 20), 'Arial');
 
     gameLoop = setInterval(update, 1000 / fps);
-    // update();
+
+    //update(Date.now());
 
     Save();
 }
 
 function LoadSave() {
     let save = JSON.parse(window.localStorage.getItem('save'));
-
     if (!save) return;
 
-    console.log(camOffset);
-    console.log(save.camOffset);
-    
     camOffset = save.camOffset;
-    
-    console.log(camOffset)
-
     worldGenerator.worldData = save.worldData;
 
     world = new World(save.worldData);
-    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, null, 100, 10, 300, 900);
+    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, null, 100, 10, 6, 18);
     playerUI = new PlayerUI(Math.floor(canvas.width / 5), Math.floor(canvas.height / 20), 'Arial');
 
-    //gameLoop = setInterval(update, 1000 / fps);
+    gameLoop = setInterval(update, 1000 / fps);
 
-    update(Date.now());
+    //update(Date.now());
 }
 
 function Save() {
@@ -147,18 +147,18 @@ function ResumeGame() {
 function update(time) {
     if (paused) return;
 
-    let dt = (time - previousUpdate) / 1000;
-    previousUpdate = time;
+    let dt = (time - lastUpdate) / 1000;
+    lastUpdate = time;
 
-    player.update(dt);
+    player.update(/*dt*/);
 
     for (let i = 0; i < enemies.length; i++) {
-        enemies[i].update(dt);
+        enemies[i].update(/*dt*/);
     }
 
     draw();
 
-    requestAnimationFrame(update);
+    //requestAnimationFrame(update);
 }
 
 function draw() {

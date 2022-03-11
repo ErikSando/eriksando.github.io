@@ -1,5 +1,5 @@
 class Player {
-    constructor(x, y, w, h, img, defence, attack, speed, jumpForce) {
+    constructor(x, y, w, h, img, defence = 100, attack = 10, speed = 400, jumpForce = 1200) {
         this.x = x;
         this.y = y;
         this.dx = 0;
@@ -15,6 +15,7 @@ class Player {
         this.jumpForce = jumpForce;
         this.grounded = false;
         this.gravity = 0;
+        this.alive = true;
         this.spawnLocation = {
             x: worldLength * tileSize / 2,
             y: 0
@@ -61,7 +62,7 @@ class Player {
         camOffset.y = this.spawnLocation.y;
     }
 
-    update(dt) {
+    update(/*dt*/) {
         this.dx = 0;
         this.dy = 0;
 
@@ -79,23 +80,22 @@ class Player {
             this.dx += this.speed;
         }
 
-        if (this.gravity < 1500) {
-            console.log(this.gravity * dt)
-            this.gravity += 1000 * dt;
+        if (this.gravity < 15) { // 2000
+            this.gravity += gravity// * dt;
         }
 
         this.dy += this.gravity;
 
         this.hitboxes = {
             x: {
-                x: this.x + this.dx,
+                x: this.x + this.dx,// * dt,
                 y: this.y,
                 w: this.w,
                 h: this.h
             },
             y: {
                 x: this.x,
-                y: this.y + this.dy,
+                y: this.y + this.dy,// * dt,
                 w: this.w,
                 h: this.h
             }
@@ -137,10 +137,13 @@ class Player {
             }
         }
 
-        console.log('Delta Y:' + this.dy, 'Delta time:' + dt, 'dx * dt: ' + this.dy * dt)
+        // console.log('Delta X:' + this.dx, 'Delta time:' + dt, 'dx * dt: ' + this.dx * dt)
+        // console.log('Delta Y:' + this.dy, 'Delta time:' + dt, 'dx * dt: ' + this.dy * dt)
 
-        camOffset.x += this.dx * dt;
-        camOffset.y += this.dy * dt;
+        camOffset.x += this.dx// * dt;
+        camOffset.y += this.dy// * dt;
+
+        if (camOffset.y > 1000) this.kill();
     }
 
     draw() {

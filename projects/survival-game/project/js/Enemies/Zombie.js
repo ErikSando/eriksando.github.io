@@ -1,5 +1,5 @@
 class Zombie {
-    constructor(x, y, w, h, img, defence, attack, speed, jumpForce, senseDistance) {
+    constructor(x, y, w, h, img, defence = 100, attack = 20, speed = 4, jumpForce = 18, senseDistance = 5) {
         this.x = x;
         this.y = y;
         this.dx = 0;
@@ -11,6 +11,8 @@ class Zombie {
         this.maxDefence = defence;
         this.attack = attack;
         this.speed = speed;
+        this.walkSpeed = Math.ceil(speed / 2);
+        this.sprintSpeed = speed;
         this.jumpForce = jumpForce;
         this.grounded = false;
         this.gravity = 0;
@@ -20,8 +22,12 @@ class Zombie {
         this.debounce = false;
     
         this.walkRandomly = setInterval(() => {
-            if (!this.chasingPlayer) this.direction = Math.floor(Math.random() * (1 + 1) - 1);
-        }, 5000);
+            if (this.chasingPlayer) return;
+            
+            this.speed = this.walkSpeed;
+
+            this.direction = Math.floor(Math.random() * (2 + 1) - 1);
+        }, 2000);
     }
 
     top() {
@@ -40,8 +46,16 @@ class Zombie {
         return this.x + this.w;
     }
 
-    update(dt) {
-        this.dx = 0;
+    damage(amount) {
+        this.defence -= amount;
+    }
+
+    kill() {
+        delete this;
+    }
+
+    update(/*dt*/) {
+        this.dx = this.direction * this.speed;
         this.dy = 0;
 
         if (this.gravity < 15) {
@@ -66,14 +80,15 @@ class Zombie {
         }
 
         if (Math.abs(player.x - (this.x - camOffset.x)) < tileSize * this.senseDistance && Math.abs(player.y - (this.y - camOffset.y)) < tileSize * this.senseDistance) {
+            this.speed = this.sprintSpeed;
+            
+            this.direction = 0;
             this.chasingPlayer = true;
 
-            if (player.x > (this.x - camOffset.x)) this.dx += 5;
-            else this.dx -= 5;
+            if (player.x > (this.x - camOffset.x)) this.dx += this.speed;
+            else if (player.x < (this.x - camOffset.x)) this.dx -= this.speed;
 
             if (Math.abs(player.x - (this.x - camOffset.x)) < tileSize && Math.abs(player.y - (this.y - camOffset.y)) < tileSize) {
-                console.log('player is within 1 block')
-
                 if (!this.debounce) {
                     this.debounce = true;
 
@@ -125,8 +140,10 @@ class Zombie {
             }
         }
 
-        this.x += this.dx * dt;
-        this.y += this.dy * dt;
+        this.x += this.dx// * dt;
+        this.y += this.dy// * dt;
+
+        if (camOffset.y > 1000) this.kill();
     }
 
     draw() {
@@ -137,11 +154,15 @@ class Zombie {
         if (this.defence < this.maxDefence) {
             // White oultine
             ctx.fillStyle = 'white';
-            ctx.fillRect(this.x - camOffset - 20, this.y - camOffset.y - 20, this.w + 40, 10);
+            ctx.fillRect(this.x - camOffset - 20, this.y - camOffset.y - 20, this.w + 40, 20);
 
             // Grey background
             ctx.fillStyle = 'darkgray';
-            ctx.fillRect(this.x - camOffset - 20, this.y - camOffset.y - 20, this.w + 40, 10);
+            ctx.fillRect(this.x - camOffset - 20, this.y - camOffset.y - 18, this.w + 36, 16);
+
+            // Health
+            ctx.fillStyle = 'green';
+            ctx.fillRect(this.x - camOffset - 18, this.y - camOffset.y - 18, this.w + 36, 16);
         }
 
         //ctx.drawImage(this.img, this.x, this.y, this.w, this.h)
