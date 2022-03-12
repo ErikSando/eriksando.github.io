@@ -5,12 +5,13 @@ let worldGenerator;
 let world;
 let player;
 let playerUI;
-let gameLoop;
 let enemySpawner;
 let saveName;
 let startMenu;
 let pauseMenu;
 let savedStatus;
+let mobile;
+let UIsize;
 let paused = false;
 let enemies = [];
 let camOffset = {
@@ -93,7 +94,7 @@ function startGame(newSave) {
     startMenu.classList.add('hidden');
 
     if ('ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0) {
-        mobileGui.classList.remove('hidden');
+        mobile = true;
     }
 
     canvas = document.getElementById('canvas');
@@ -135,12 +136,14 @@ function startGame(newSave) {
     music.play();
 
     timeCycle = setInterval(() => {
-        if (time + 0.02 > 1) timeReversed = true;
-        if (time - 0.02 < 0.02) timeReversed = false;
+        if (time + 0.02 > 1) timeReversed = false;
+        if (time - 0.02 < 0.02) timeReversed = true;
 
         if (timeReversed) return time += 0.02;
         time -= 0.02;
     }, 14400)
+
+    UIsize = Math.min(Math.floor(canvas.height / 20) * 4, canvas.width / 10);
 
     if (!newSave && window.localStorage.getItem('save')) return LoadSave();
     
@@ -148,9 +151,7 @@ function startGame(newSave) {
 
     world = new World(worldGenerator.worldData);
     player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, null, 100, 10, speed, jumpForce);
-    playerUI = new PlayerUI(Math.floor(canvas.height / 20) * 6, Math.floor(canvas.height / 20), 'Arial');
-
-    //gameLoop = setInterval(update, 1000 / fps);
+    playerUI = new PlayerUI(UIsize, 'Arial');
 
     update(Date.now());
 
@@ -166,9 +167,7 @@ function LoadSave() {
 
     world = new World(save.worldData);
     player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, null, 100, 10, speed, jumpForce);
-    playerUI = new PlayerUI(Math.floor(canvas.width / 5), Math.floor(canvas.height / 20), 'Arial');
-
-    //gameLoop = setInterval(update, 1000 / fps);
+    playerUI = new PlayerUI(UIsize, 'Arial');
 
     update(Date.now());
 }
@@ -181,13 +180,9 @@ function Save() {
         }));
 
         savedStatus.innerHTML = 'Saved!';
-
         setTimeout(() => { savedStatus.innerHTML = '' }, 2000);
     } catch (e) {
         savedStatus.innerHTML = 'Couldn\'t save';
-
-        console.log(e)
-
         setTimeout(() => { savedStatus.innerHTML = '' }, 2000);
     }
 }
@@ -238,7 +233,8 @@ function draw() {
  
     world.draw();
     player.draw();
-    playerUI.draw();
-
+    
     for (let i = 0; i < enemies.length; i++) enemies[i].draw();
+    
+    playerUI.draw();
 }

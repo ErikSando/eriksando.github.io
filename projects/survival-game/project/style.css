@@ -50,10 +50,6 @@ hr {
     background: rgb(50, 60, 80);
 }
 
-#mobile-gui {
-    z-index: 99999999;
-}
-
 .mobile-button {
     display: flex;
     width: 5vh;
