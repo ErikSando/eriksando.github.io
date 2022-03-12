@@ -17,7 +17,7 @@ class Player {
         this.gravity = 0;
         this.alive = true;
         this.spawnLocation = {
-            x: worldLength * tileSize / 2,
+            x: 0,
             y: 0
         }
         this.healing = setInterval(() => {
@@ -46,18 +46,24 @@ class Player {
         this.defence -= amount;
 
         if (this.defence <= 0) {
+            this.defence = 0;
             this.kill();
         }
     }
 
     kill() {
         this.alive = false;
+
+        respawnButton.enabled = true;
     }
 
     respawn() {
         this.alive = true;
         this.defence = this.maxDefence;
+        this.gravity = 0;
 
+        respawnButton.enabled = false;
+        
         camOffset.x = this.spawnLocation.x;
         camOffset.y = this.spawnLocation.y;
     }

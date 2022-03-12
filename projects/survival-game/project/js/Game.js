@@ -5,6 +5,7 @@ let worldGenerator;
 let world;
 let player;
 let playerUI;
+let respawnButton;
 let enemySpawner;
 let saveName;
 let startMenu;
@@ -13,6 +14,7 @@ let savedStatus;
 let mobile;
 let UIsize;
 let paused = false;
+let buttons = [];
 let enemies = [];
 let camOffset = {
     x: 0,
@@ -139,20 +141,18 @@ function startGame(newSave) {
     music.play();
 
     timeCycle = setInterval(() => {
-        if (time + 0.02 > 1) timeReversed = false;
-        if (time - 0.02 < 0.02) timeReversed = true;
+        if (time + 0.01 > 1) timeReversed = false;
+        if (time - 0.01 < 0.01) timeReversed = true;
 
-        if (timeReversed) return time += 0.02;
-        time -= 0.02;
+        if (timeReversed) return time += 0.01;
+        time -= 0.01;
 
         time = time.toFixed(2);
-    }, 14400)
+    }, 7700)
 
     Input = new InputHandler();
 
-    UIsize = Math.min(Math.floor(canvas.height / 20) * 4, canvas.width / 10);
-
-    if (!newSave && window.localStorage.getItem('save')) return LoadSave();
+    UIsize = Math.min(Math.floor(canvas.height / 20) * 4, Math.floor(canvas.width / 10));
     
     worldGenerator.createWorld();
 
@@ -160,9 +160,18 @@ function startGame(newSave) {
     player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, null, 100, 10, speed, jumpForce);
     playerUI = new PlayerUI(UIsize, 'Arial');
 
-    update(Date.now());
+    const respawn = () => {
+        player.respawn();
+    }
 
-    Save();
+    respawnButton = new Button(canvas.width / 2, canvas.height / 2, UIsize / 2, null, 'Respawn', 'Arial', 'white', 'black', 'white', respawn);
+    respawnButton.enabled = false;
+
+    buttons.push(respawnButton);
+
+    if (!newSave && window.localStorage.getItem('save')) LoadSave();
+
+    update(Date.now());
 }
 
 function LoadSave() {
@@ -172,11 +181,7 @@ function LoadSave() {
     camOffset = save.camOffset;
     worldGenerator.worldData = save.worldData;
 
-    world = new World(save.worldData);
-    player = new Player(Math.floor(canvas.width / 2) - playerW / 2, Math.floor(canvas.height / 2) - playerH / 2, playerW, playerH, null, 100, 10, speed, jumpForce);
-    playerUI = new PlayerUI(UIsize, 'Arial');
-
-    update(Date.now());
+    world = new World(worldGenerator.worldData);
 }
 
 function Save() {
@@ -225,10 +230,10 @@ function update(time) {
 
     if (!dt || isNaN(dt) || dt > 1 || dt < 0) return requestAnimationFrame(update);
 
-    player.update(dt);
+    if (player.alive) player.update(dt);
 
     for (let i = 0; i < enemies.length; i++) enemies[i].update(dt);
-    
+
     draw();
 
     requestAnimationFrame(update);
@@ -239,9 +244,12 @@ function draw() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
  
     world.draw();
-    player.draw();
     
     for (let i = 0; i < enemies.length; i++) enemies[i].draw();
+    for (let i = 0; i < buttons.length; i++) if (buttons[i].enabled) buttons[i].draw();
+
+    if (!player.alive) return;
     
+    player.draw();
     playerUI.draw();
 }

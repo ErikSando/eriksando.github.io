@@ -2,8 +2,6 @@ class Enemy {
     constructor(x, y, w, h, img, defence = 100, attack = 20, speed = 4, jumpForce = 18, senseDistance = 5) {
         this.x = x;
         this.y = y;
-        this.dx = 0;
-        this.dy = 0;
         this.w = w;
         this.h = h;
         this.img = img;
@@ -11,23 +9,8 @@ class Enemy {
         this.maxDefence = defence;
         this.attack = attack;
         this.speed = speed;
-        this.walkSpeed = Math.ceil(speed / 2);
-        this.sprintSpeed = speed;
         this.jumpForce = jumpForce;
-        this.grounded = false;
-        this.gravity = 0;
-        this.direction = 0;
         this.senseDistance = senseDistance;
-        this.chasingPlayer = false;
-        this.debounce = false;
-    
-        this.walkRandomly = setInterval(() => {
-            if (this.chasingPlayer) return;
-            
-            this.speed = this.walkSpeed;
-
-            this.direction = Math.floor(Math.random() * (2 + 1) - 1);
-        }, 2000);
     }
 
     top() {

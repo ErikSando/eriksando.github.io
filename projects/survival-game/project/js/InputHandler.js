@@ -3,7 +3,6 @@ class InputHandler {
         this.left = false;
         this.right = false;
         this.up = false;
-        this.mouse = false;
 
         document.onkeydown = (e) => {
             switch(e.key) {
@@ -71,52 +70,6 @@ class InputHandler {
                 case 'ArrowUp':
                     this.up = false;
                     break;
-            }
-        }
-
-        canvas.onmousedown = (e) => {
-            this.mouse = true;
-
-            let mouseRect = {
-                x: GetMousePos(canvas, e).x,
-                y: GetMousePos(canvas, e).y,
-                w: 1,
-                h: 1
-            }
-
-            if (RectIntersection(playerUI.rects.left, mouseRect)) {
-                this.left = true;
-            }
-
-            if (RectIntersection(playerUI.rects.right, mouseRect)) {
-                this.right = true;
-            }
-
-            if (RectIntersection(playerUI.rects.up, mouseRect)) {
-                this.up = true;
-            }
-        }
-
-        canvas.onmouseup = (e) => {
-            this.mouse = false;
-
-            let mouseRect = {
-                x: GetMousePos(canvas, e).x,
-                y: GetMousePos(canvas, e).y,
-                w: 1,
-                h: 1
-            }
-
-            if (RectIntersection(playerUI.rects.left, mouseRect)) {
-                this.left = true;
-            }
-
-            if (RectIntersection(playerUI.rects.right, mouseRect)) {
-                this.right = true;
-            }
-
-            if (RectIntersection(playerUI.rects.up, mouseRect)) {
-                this.up = true;
             }
         }
     }
