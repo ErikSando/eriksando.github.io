@@ -96,6 +96,10 @@ class Slime extends Enemy {
             }
         }
 
+        console.log(this.x + camOffset.x, this.x - camOffset.y)
+
+        if ((this.x - camOffset.x) < -Math.floor(worldLength / 2) + Math.floor(canvas.width / tileSize / 2) || (this.x - camOffset.x) > Math.floor(worldLength / 2) + Math.floor(canvas.width / tileSize / 2))
+
         this.x += this.dx * dt;
         this.y += this.dy * dt;
 

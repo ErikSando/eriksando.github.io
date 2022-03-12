@@ -3,17 +3,7 @@ class InputHandler {
         this.left = false;
         this.right = false;
         this.up = false;
-
-        this.buttons = {
-            left: document.getElementById('left'),
-            right: document.getElementById('right'),
-            up: document.getElementById('up'),
-            pause: document.getElementById('pause')
-        }
-
-        document.getElementById('up').addEventListener('mousedown', () => {
-            console.log('mouse down on the up button')
-        })
+        this.mouse = false;
 
         document.onkeydown = (e) => {
             switch(e.key) {
@@ -84,49 +74,50 @@ class InputHandler {
             }
         }
 
-        this.buttons.up.onmousedown = (e) => {
-            switch(e.buttton) {
-                case '0':
-                    this.up = true;
-                    break;
+        canvas.onmousedown = (e) => {
+            this.mouse = true;
+
+            let mouseRect = {
+                x: GetMousePos(canvas, e).x,
+                y: GetMousePos(canvas, e).y,
+                w: 1,
+                h: 1
+            }
+
+            if (RectIntersection(playerUI.rects.left, mouseRect)) {
+                this.left = true;
+            }
+
+            if (RectIntersection(playerUI.rects.right, mouseRect)) {
+                this.right = true;
+            }
+
+            if (RectIntersection(playerUI.rects.up, mouseRect)) {
+                this.up = true;
             }
         }
 
-        this.buttons.up.onmouseup = (e) => {
-            switch(e.buttton) {
-                case '0':
-                    this.up = false;
-                    break;
+        canvas.onmouseup = (e) => {
+            this.mouse = false;
+
+            let mouseRect = {
+                x: GetMousePos(canvas, e).x,
+                y: GetMousePos(canvas, e).y,
+                w: 1,
+                h: 1
             }
-        }
 
-        this.buttons.left.onmousedown = (e) => {
-            switch(e.buttton) {
-                case '0':
-                    this.left = true;
-                    break;
+            if (RectIntersection(playerUI.rects.left, mouseRect)) {
+                this.left = true;
             }
-        }
 
-        this.buttons.left.onmouseup = (e) => {
-            switch(e.buttton) {
-                case '0':
-                    this.left = false;
-                    break;
+            if (RectIntersection(playerUI.rects.right, mouseRect)) {
+                this.right = true;
             }
-        }
 
-        this.buttons.right.onmousedown = (e) => {
-            this.right = true;
-        }
-
-        this.buttons.right.onmouseup = (e) => {
-            this.right = false;
-        }
-
-        this.buttons.pause.onclick = () => {
-            if (!paused) return PauseGame();
-            ResumeGame();
+            if (RectIntersection(playerUI.rects.up, mouseRect)) {
+                this.up = true;
+            }
         }
     }
 }

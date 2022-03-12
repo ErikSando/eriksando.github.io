@@ -65,7 +65,9 @@ const _enemies = [
     }
 ]
 
-let mobileGui;
+window.oncontextmenu = (e) => {
+    e.preventDefault();
+}
 
 function GetMousePos(canvas, e) {
     let rect = canvas.getBoundingClientRect();
@@ -105,10 +107,11 @@ function startGame(newSave) {
 
     ctx.imageSmoothingEnabled = false;
 
-    Input = new InputHandler();
     worldGenerator = new WorldGenerator();
 
     enemySpawner = setInterval(() => {
+        if (enemies.length > worldLength / 5 || time > 0.5) return;
+
         let r = Math.floor(Math.random() * _enemies.length)
 
         enemies.push(new _enemies[r].class(
@@ -141,7 +144,11 @@ function startGame(newSave) {
 
         if (timeReversed) return time += 0.02;
         time -= 0.02;
+
+        time = time.toFixed(2);
     }, 14400)
+
+    Input = new InputHandler();
 
     UIsize = Math.min(Math.floor(canvas.height / 20) * 4, canvas.width / 10);
 

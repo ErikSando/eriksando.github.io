@@ -14,10 +14,10 @@ class PlayerUI {
 
         ctx.fillStyle = 'green';
         ctx.fillRect(7, 7, (this.size * 2 - 4) * (player.defence / player.maxDefence), this.size / 3 - 4);
-        ctx.font = this.size / 1.2 + 'px ' + this.font;
+        ctx.font = this.size / 3.6 + 'px ' + this.font;
 
         ctx.fillStyle = 'white';
-        ctx.fillText('Health: ' + Math.floor(player.defence), 10, 10 + this.size, this.size / 2);
+        ctx.fillText('Health: ' + Math.floor(player.defence), 15, 10 + this.size / 4 - 2, this.size * 2);
 
         if (mobile) {
             ctx.fillStyle = 'white';
