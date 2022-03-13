@@ -13,10 +13,10 @@ class World {
         this.tiles = [];
 
         let x;
-        let y = -15//-(Math.floor(data.length / 2)) * tileSize;
+        let y = -(Math.floor(data.length / 2)) + canvas.height / 2 / tileSize;
 
         for (let i = 0; i < data.length; i++) {
-            x = -Math.floor(worldLength / 2) + Math.floor(canvas.width / tileSize / 2);
+            x = -Math.floor(worldLength / 2) + Math.floor(canvas.width / tileSize / 2) + 0.5;
 
             for (let j = 0; j < data[i].length; j++) {
                 if (data[i][j] == 1) {
@@ -41,7 +41,14 @@ class World {
 
     draw() {
         for (let i = 0; i < this.tiles.length; i++) {
-            this.tiles[i].draw();
+            let tileRect = {
+                x: this.tiles[i].x - camOffset.x,
+                y: this.tiles[i].y - camOffset.y,
+                w: this.tiles[i].w,
+                h: this.tiles[i].h
+            }
+
+            if (RectIntersection(displayRect, tileRect)) this.tiles[i].draw();
         }
     }
 }

@@ -1,8 +1,9 @@
-let worldLength = 20;
+let worldLength = 2000;
 
 class WorldGenerator {
     constructor() {
         this.worldData = [
+            [], [], [], [], [], [], [], [], [], [],
             [], [], [], [], [], [], [], [], [], [],
             [], [], [], [], [], [], [], [], [], [],
             [], [], [], [], [], [], [], [], [], [],
@@ -35,7 +36,7 @@ class WorldGenerator {
 
             let elevation = Math.floor(Math.random() * (2 + 1) - 1);
 
-            if (totalElevation + elevation == 5) {
+            if (totalElevation + elevation == 10) {
                 elevation = 0;
             } else if (totalElevation + elevation == -5) {
                 elevation = 0;
@@ -83,6 +84,7 @@ class WorldGenerator {
             i += planeLength - 1;
         }
 
+        console.log(this.worldData)
         return this.worldData;
     }
 }

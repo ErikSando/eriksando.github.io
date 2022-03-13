@@ -126,7 +126,7 @@ class Player {
         camOffset.x += this.dx * dt;
         camOffset.y += this.dy * dt;
 
-        if (camOffset.y > 1000) this.kill();
+        if (camOffset.y > 1500) this.kill();
     }
 
     draw() {

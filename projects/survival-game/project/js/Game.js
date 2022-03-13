@@ -1,5 +1,6 @@
 let canvas;
 let ctx;
+let displayRect;
 let Input;
 let worldGenerator;
 let world;
@@ -109,6 +110,13 @@ function startGame(newSave) {
 
     ctx.imageSmoothingEnabled = false;
 
+    displayRect = {
+        x: 0,
+        y: 0,
+        w: canvas.width,
+        h: canvas.height
+    }
+
     worldGenerator = new WorldGenerator();
 
     enemySpawner = setInterval(() => {
@@ -116,14 +124,18 @@ function startGame(newSave) {
 
         let r = Math.floor(Math.random() * _enemies.length)
 
-        enemies.push(new _enemies[r].class(
-            Math.floor(Math.random() * ((worldLength - 1) * tileSize)),
-            -128, // Will change this to get the position of the highest grass block
-            _enemies[r].w,
-            _enemies[r].h,
-            _enemies[r].img,
-            _enemies[r].speed,
-            _enemies[r].jump)
+        enemies.push(
+            new _enemies[r].class(
+                Math.floor(Math.random() * ((worldLength - 1) * tileSize)),
+                -128, // Will change this to get the position of the highest grass block
+                _enemies[r].w,
+                _enemies[r].h,
+                _enemies[r].def,
+                _enemies[r].atk,
+                _enemies[r].img,
+                _enemies[r].speed,
+                _enemies[r].jump
+            )
         );
     }, 15000);
 
@@ -136,6 +148,13 @@ function startGame(newSave) {
         canvas.height = window.innerHeight;
 
         ctx.imageSmoothingEnabled = false;
+
+        displayRect = {
+            x: 0,
+            y: 0,
+            w: canvas.width,
+            h: canvas.height
+        }
     }
 
     music.play();
@@ -228,11 +247,24 @@ function update(time) {
     let dt = (time - lastUpdate) / 1000;
     lastUpdate = time;
 
+    console.log('FPS: ' + 1 / dt)
+
     if (!dt || isNaN(dt) || dt > 1 || dt < 0) return requestAnimationFrame(update);
 
     if (player.alive) player.update(dt);
 
-    for (let i = 0; i < enemies.length; i++) enemies[i].update(dt);
+    for (let i = 0; i < enemies.length; i++) {
+        let enemyRect = {
+            x: enemies[i].x - camOffset.x,
+            y: enemies[i].y - camOffset.y,
+            w: enemies[i].w,
+            h: enemies[i].h
+        }
+
+        if (RectIntersection(displayRect, enemyRect)) {
+            enemies[i].update(dt);
+        }
+    }
 
     draw();
 

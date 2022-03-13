@@ -36,7 +36,7 @@ class Enemy {
     }
 
     kill() {
-        delete this;
+        enemies.splice(this);
     }
 
     draw() {
