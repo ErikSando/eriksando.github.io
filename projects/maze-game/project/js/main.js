@@ -9,7 +9,7 @@ let width;
 let height;
 let jumpscareImg;
 
-let stepAfterDeath = 0;
+let stepsAfterDeath = 0;
 let hitTile = false;
 let fps = 60;
 let level = 1;
@@ -162,10 +162,10 @@ function draw() {
         world.draw('red');
         mouse.draw();
 
-        stepAfterDeath++;
+        stepsAfterDeath++;
 
-        if (stepAfterDeath >= 60) {
-            stepAfterDeath = 0;
+        if (stepsAfterDeath >= 60) {
+            stepsAfterDeath = 0;
             level = 1;
         }
 

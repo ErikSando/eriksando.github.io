@@ -9,12 +9,12 @@ body {
 
 #left {
     float: left;
-    width: 70%
+    width: 60vw;
 }
 
 #updates {
-    width: 25%;
-    height: 90vh;
+    width: min(30vw, 50vh);
+    height: min(50vw, 80vh);
     float: right;
     background: rgb(60, 80, 100);
     padding: 5px;
