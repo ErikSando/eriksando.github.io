@@ -10,11 +10,19 @@ class InputHandler {
                     this.left = true;
                     break;
 
+                case 'A':
+                    this.left = true;
+                    break;
+
                 case 'ArrowLeft':
                     this.left = true;
                     break;
 
                 case 'd':
+                    this.right = true;
+                    break;
+
+                case 'D':
                     this.right = true;
                     break;
 
@@ -27,6 +35,10 @@ class InputHandler {
                     break;
 
                 case 'w':
+                    this.up = true;
+                    break;
+                
+                case 'W':
                     this.up = true;
                     break;
 
@@ -46,6 +58,10 @@ class InputHandler {
                 case 'a':
                     this.left = false;
                     break;
+                
+                case 'A':
+                    this.left = false;
+                    break;
 
                 case 'ArrowLeft':
                     this.left = false;
@@ -54,6 +70,9 @@ class InputHandler {
                 case 'd':
                     this.right = false;
                     break;
+                
+                case 'D':
+                    this.right = false;
 
                 case 'ArrowRight':
                     this.right = false;
@@ -66,6 +85,9 @@ class InputHandler {
                 case 'w':
                     this.up = false;
                     break;
+
+                case 'W':
+                    this.up = false;
 
                 case 'ArrowUp':
                     this.up = false;

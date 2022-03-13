@@ -96,8 +96,20 @@ window.onload = function () {
                 leftKey = true;
                 break;
 
+            case 'A':
+                if (!started || gameWon) return;
+
+                leftKey = true;
+                break;
+
             case 'd':
                 if (!started || gameWon) return;
+
+                rightKey = true;
+                break;
+
+            case 'D':
+                if (!start || gameWon) return;
 
                 rightKey = true;
                 break;
@@ -134,7 +146,14 @@ window.onload = function () {
                 leftKey = false;
                 break;
 
+            case 'A':
+                leftKey = false;
+
             case 'd':
+                rightKey = false;
+                break;
+
+            case 'D':
                 rightKey = false;
                 break;
 
