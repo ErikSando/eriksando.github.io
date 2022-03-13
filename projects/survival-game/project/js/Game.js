@@ -15,6 +15,7 @@ let savedStatus;
 let mobile;
 let UIsize;
 let paused = false;
+let extraGuiEnabled = false;
 let buttons = [];
 let enemies = [];
 let camOffset = {
@@ -247,8 +248,6 @@ function update(time) {
     let dt = (time - lastUpdate) / 1000;
     lastUpdate = time;
 
-    console.log('FPS: ' + 1 / dt)
-
     if (!dt || isNaN(dt) || dt > 1 || dt < 0) return requestAnimationFrame(update);
 
     if (player.alive) player.update(dt);
@@ -266,12 +265,12 @@ function update(time) {
         }
     }
 
-    draw();
+    draw(dt);
 
     requestAnimationFrame(update);
 }
 
-function draw() {
+function draw(dt) {
     ctx.fillStyle = `rgb(${bgColour.r * time}, ${bgColour.g * time}, ${bgColour.b * time}`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
  
@@ -283,5 +282,5 @@ function draw() {
     if (!player.alive) return;
     
     player.draw();
-    playerUI.draw();
+    playerUI.draw(dt);
 }

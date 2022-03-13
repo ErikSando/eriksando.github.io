@@ -50,6 +50,11 @@ class InputHandler {
                     if (!paused) return PauseGame();
                     ResumeGame();
                     break;
+                
+                case 'F9':
+                    extraGuiEnabled = !extraGuiEnabled;
+                    console.log(extraGuiEnabled);
+                    break;
             }
         }
 

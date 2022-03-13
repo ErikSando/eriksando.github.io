@@ -23,12 +23,36 @@
         <div id="start-menu">
             <h1>Start new game or load existing game</h1> <hr> <br>
             <div id="new-save" class="start-button"><p>New Game</p></div> <div id="load-save" class="start-button"><p>Load Game</p></div>
+            <div class="help">
+                <div class="how-to-play">
+                    <h2>How to play</h2>
+                    Nothing to do right now, just move around or something idk.
+                </div>
+                <div class="controls">
+                    <h2>Controls</h2>
+                    Move: A, D / Left, Right <br>
+                    Jump: W / Up / Space <br>
+                    Extra GUI: F9 <br>
+                </div>
+            </div>
         </div>
         <div id="pause-menu" class="hidden">
             <h1>Game paused; press Escape to resume</h1>
             <button id="save" onclick="Save()">Save</button>
             <span class="hidden" id="saved-status"></span> <br>
             <button id="quit" onclick="SaveAndQuit()">Save and Quit</button>
+            <div class="help">
+                <div class="how-to-play">
+                    <h2>How to play</h2>
+                    Nothing to do right now, just move around or something idk.
+                </div>
+                <div class="controls">
+                    <h2>Controls</h2>
+                    Move: A, D / Left, Right
+                    Jump: W / Up / Space
+                    Extra GUI: F10
+                </div>
+            </div>
         </div>
         <div id="mobile-gui" class="hidden">
             <div id="movement">

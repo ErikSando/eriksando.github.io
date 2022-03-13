@@ -20,6 +20,26 @@ hr {
     width: 80vw;
 }
 
+.help {
+    display: block;
+    background: rgb(60, 80, 100);
+    width: 80vw;
+    height: 20vh;
+    margin-top: 50vh;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.how-to-play {
+    float: left;
+    width: 50%;
+}
+
+.controls {
+    float: right;
+    width: 50%;
+}
+
 .hidden {
     display: none;
 }
@@ -38,7 +58,7 @@ hr {
     width: max(22vh, 13vw);
     height: max(5vh, 3vw);
     margin: auto;
-    font-size: 3vh;
+    font-size: max(3vh, 1.5vw);
     border: 2px solid white;
     align-items: center;
     justify-content: center;

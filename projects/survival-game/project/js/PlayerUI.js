@@ -4,7 +4,7 @@ class PlayerUI {
         this.font = font;
     }
 
-    draw() {
+    draw(dt) {
         ctx.fillStyle = 'white';
         ctx.fillRect(5, 5, this.size * 2.5, this.size / 3);
 
@@ -17,5 +17,13 @@ class PlayerUI {
 
         ctx.fillStyle = 'white';
         ctx.fillText('Health: ' + Math.floor(player.defence), 15, 10 + this.size / 4 - 2, this.size * 2.3);
+
+        if (!extraGuiEnabled) return;
+    
+        let _fps = 1 / dt;
+
+        ctx.fillStyle = 'white'
+        ctx.font = this.size / 3.6 + 'px ' + this.font;
+        ctx.fillText('FPS: ' + Math.round(_fps), canvas.width - ctx.measureText('FPS: ' + Math.round(_fps)).width - 10, this.size / 4);
     }
 }
