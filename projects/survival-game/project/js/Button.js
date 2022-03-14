@@ -32,7 +32,13 @@ class Button {
             }
 
             if (RectIntersection(mouseRect, this.rect)) {
-                this.onclick();
+                if (typeof this.onclick != 'function') return console.error('Button.onclick is not of type function');
+
+                try {
+                    this.onclick();
+                } catch (e) {
+                    console.log(e);
+                }
             }
         }
     }
@@ -52,8 +58,6 @@ class Button {
             ctx.font = this.h / 1.5 + ' ' + this.font;
             ctx.fillStyle = this.textColour;
             ctx.fillText(this.text, this.x + (this.w / 1.25) / 2, this.y + this.h / 1.4)
-        } else {
-            console.error('No text or image, cannot draw button');
         }
     }
 }

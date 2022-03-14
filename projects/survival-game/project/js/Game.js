@@ -141,8 +141,8 @@ function startGame(newSave) {
     }, 15000);
 
     // Zombie and slime test
-    enemies.push(new Zombie(800, 280, playerW, playerH, null, 100, 20, 200, 600, 5));
-    enemies.push(new Slime(800, 280, playerW, 48, null, 50, 15, 200, 750, 5));
+    enemies.push(new Zombie(worldLength / 2 / tileSize, -128, playerW, playerH, null, 100, 20, 200, 600, 5));
+    enemies.push(new Slime(worldLength / 2 / tileSize, -128, playerW, 48, null, 50, 15, 200, 750, 5));
 
     window.onresize = () => {
         canvas.width = window.innerWidth;
@@ -167,7 +167,7 @@ function startGame(newSave) {
         if (timeReversed) return time += 0.01;
         time -= 0.01;
 
-        time = time.toFixed(2);
+        time = Number(time.toFixed(2));
     }, 7700)
 
     Input = new InputHandler();
@@ -184,7 +184,7 @@ function startGame(newSave) {
         player.respawn();
     }
 
-    respawnButton = new Button(canvas.width / 2, canvas.height / 2, UIsize / 2, null, 'Respawn', 'Arial', 'white', 'black', 'white', respawn);
+    respawnButton = new Button(canvas.width / 2, canvas.height / 2, UIsize / 2, null, 'Respawn', 'Arial', 'white', 'black', 'white', null);
     respawnButton.enabled = false;
 
     buttons.push(respawnButton);

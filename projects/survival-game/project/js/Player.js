@@ -60,7 +60,7 @@ class Player {
     respawn() {
         this.alive = true;
         this.defence = this.maxDefence;
-        this.gravity = 0;
+        this.dy = 0;
 
         respawnButton.enabled = false;
         
@@ -70,14 +70,12 @@ class Player {
 
     update(dt) {
         this.dx = 0;
-        this.dy = 0;
 
-        if (Input.up && this.grounded)this.gravity = -this.jumpForce;
+        if (Input.up && this.grounded) this.dy = -this.jumpForce;
         if (Input.left) this.dx -= this.speed;
         if (Input.right) this.dx += this.speed;
 
-        if (this.gravity < maxFall) this.gravity += gravity;
-        this.dy += this.gravity;
+        if (this.dy < maxFall) this.dy += gravity;
 
         this.hitboxes = {
             x: {
