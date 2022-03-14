@@ -11,7 +11,7 @@ let groundMaterial = new THREE.MeshLambertMaterial({
     color: 0xcfcfcf,
 });
 let boxMaterial = new THREE.MeshLambertMaterial({
-    color: "red",
+    color: 0x034799,
 });
 let fov = 80;
 let aspect = (window.innerWidth - 20) / (window.innerHeight - 20);
@@ -21,7 +21,7 @@ let far = 2000;
 window.onload = () => {
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth - 20, window.innerHeight - 20);
-    renderer.setClearColor(0x00fff);
+    renderer.setClearColor(0x3DA8EB);
 
     document.body.appendChild(renderer.domElement);
     
@@ -37,9 +37,9 @@ window.onload = () => {
     camera.up.set(0, -0.5, 1);
     camera.rotation.x = -Math.PI / 4;
 
-    ambientLight = new THREE.AmbientLight(0x8d939e);
+    ambientLight = new THREE.AmbientLight(0x8D939E);
 
-    light = new THREE.DirectionalLight(0xffffff, 1);
+    light = new THREE.DirectionalLight(0xFFFFFF, 1);
     light.position.set(0, -10, 5);
     light.castShadow = true;
     
