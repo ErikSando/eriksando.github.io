@@ -14,19 +14,19 @@ let boxMaterial = new THREE.MeshLambertMaterial({
     color: "red",
 });
 let fov = 80;
-let aspect = (window.innerWidth - 16) / (window.innerHeight - 16);
+let aspect = (window.innerWidth - 20) / (window.innerHeight - 20);
 let near = 0.1;
 let far = 2000;
 
 window.onload = () => {
     renderer = new THREE.WebGLRenderer({ antialias: true });
-    renderer.setSize(window.innerWidth - 16, window.innerHeight - 16);
+    renderer.setSize(window.innerWidth - 20, window.innerHeight - 20);
     renderer.setClearColor(0x00fff);
 
     document.body.appendChild(renderer.domElement);
     
     window.onresize = () => {
-        renderer.setSize(window.innerWidth - 16, window.innerHeight - 16);
+        renderer.setSize(window.innerWidth - 20, window.innerHeight - 20);
     
         aspect = window.innerWidth / window.innerHeight;
     }
