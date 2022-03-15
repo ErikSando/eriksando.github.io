@@ -1,5 +1,3 @@
-const THREE = require('three');
-
 let renderer;
 let scene;
 let camera;
