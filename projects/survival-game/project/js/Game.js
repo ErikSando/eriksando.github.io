@@ -172,7 +172,7 @@ function startGame(newSave) {
 
     Input = new InputHandler();
 
-    UIsize = Math.min(Math.floor(canvas.height / 20) * 4, Math.floor(canvas.width / 10));
+    UIsize = Math.min(Math.floor(canvas.height / 22) * 4, Math.floor(canvas.width / 11));
     
     worldGenerator.createWorld();
 
