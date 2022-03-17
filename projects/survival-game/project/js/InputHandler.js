@@ -53,7 +53,6 @@ class InputHandler {
                 
                 case 'F9':
                     extraGuiEnabled = !extraGuiEnabled;
-                    console.log(extraGuiEnabled);
                     break;
             }
         }

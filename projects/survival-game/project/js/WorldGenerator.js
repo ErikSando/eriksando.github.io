@@ -83,8 +83,7 @@ class WorldGenerator {
 
             i += planeLength - 1;
         }
-
-        console.log(this.worldData)
+        
         return this.worldData;
     }
 }

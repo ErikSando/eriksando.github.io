@@ -7,7 +7,6 @@ class Button {
         this.font = font;
         this.h = size;
         ctx.font = this.h / 1.5 + ' ' + this.font;
-        console.log(ctx.measureText(this.text).width, size)
         this.w = Math.floor(ctx.measureText(this.text).width * 1.25);
         this.outlineColour = outlineColour;
         this.bodyColour = bodyColour;
@@ -32,8 +31,6 @@ class Button {
             }
 
             if (RectIntersection(mouseRect, this.rect)) {
-                if (typeof this.onclick != 'function') return console.error('Button.onclick is not of type function');
-
                 try {
                     this.onclick();
                 } catch (e) {

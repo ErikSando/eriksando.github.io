@@ -98,7 +98,5 @@ class Zombie extends Enemy {
 
         this.x += this.dx * dt;
         this.y += this.dy * dt;
-
-        if (this.y - camOffset.y > 1000) console.log('killing zombie'); this.kill();
     }
 }

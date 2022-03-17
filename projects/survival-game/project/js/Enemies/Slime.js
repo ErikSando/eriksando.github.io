@@ -100,7 +100,5 @@ class Slime extends Enemy {
 
         this.x += this.dx * dt;
         this.y += this.dy * dt;
-
-        if (this.y - camOffset.y > 3000) this.kill();
     }
 }
