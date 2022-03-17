@@ -17,25 +17,27 @@ class Stopwatch {
         this.running = false;
     }
 
-    updateTime() {
+    updateTime(time) {
+        const dt = (time - this.lastUpdate) / 100;
+        this.lastUpdate = time;
+
         if (!this.running) return;
         
-        this.millisecs += 1;
+        this.millisecs += dt;
 
         // If a second has past
-        if (this.millisecs == 100) {
+        if (this.millisecs >= 100) {
             this.millisecs = 0;
             this.seconds += 1;
         }
 
         // If a minute has passed
-        if (this.seconds == 60) {
+        if (this.seconds >= 60) {
             this.seconds = 0;
             this.minutes += 1;
         }
 
-        // Call updateTime every 10 milliseconds
-        setTimeout('stopwatch.updateTime()', 10);
+        requestAnimationFrame(this.updateTime);
     }
 
     getTime() {

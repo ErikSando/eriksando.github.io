@@ -101,7 +101,9 @@ class Player {
                 w: world.tiles[i].w,
                 h: world.tiles[i].h,
                 top: () => { return world.tiles[i].top() - camOffset.y },
-                bottom: () => { return world.tiles[i].bottom() - camOffset.y }
+                bottom: () => { return world.tiles[i].bottom() - camOffset.y },
+                left: () => { return world.tiles[i].left() - camOffset.x },
+                right: () => { return world.tiles[i].right() - camOffset.x }
             }
 
             if (RectIntersection(this.hitboxes.y, tile)) {
@@ -116,8 +118,8 @@ class Player {
             }
             
             if (RectIntersection(this.hitboxes.x, tile)) {
-                if (this.dx >= 0) this.dx = (tile.x - (this.x + this.w)) / dt;
-                else this.dx = (tile.x + tile.w - this.x) / dt;
+                if (this.dx >= 0) this.dx = (tile.left() - this.right()) / dt;
+                else this.dx = (tile.right() - this.left()) / dt;
             }
         }
 

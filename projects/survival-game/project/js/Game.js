@@ -45,7 +45,7 @@ const maxFall = 4020;
 
 const playerW = 48;
 const playerH = 115;
-const speed = 300;
+const speed = 350;
 const jumpForce = 720;
 
 const _enemies = [
@@ -55,7 +55,7 @@ const _enemies = [
         h: playerH,
         def: 100,
         atk: 20,
-        speed: 200,
+        speed: 250,
         jump: 720
     },
     {
@@ -64,7 +64,7 @@ const _enemies = [
         h: playerH / 2,
         def: 50,
         atk: 15,
-        speed: 200,
+        speed: 250,
         jump: 800
     }
 ]
