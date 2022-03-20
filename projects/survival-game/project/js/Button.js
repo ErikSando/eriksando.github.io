@@ -23,6 +23,8 @@ class Button {
         }
 
         canvas.onclick = (e) => {
+            if (!this.enabled) return;
+
             let mouseRect = {
                 x: GetMousePos(canvas, e).x,
                 y: GetMousePos(canvas, e).y,

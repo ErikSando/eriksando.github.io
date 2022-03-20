@@ -3,6 +3,8 @@ class InputHandler {
         this.left = false;
         this.right = false;
         this.up = false;
+        this.lmb = false;
+        this.rmb = false;
 
         document.onkeydown = (e) => {
             switch(e.key) {
@@ -96,6 +98,26 @@ class InputHandler {
                 case 'ArrowUp':
                     this.up = false;
                     break;
+            }
+        }
+
+        document.onmousedown = (e) => {
+            switch(e.which) {
+                case '1':
+                    this.lmb = true;
+                
+                case '3':
+                    this.rmb = true;
+            }
+        }
+
+        document.onmouseup = (e) => {
+            switch(e.which) {
+                case '1':
+                    this.lmb = false;
+                
+                case '3':
+                    this.rmb = false;
             }
         }
     }

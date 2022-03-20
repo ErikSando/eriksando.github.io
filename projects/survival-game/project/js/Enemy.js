@@ -1,5 +1,5 @@
 class Enemy {
-    constructor(x, y, w, h, img, defence = 100, attack = 20, speed = 4, jumpForce = 18, senseDistance = 5) {
+    constructor(x = 0, y = 0, w = 0, h = 0, img, defence = 100, attack = 20, speed = 4, jumpForce = 18, senseDistance = 5) {
         this.x = x;
         this.y = y;
         this.w = w;
@@ -43,19 +43,15 @@ class Enemy {
         ctx.fillStyle = 'green';
         ctx.fillRect(this.x - camOffset.x, this.y - camOffset.y, this.w, this.h);
 
-        // Draw healthbar above head
         if (this.defence < this.maxDefence) {
-            // White oultine
             ctx.fillStyle = 'white';
-            ctx.fillRect(this.x - camOffset - 20, this.y - camOffset.y - 20, this.w + 40, 20);
+            ctx.fillRect(this.x - camOffset.x - 20, this.y - camOffset.y - 50, this.w + 40, 20);
 
-            // Grey background
             ctx.fillStyle = 'darkgray';
-            ctx.fillRect(this.x - camOffset - 20, this.y - camOffset.y - 18, this.w + 36, 16);
+            ctx.fillRect(this.x - camOffset.x - 20, this.y - camOffset.y - 48, this.w + 36, 16);
 
-            // Health
             ctx.fillStyle = 'green';
-            ctx.fillRect(this.x - camOffset - 18, this.y - camOffset.y - 18, this.w + 36, 16);
+            ctx.fillRect(this.x - camOffset.x - 18, this.y - camOffset.y - 48, this.w + 36, 16);
         }
 
         //ctx.drawImage(this.img, this.x, this.y, this.w, this.h)

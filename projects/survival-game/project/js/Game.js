@@ -8,7 +8,6 @@ let player;
 let playerUI;
 let respawnButton;
 let enemySpawner;
-let saveName;
 let startMenu;
 let pauseMenu;
 let savedStatus;
@@ -41,7 +40,7 @@ const bgColour = {
 }
 
 const gravity = 30;
-const maxFall = 4020;
+const maxFall = 2400;
 
 const playerW = 48;
 const playerH = 115;
@@ -182,9 +181,10 @@ function startGame(newSave) {
 
     const respawn = () => {
         player.respawn();
+        respawnButton.enabled = false;
     }
 
-    respawnButton = new Button(canvas.width / 2, canvas.height / 2, UIsize / 2, null, 'Respawn', 'Arial', 'white', 'black', 'white', null);
+    respawnButton = new Button(canvas.width / 2, canvas.height / 2, UIsize / 2, null, 'Respawn', 'Arial', 'white', 'black', 'white', respawn);
     respawnButton.enabled = false;
 
     buttons.push(respawnButton);

@@ -1,5 +1,5 @@
 class Player {
-    constructor(x, y, w, h, img, defence = 100, attack = 10, speed = 300, jumpForce = 600) {
+    constructor(x = 0, y = 0 , w = 0, h = 0, img, defence = 100, attack = 10, speed = 300, jumpForce = 600) {
         this.x = x;
         this.y = y;
         this.dx = 0;
@@ -61,8 +61,6 @@ class Player {
         this.alive = true;
         this.defence = this.maxDefence;
         this.dy = 0;
-
-        respawnButton.enabled = false;
         
         camOffset.x = this.spawnLocation.x;
         camOffset.y = this.spawnLocation.y;
@@ -109,10 +107,8 @@ class Player {
             if (RectIntersection(this.hitboxes.y, tile)) {
                 if (this.gravity >= 0) {
                     this.grounded = true;
-                    this.gravity = 0;
                     this.dy = (tile.top() - this.bottom()) / dt;
                 } else {
-                    this.gravity = 0;
                     this.dy = (tile.bottom() - this.top()) / dt;
                 }
             }
@@ -131,7 +127,7 @@ class Player {
 
     draw() {
         ctx.fillStyle = 'red';
-        ctx.fillRect(this.x, this.y, this.w, this.h)
+        ctx.fillRect(this.x, this.y, this.w, this.h);
         // ctx.drawImage(this.img, this.x, this.y, this.w, this.h);
     }
 }
