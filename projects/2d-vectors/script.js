@@ -4,12 +4,12 @@ class Vector2 {
         this.y = y;
     }
 
-    length() {
+    magnitude() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
 
     normalised() {
-        return new Vector2(this.x / this.length(), this.y / this.length());
+        return new Vector2(this.x / this.magnitude(), this.y / this.magnitude());
     }
 }
 
