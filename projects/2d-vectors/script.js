@@ -4,6 +4,22 @@ class Vector2 {
         this.y = y;
     }
 
+    UP() {
+        return new Vector2(0, -1);
+    }
+
+    DOWN() {
+        return new Vector2(0, 1);
+    }
+
+    LEFT() {
+        return new Vector2(-1, 0);
+    }
+
+    RIGHT() {
+         return new Vector2(1, 0);        
+    }
+
     magnitude() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
     }
