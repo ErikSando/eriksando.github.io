@@ -3,7 +3,7 @@ function factorial(n) {
 
     if (n == 0 || n == 1) return answer;
 
-    for (let i = 1; i < n; i++) {
+    for (let i = 1; i < n + 1; i++) {
         answer *= i;
     }
         
@@ -30,6 +30,7 @@ function pow(n, amount) {
 
 window.onload = () => {
     let ruleInput = document.getElementById('rule');
+    let gridSizeInput = document.getElementById('grid-size');
 
     let canvas = document.getElementById('canvas');
     let ctx = canvas.getContext('2d');
@@ -38,7 +39,7 @@ window.onload = () => {
     const GridColour = 'black';
     const LineColour = 'red';
     
-    let gridSize = 20;
+    let gridSize = 40;
 
     function UpdateCanvasSize() {
         if (window.innerWidth > 2160 + 160 && window.innerHeight > 2160 + 160) {
@@ -71,6 +72,12 @@ window.onload = () => {
         rule = ruleInput.value;
     }
 
+    gridSizeInput.oninput = () => {
+        if (gridSizeInput.value > 100) return;
+
+        gridSize = gridSizeInput.value;
+    }
+
     requestAnimationFrame(draw);
 
     function draw() {
@@ -78,20 +85,19 @@ window.onload = () => {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.strokeStyle = GridColour;
-
         ctx.lineWidth = 1;
 
-        for (let i = 1; i < canvas.height / gridSize; i++) {
+        for (let i = 0; i < canvas.height; i += canvas.height / gridSize) {
             ctx.beginPath();
-            ctx.moveTo(0, i * canvas.height / gridSize);
-            ctx.lineTo(canvas.width, i * canvas.height / gridSize);
+            ctx.moveTo(0, i);
+            ctx.lineTo(canvas.width, i);
             ctx.stroke();
         }
 
-        for (let i = 1; i < canvas.width / gridSize; i++) {
+        for (let i = 0; i < canvas.width; i += canvas.height / gridSize) {
             ctx.beginPath();
-            ctx.moveTo(i * canvas.width / gridSize, 0);
-            ctx.lineTo(i * canvas.width / gridSize, canvas.height);
+            ctx.moveTo(i, 0);
+            ctx.lineTo(i, canvas.height);
             ctx.stroke();
         }
 
@@ -114,13 +120,9 @@ window.onload = () => {
 
             try {
                 yPosition = eval(rule);
-            
-                if (x == 0) console.log(rule, yPosition);
             } catch (e) {
                 console.log(e);
             }
-            
-            if (!yPosition) continue;
 
             let position = {
                 x: x,
@@ -136,6 +138,7 @@ window.onload = () => {
                 ctx.lineWidth = 2;
 
                 ctx.beginPath();
+                if (positions[i].x == 0) console.log(positions[i], positions[i].x * (canvas.width / gridSize) + canvas.width / 2, -positions[i].y * (canvas.height / gridSize) + canvas.height / 2)
                 ctx.moveTo(positions[i].x * (canvas.width / gridSize) + canvas.width / 2, -positions[i].y * (canvas.height / gridSize) + canvas.height / 2);
                 ctx.lineTo(positions[i + 1].x * (canvas.width / gridSize) + canvas.width / 2, -positions[i + 1].y * (canvas.height / gridSize) + canvas.height / 2)
                 ctx.stroke();

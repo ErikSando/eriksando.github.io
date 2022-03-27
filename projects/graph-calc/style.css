@@ -17,7 +17,7 @@ a {
     color: brown;
 }
 
-#rule {
+#rule, #grid-size {
     resize: none;
     width: 40vw;
     height: 2.2vh;
