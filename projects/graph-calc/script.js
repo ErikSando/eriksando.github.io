@@ -3,6 +3,8 @@ function factorial(n) {
 
     if (n == 0 || n == 1) return answer;
 
+    if (n % 1 != 0) return null;
+
     for (let i = 1; i < n + 1; i++) {
         answer *= i;
     }
@@ -16,6 +18,10 @@ function sqrt(n) {
 
 function root(n, root) {
     return Math.pow(n, 1 / root);
+}
+
+function mod(n) {
+    return Math.abs(n);
 }
 
 function pow(n, amount) {
@@ -115,7 +121,7 @@ window.onload = () => {
 
         let positions = [];
 
-        for (let x = -gridSize; x < gridSize; x++) {
+        for (let x = -gridSize; x < gridSize; x += 0.1) {
             let yPosition;
 
             try {
@@ -133,12 +139,13 @@ window.onload = () => {
         }
 
         for (let i = 0; i < positions.length; i++) {
-            if (i + 1 < positions.length) {
+            if (positions[i].y == null) continue;
+            
+            if (i + 1 < positions.length) {                
                 ctx.strokeStyle = LineColour;
                 ctx.lineWidth = 2;
 
                 ctx.beginPath();
-                if (positions[i].x == 0) console.log(positions[i], positions[i].x * (canvas.width / gridSize) + canvas.width / 2, -positions[i].y * (canvas.height / gridSize) + canvas.height / 2)
                 ctx.moveTo(positions[i].x * (canvas.width / gridSize) + canvas.width / 2, -positions[i].y * (canvas.height / gridSize) + canvas.height / 2);
                 ctx.lineTo(positions[i + 1].x * (canvas.width / gridSize) + canvas.width / 2, -positions[i + 1].y * (canvas.height / gridSize) + canvas.height / 2)
                 ctx.stroke();
