@@ -1,11 +1,11 @@
 body {
-    background: rgb(255, 255, 255);
+    background-color: rgb(255, 255, 255);
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     text-align: center;
 }
 
 .dark-mode {
-    background: rgb(20, 20, 20);
+    background-color: rgb(20, 20, 20);
     color: white;
 }
 
