@@ -114,11 +114,13 @@ class SimpleSceneCreator {
             for (let j = 0; j < data[i].length; j++) {
                 if (data[i][j] == 1) {
                     let tile = new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize, colour, transparency);
+                    
                     outputData.push(tile);
                 }
 
                 if (data[i][j] == 2) {
                     let tile = new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize, colour, transparency);
+
                     tile.static = true;
                     outputData.push(tile);
                 }
@@ -168,11 +170,13 @@ class Game {
     resume() {
         this.running = true;
         this.#lastUpdate = Date.now();
+
         requestAnimationFrame(this.update);    
     }
 
     pause() {
         this.running = false;
+
         cancelAnimationFrame(this.update);
     }
 
@@ -190,6 +194,7 @@ class Game {
 
         if (!dt || dt < 0 || dt > 5) {
             requestAnimationFrame(this.update);
+
             return;
         }
 
@@ -918,8 +923,6 @@ document.oncontextmenu = (e) => {
 
 window.addEventListener('load', () => {
     canvas = document.querySelector('canvas');
-
-    console.log(canvas)
     
     if (!canvas) {
         canvas = document.createElement('canvas');

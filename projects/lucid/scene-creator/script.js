@@ -28,7 +28,7 @@ window.onload = () => {
 
     ctx.imageSmoothingEnabled = false;
 
-    window.onresize = {
+    window.onresize = () => {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
