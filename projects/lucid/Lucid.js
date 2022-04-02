@@ -33,7 +33,7 @@ let EngineEvents = {
 
 Object.freeze(Enum);
 
-function GetMouseRect(canvas, e) {
+function GetMousePositionRect(canvas, e) {
     let rect = canvas.getBoundingClientRect();
     
     return {
@@ -58,46 +58,123 @@ function RectIntersection(rect1, rect2) {
     return true;
 }
 
-function Vector2(x = 0, y = 0) {
-    this.x = x;
-    this.y = y;
+function CircleIntersection(circ1, circ2) {
+    let circ1PosVector = Vector2(circ1.x, circ1.y);
+    let circ2PosVector = Vector2(circ2.x, circ2.y);
+    let distanceApartVector = circ1PosVector.subtract(circ2PosVector);
+
+    if (distanceApartVector.magnitude() < circ1.radius + circ2.radius) return true;
+
+    return false;
 }
 
-Vector2.prototype = {
-    magnitude: function () {
+function RandomInteger(min, max) {
+    return Math.floor(Math.random() * (max + 1 - min) + min);
+}
+
+function Random() {
+    return Math.random();
+}
+
+function Clamp(value, min, max) {
+    if (value < min) return min;
+    else if (value > max) return max;
+
+    return value;
+}
+
+function TextWidth(text, fontSize) {
+    if (!typeof text == 'string' || !typeof fontSize == 'number') return 0;
+
+    let previousFont = ctx.font || undefined;
+    ctx.font = fontSize + 'px Arial';
+    result = ctx.measureText(text).width;
+    ctx.font = previousFont;
+
+    return result;
+}
+
+class _Vector2 {
+    x = 0;
+    y = 0;
+
+    constructor(x = 0, y = 0) {
+        if (!typeof x == 'number' || !typeof y == 'number') return console.error('X and Y arguments for a Vector2 must be of type "Number"');
+        
+        this.x = x;
+        this.y = y;
+    }
+    
+    magnitude() {
         return Math.sqrt(this.x * this.x + this.y * this.y);
-    },
+    }
 
-    normalised: function () {
-        return new Vector2(this.x / this.magnitude(), this.y / this.magnitude());
-    },
+    normalised() {
+        return Vector2(this.x / this.magnitude(), this.y / this.magnitude());
+    }
 
-    add: function (vector) {
-        return new Vector2(this.x + vector.x, this.y + vector.y);
-    },
+    add(vector) {
+        if (!vector instanceof Vector2) return;
 
-    subtract: function (vector) {
-        return new Vector2(this.x - vector.x, this.y - vector.y);
+        return Vector2(this.x + vector.x, this.y + vector.y);
+    }
+
+    subtract(vector) {
+        if (!vector instanceof Vector2) return;
+
+        return Vector2(this.x - vector.x, this.y - vector.y);
+    }
+
+    negated() {
+        return Vector2(-this.x, -this.y);
     }
 }
 
-Vector2.ZERO = new Vector2(0, 0);
-Vector2.UP = new Vector2(0, -1);
-Vector2.DOWN = new Vector2(0, 1);
-Vector2.LEFT = new Vector2(-1, 0);
-Vector2.RIGHT = new Vector2(1, 0);
+function Vector2(x, y) {
+    return new _Vector2(x, y);
+}
+
+Vector2.ZERO = Vector2(0, 0);
+Vector2.UP = Vector2(0, -1);
+Vector2.DOWN = Vector2(0, 1);
+Vector2.LEFT = Vector2(-1, 0);
+Vector2.RIGHT = Vector2(1, 0);
+
+class _Raycast {
+    constructor(beginX, beginY, endX, endY) {
+        this.beginPos = {
+            x: beginX,
+            y: beginY
+        }
+
+        this.endPos = {
+            x: endX,
+            y: endY
+        }
+    }
+}
+
+function Raycast(beginX, beginY, endX, endY) {
+    return new _Raycast(beginX, beginY, endX, endY);
+}
 
 class Scene {
-    constructor(gameObjects) {
-        this.gameObjects = gameObjects || [];
+    gameObjects = [];
+
+    constructor(gameObjects = []) {
+        this.gameObjects = gameObjects;
     }
 
     add(gameObject) {
+        if (!gameObject instanceof GameObject) return;
+
         this.gameObjects.push(gameObject);
     }
 
     remove(gameObject) {
-        this.gameObjects.splice(gameObject);
+        let idx = this.gameObjects.indexOf(gameObject);
+        
+        if (this.gameObjects[idx]) this.gameObjects.splice(idx, 1);
     }
 }
 
@@ -137,7 +214,6 @@ class SimpleSceneCreator {
 
 class Game {
     #lastUpdate;
-    #guiObjects = [];
 
     camOffset = {
         x: 0,
@@ -150,21 +226,25 @@ class Game {
         bgColour: 'whitesmoke'
     }
 
+    running = false;
+    guiObjects = [];
+
     constructor(scene = new Scene([])) {
         this.scene = scene;
-        this.running = false;
-    }
 
-    addGuiObject(guiObject) {
-        this.#guiObjects.push(guiObject);
-    }
+        this.Gui = {
+            add: (guiObject) => {
+                if (!guiObject instanceof GuiObject) return;
 
-    removeGuiObject(guiObject) {
-        this.#guiObjects.splice(guiObject);
-    }
+                this.guiObjects.push(guiObject);
+            },
+            
+            remove: (guiObject) => {
+                let idx = this.guiObjects.indexOf(guiObject);
 
-    getGuiObjects() {
-        return this.#guiObjects;
+                if (this.guiObjects[idx]) this.guiObjects.splice(idx, 1);
+            }
+        }
     }
 
     resume() {
@@ -204,8 +284,8 @@ class Game {
             this.scene.gameObjects[i].update(dt);
         }
 
-        for (let i = 0; i < this.#guiObjects; i++) {
-            if (this.#guiObjects[i].visible) this.#guiObjects[i].update();
+        for (let i = 0; i < this.guiObjects; i++) {
+            if (this.guiObjects[i].visible) this.guiObjects[i].update();
         }
 
         this.#draw();
@@ -219,8 +299,8 @@ class Game {
 
         for (let i = 0; i < this.scene.gameObjects.length; i++) this.scene.gameObjects[i].draw();
 
-        for (let i = 0; i < this.#guiObjects; i++) {
-            if (this.#guiObjects[i].visible) this.#guiObjects[i].draw();
+        for (let i = 0; i < this.guiObjects; i++) {
+            if (this.guiObjects[i].visible) this.guiObjects[i].draw();
         }
     }
 }
@@ -261,14 +341,7 @@ class InputHandler {
         SPACE: () => {},
         SHIFT: () => {},
         CTRL: () => {},
-        ESC: () => {}
-    }
-
-    OnRawAxisKeyDown = {
-        UP: () => {},
-        DOWN: () => {},
-        LEFT: () => {},
-        RIGHT: () => {}
+        ESC: () => {},
     }
 
     OnKeyUp = {
@@ -283,6 +356,13 @@ class InputHandler {
         SPACE: () => {},
         SHIFT: () => {},
         CTRL: () => {}
+    }
+
+    OnRawAxisKeyDown = {
+        UP: () => {},
+        DOWN: () => {},
+        LEFT: () => {},
+        RIGHT: () => {}
     }
 
     OnRawAxisKeyUp = {
@@ -302,11 +382,11 @@ class InputHandler {
                     try {
                         this.OnKeyDown.W();
                         this.OnRawAxisKeyDown.UP();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'a':
                     this.#keysDown.a = true;
@@ -315,11 +395,11 @@ class InputHandler {
                     try {
                         this.OnKeyDown.A();
                         this.OnRawAxisKeyDown.LEFT();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
                     
                 case 's':
                     this.#keysDown.s = true;
@@ -328,11 +408,11 @@ class InputHandler {
                     try {
                         this.OnKeyDown.S();
                         this.OnRawAxisKeyDown.DOWN();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'd':
                     this.#keysDown.d = true;
@@ -341,11 +421,11 @@ class InputHandler {
                     try {
                         this.OnKeyDown.D();
                         this.OnRawAxisKeyDown.RIGHT();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'ArrowUp':
                     this.#keysDown.up = true;
@@ -359,11 +439,11 @@ class InputHandler {
                     try {
                         this.OnKeyDown.LEFT();
                         this.OnRawAxisKeyDown.LEFT();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
     
                 case 'ArrowRight':
                     this.#keysDown.right = true;
@@ -375,11 +455,11 @@ class InputHandler {
                     try {
                         this.OnKeyDown.RIGHT();
                         this.OnRawAxisKeyDown.RIGHT();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'ArrowDown':
                     ths.#keysDown.down = true;
@@ -388,11 +468,11 @@ class InputHandler {
                     try {
                         this.OnKeyDown.DOWN();
                         this.OnRawAxisKeyDown.DOWN();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case ' ':
                     this.#keysDown.space = true;
@@ -401,42 +481,42 @@ class InputHandler {
                     try {
                         this.OnKeyDown.SPACE();
                         this.OnRawAxisKeyDown.UP();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'Shift':
                     this.#keysDown.shift = true;
 
                     try {
                         this.OnKeyDown.SHIFT();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
             
                 case 'Control':
                     this.#keysDown.ctrl = true;
 
                     try {
                         this.OnKeyDown.CTRL();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'Escape':    
                     try {
                         this.OnKeyDown.ESC();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
             }
         });
 
@@ -449,11 +529,11 @@ class InputHandler {
                     try {
                         this.OnKeyUp.W();
                         this.OnRawAxisKeyUp.UP();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'a':
                     this.#keysDown.a = false;
@@ -462,11 +542,11 @@ class InputHandler {
                     try {
                         this.OnKeyUp.A();
                         this.OnRawAxisKeyUp.LEFT();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
                     
                 case 's':
                     this.#keysDown.s = false;
@@ -475,11 +555,11 @@ class InputHandler {
                     try {
                         this.OnKeyUp.S();
                         this.OnRawAxisKeyUp.DOWN();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'd':
                     this.#keysDown.d = false;
@@ -488,11 +568,11 @@ class InputHandler {
                     try {
                         this.OnKeyUp.D();
                         this.OnRawAxisKeyUp.RIGHT();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'ArrowUp':
                     this.#keysDown.up = false;
@@ -506,11 +586,11 @@ class InputHandler {
                     try {
                         this.OnKeyUp.LEFT();
                         this.OnRawAxisKeyUp.LEFT();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
     
                 case 'ArrowRight':
                     this.#keysDown.right = false;
@@ -522,11 +602,11 @@ class InputHandler {
                     try {
                         this.OnKeyUp.RIGHT();
                         this.OnRawAxisKeyUp.RIGHT();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'ArrowDown':
                     ths.#keysDown.down = false;
@@ -535,11 +615,11 @@ class InputHandler {
                     try {
                         this.OnKeyUp.DOWN();
                         this.OnRawAxisKeyUp.DOWN();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case ' ':
                     this.#keysDown.space = false;
@@ -548,120 +628,110 @@ class InputHandler {
                     try {
                         this.OnKeyUp.SPACE();
                         this.OnRawAxisKeyUp.UP();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'Shift':
                     this.#keysDown.shift = false;
 
                     try {
                         this.OnKeyDown.SHIFT();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
             
                 case 'Control':
                     this.#keysDown.ctrl = false;
 
                     try {
                         this.OnKeyDown.CTRL();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
 
                 case 'Escape':    
                     try {
                         this.OnKeyDown.ESC();
-                    } catch (e) {
-                        throw new Error(e);
+                    } catch (err) {
+                        throw new Error(err);
                     }
 
-                    break;
+                break;
             }
         });
 
         document.addEventListener('mousemove', (e) => {
-            let guiObjects = game.getGuiObjects();
-            
-            for (let i = 0; i < guiObjects.length; i++) {
-                if (guiObjects[i].type == Enum.GuiTypes.Button) {
-                    guiObjects[i].update(e);
+            for (let i = 0; i < game.guiObjects.length; i++) {
+                if (game.guiObjects[i].type == Enum.GuiTypes.Button) {
+                    game.guiObjects[i].update(e);
                 }       
             }
         });
 
         document.addEventListener('mousedown', (e) => {
-            let mouseRect = GetMouseRect(canvas, e);
+            let mouseRect = GetMousePositionRect(canvas, e);
 
             switch(e.button) {
                 case '0':
-                    guiObjects = game.getGuiObjects();
-
-                    for (let i = 0; i < guiObjects.length; i++) {
-                        if (RectIntersection(guiObjects[i], mouseRect)) try {
-                            guiObjects[i].OnLeftMouseButtonDown();
-                        } catch (e) {
-                            throw new Error(e);
+                    for (let i = 0; i < game.guiObjects.length; i++) {
+                        if (RectIntersection(game.guiObjects[i], mouseRect)) try {
+                            game.guiObjects[i].OnLeftMouseButtonDown();
+                        } catch (err) {
+                            throw new Error(err);
                         }
                     }
 
-                    break;
+                break;
             
                 case '2':
-                    guiObjects = game.getGuiObjects();
-
-                    for (let i = 0; i < guiObjects.length; i++) {
-                        if (guiObjects[i].type == Enum.GuiTypes.Button) {
-                            if (RectIntersection(guiObjects[i], mouseRect)) try {
-                                guiObjects[i].OnRightMouseButtonDown();
-                            } catch (e) {
-                                throw new Error(e);
+                    for (let i = 0; i < game.guiObjects.length; i++) {
+                        if (game.guiObjects[i].type == Enum.GuiTypes.Button) {
+                            if (RectIntersection(game.guiObjects[i], mouseRect)) try {
+                                game.guiObjects[i].OnRightMouseButtonDown();
+                            } catch (err) {
+                                throw new Error(err);
                             }
                         }
                     }
 
-                    break;
+                break;
             }
         });
 
         document.addEventListener('mouseup', (e) => {
-            let mouseRect = GetMouseRect(canvas, e);
+            let mouseRect = GetMousePositionRect(canvas, e);
             
             e.preventDefault();
 
             switch(e.button) {
                 case '0':
-                    guiObjects = game.getGuiObjects();
-
-                    for (let i = 0; i < guiObjects.length; i++) {
-                        if (RectIntersection(guiObjects[i], mouseRect)) try {
-                            guiObjects[i].OnLeftMouseButtonUp();
-                        } catch (e) {
-                            throw new Error(e);
+                    for (let i = 0; i < game.guiObjects.length; i++) {
+                        if (RectIntersection(game.guiObjects[i], mouseRect)) try {
+                            game.guiObjects[i].OnLeftMouseButtonUp();
+                        } catch (err) {
+                            throw new Error(err);
                         }
                     }
 
-                    break;
+                break;
             
                 case '2':
-                    guiObjects = game.getGuiObjects();
-
-                    for (let i = 0; i < guiObjects.length; i++) {
-                        if (RectIntersection(guiObjects[i], mouseRect)) try {
-                            guiObjects[i].OnRightMouseButtonUp();
-                        } catch (e) {
-                            throw new Error(e);
+                    for (let i = 0; i < game.guiObjects.length; i++) {
+                        if (RectIntersection(game.guiObjects[i], mouseRect)) try {
+                            game.guiObjects[i].OnRightMouseButtonUp();
+                        } catch (err) {
+                            throw new Error(err);
                         }
                     }
 
-                    break;
+                break;
             }
         });
     }
@@ -677,21 +747,46 @@ class InputHandler {
 
         return 0;
     }
+
+    AddKeyEvent(key, down, up) {
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case key:
+                    try {
+                        down();
+                    } catch (err) {
+                        throw new Error(err);
+                    }
+                
+                break;         
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            switch(e.key) {
+                case key:
+                    try {
+                        up();
+                    } catch (err) {
+                        throw new Error(err);
+                    }
+                
+                break;         
+            }
+        });
+    }
 }
 
 const Input = new InputHandler();
 
 class GameObject {
-    constructor(x, y, w, h) {
-        this.position = {
-            x: x,
-            y: y
-        }
+    destroyed = () => {}
 
-        this.scale = {
-            x: w,
-            y: h
-        }
+    collisionEnabled = true;
+
+    constructor(x, y, w, h) {
+        this.position = Vector2(x, y);
+        this.scale = Vector2(w, h);
 
         game.scene.add(this);
     }
@@ -714,6 +809,8 @@ class GameObject {
 
     destroy() {
         game.scene.remove(this);
+
+        this.destroyed();
 
         delete this;
     }
@@ -779,20 +876,12 @@ class GuiObject {
     }
 
     constructor(x, y, w, h, type) {
-        this.position = {
-            x: x,
-            y: y
-        }
-
-        this.scale = {
-            x: w,
-            y: h
-        }
-
+        this.position = Vector2(x, y);
+        this.scale = Vector2(w, h);
         this.type = type;
         this.colour = this.bgColour;
         
-        game.addGuiObject(this);
+        game.Gui.add(this);
     }
 
     draw() {
@@ -824,6 +913,12 @@ class GuiObject {
             ctx.font = this.fontSize + 'px ' + this.font;
             ctx.fillText(this.text, this.position.x + this.textPosition.x, this.position.y + this.textPosition.y + (this.fontSize + (this.scale.y - this.fontSize) / 2));
         }
+    }
+
+    destroy() {
+        game.Gui.remove(this);
+
+        delete this;
     }
 }
 
@@ -860,7 +955,7 @@ class TextButton extends GuiObject {
     }
 
     update(e) {
-        let mouseRect = GetMouseRect(canvas, e);
+        let mouseRect = GetMousePositionRect(canvas, e);
 
         if (RectIntersection(this, mouseRect)) {
             this.colour = this.mouseOverColour;

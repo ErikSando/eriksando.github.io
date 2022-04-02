@@ -1,7 +1,6 @@
 const simpleSceneCreator = new SimpleSceneCreator();
 
 let tileSize = Math.max(window.innerWidth / 20, window.innerHeight / 15);
-console.log(window.innerWidth / 20, window.innerHeight / 15);
 let oldTileSize = tileSize;
 let tileColour = 'black';
 let tileTransparency = 0.5;
@@ -86,8 +85,6 @@ class SceneGenerator {
 
             i += planeLength - 1;
         }
-
-        console.log(JSON.stringify(output));
 
         return output;
     }

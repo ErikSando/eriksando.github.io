@@ -5,16 +5,27 @@ class Player {
     jumpForce = 720;
     velocity = Vector2.ZERO;
     grounded = false;
+    attack = 10;
+    defence = 100;
+    maxDefence = 100;
+    alive = true;
+
+    HealthChanged = () => {}
+    OnDeath = () => {}
+    OnRespawn = () => {}
 
     constructor(gameObj) {
         this.obj = gameObj;
     }
 
+    // Update is called every frame
     update = (delta) => {
+        if (!this.alive) return;
+
         this.velocity.x = 0;
 
         if (Input.rawAxisKeysDown('up') && this.grounded) this.velocity.y = -this.jumpForce;
-        this.velocity.x += Input.rawAxisKeysDown('left') - Input.rawAxisKeysDown('right');
+        this.velocity.x += (Input.rawAxisKeysDown('right') - Input.rawAxisKeysDown('left')) * speed;
 
         this.grounded = false;
         for (let i = 0; i < game.scene.gameObjects.length; i++) {
@@ -26,4 +37,24 @@ class Player {
         this.obj.position.x += this.velocity.x / delta;
         this.obj.position.y += this.velocity.y / delta;
     }
+
+    damage(amount) {
+        this.defence -= amount;
+
+        this.HealthChanged(amount);
+    
+        if (this.defence < 0) {
+            this.alive = false;
+
+            this.OnDeath();
+        }
+    }
+
+    respawn() {
+        this.alive = true;
+
+        this.OnRespawn();
+    }
 }
+
+let player = new Player(playerObj);

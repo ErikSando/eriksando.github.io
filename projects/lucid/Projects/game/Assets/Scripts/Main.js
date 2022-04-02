@@ -16,7 +16,7 @@ EngineEvents.EngineLoaded = () => {
 	Input.OnKeyDown.ESC = () => {
 		game.pause() ? game.running : game.resume();
 	}
-	
+
    	game.start();
 }
 
