@@ -526,7 +526,7 @@ class InputHandler {
                 break;
 
                 case 'ArrowDown':
-                    ths.#keysDown.Down = true;
+                    this.#keysDown.Down = true;
                     this.#rawAxisDirections.Vertical += 1;
 
                     try {
@@ -580,6 +580,10 @@ class InputHandler {
                     }
 
                 break;
+            }
+
+            for (const [key] of Object.entries(this.#rawAxisDirections)) {
+                this.#rawAxisDirections[key] = Clamp(this.#rawAxisDirections[key], -1, 1);
             }
         });
 
@@ -669,8 +673,8 @@ class InputHandler {
                 break;
 
                 case 'ArrowDown':
-                    ths.#keysDown.Down = false;
-                    this.#rawAxisDirections.Horizontal -= 1;
+                    this.#keysDown.Down = false;
+                    this.#rawAxisDirections.Vertical -= 1;
 
                     try {
                         this.OnKeyUp.Down();
@@ -725,6 +729,10 @@ class InputHandler {
                     }
 
                 break;
+            }
+
+            for (const [key] of Object.entries(this.#rawAxisDirections)) {
+                this.#rawAxisDirections[key] = Clamp(this.#rawAxisDirections[key], -1, 1);
             }
         });
 
