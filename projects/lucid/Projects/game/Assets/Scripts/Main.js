@@ -13,7 +13,7 @@ EngineEvents.EngineLoaded = () => {
    	game.settings.bgColour = bgColour;
 	game.scene = scene;
 
-	Input.OnKeyDown.ESC = () => {
+	Input.OnKeyDown.Escape = () => {
 		game.pause() ? game.running : game.resume();
 	}
 

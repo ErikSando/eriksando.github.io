@@ -24,8 +24,8 @@ class Player {
 
         this.velocity.x = 0;
 
-        if (Input.rawAxisKeysDown('up') && this.grounded) this.velocity.y = -this.jumpForce;
-        this.velocity.x += (Input.rawAxisKeysDown('right') - Input.rawAxisKeysDown('left')) * speed;
+        if (Input.RawMovementKeysDown('Up') && this.grounded) this.velocity.y = -this.jumpForce;
+        this.velocity.x += Input.GetAxisRaw('Horizontal');
 
         this.grounded = false;
         for (let i = 0; i < game.scene.gameObjects.length; i++) {
@@ -34,8 +34,7 @@ class Player {
             }
         }
 
-        this.obj.position.x += this.velocity.x / delta;
-        this.obj.position.y += this.velocity.y / delta;
+        this.obj.position = this.obj.position.plus(this.velocity.normalised() / delta * this.speed);
     }
 
     damage(amount) {
@@ -58,3 +57,5 @@ class Player {
 }
 
 let player = new Player(playerObj);
+
+game.customUpdates.push(player.update);

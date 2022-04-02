@@ -5,8 +5,7 @@
 
 console.log('Lucid Engine version 1.0.0');
 
-let canvas;
-let ctx;
+let canvas, ctx;
 
 let Enum = {
     GuiTypes: {
@@ -27,11 +26,11 @@ let Enum = {
     }
 }
 
+Object.freeze(Enum);
+
 let EngineEvents = {
     EngineLoaded: () => {}
 }
-
-Object.freeze(Enum);
 
 function GetMousePositionRect(canvas, e) {
     let rect = canvas.getBoundingClientRect();
@@ -59,13 +58,46 @@ function RectIntersection(rect1, rect2) {
 }
 
 function CircleIntersection(circ1, circ2) {
-    let circ1PosVector = Vector2(circ1.x, circ1.y);
-    let circ2PosVector = Vector2(circ2.x, circ2.y);
-    let distanceApartVector = circ1PosVector.subtract(circ2PosVector);
+    let distanceApartVector = circ1.position.minus(circ2.position);
 
-    if (distanceApartVector.magnitude() < circ1.radius + circ2.radius) return true;
+    return distanceApartVector.magnitude() < circ1.r + circ2.r;
+}
 
-    return false;
+function LineIntersection(line1, line2) {
+    
+}
+
+function LineIntersectionPoint(line1, line2) {
+    let x1 = line1.beginPosition.x;
+    let y1 = line1.beginPosition.y;
+    let x2 = line1.endPosition.x;
+    let y2 = line1.endPosition.y;
+
+    let x3 = line2.beginPosition.x;
+    let y3 = line2.beginPosition.y;
+    let x4 = line2.endPosition.x;
+    let y4 = line2.endPosition.y;
+
+    let a1 = y2 - y1;
+    let b1 = x1 - x2;
+    let c1 = a1 * x1 + b1 * y1;
+    let a2 = y4 - y3;
+    let b2 = x3 - x4;
+    let c2 = a2 * x3 + b2 * y3;
+    let denominator = a1 * b2 - a2 * b1;
+
+    return Vector2((b2 * c1 - b1 * c2) / denominator, (a1 * c2 - a2 * c1) / denominator);
+}
+
+function CircleAndRectIntersection(circ, rect) {
+    let distanceX = Math.abs(circ.position.x - (rect.position.x + rect.scale.x / 2));
+    let distanceY = Math.abs(circ.position.y - (rect.position.y + rect.scale.y / 2));
+
+    return Math.pow(distanceX - rect.scale.x / 2, 2) + Math.pow(distanceY - rect.scale.y / 2, 2) < Math.pow(circ.r, 2);
+}
+
+function LineAndRectIntersection(line, rect) {
+    
 }
 
 function RandomInteger(min, max) {
@@ -113,13 +145,13 @@ class _Vector2 {
         return Vector2(this.x / this.magnitude(), this.y / this.magnitude());
     }
 
-    add(vector) {
+    plus(vector) {
         if (!vector instanceof Vector2) return;
 
         return Vector2(this.x + vector.x, this.y + vector.y);
     }
 
-    subtract(vector) {
+    minus(vector) {
         if (!vector instanceof Vector2) return;
 
         return Vector2(this.x - vector.x, this.y - vector.y);
@@ -139,24 +171,6 @@ Vector2.UP = Vector2(0, -1);
 Vector2.DOWN = Vector2(0, 1);
 Vector2.LEFT = Vector2(-1, 0);
 Vector2.RIGHT = Vector2(1, 0);
-
-class _Raycast {
-    constructor(beginX, beginY, endX, endY) {
-        this.beginPos = {
-            x: beginX,
-            y: beginY
-        }
-
-        this.endPos = {
-            x: endX,
-            y: endY
-        }
-    }
-}
-
-function Raycast(beginX, beginY, endX, endY) {
-    return new _Raycast(beginX, beginY, endX, endY);
-}
 
 class Scene {
     gameObjects = [];
@@ -179,7 +193,7 @@ class Scene {
 }
 
 class SimpleSceneCreator {
-    CreateScene(data, tileSize, colour, transparency) {
+    CreateScene(data, tileSize, colour, opacity) {
         let x = 0;
         let y = 0;
 
@@ -190,13 +204,13 @@ class SimpleSceneCreator {
 
             for (let j = 0; j < data[i].length; j++) {
                 if (data[i][j] == 1) {
-                    let tile = new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize, colour, transparency);
+                    let tile = new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize, colour, opacity);
                     
                     outputData.push(tile);
                 }
 
                 if (data[i][j] == 2) {
-                    let tile = new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize, colour, transparency);
+                    let tile = new Rectangle(x * tileSize, y * tileSize, tileSize, tileSize, colour, opacity);
 
                     tile.static = true;
                     outputData.push(tile);
@@ -226,8 +240,14 @@ class Game {
         bgColour: 'whitesmoke'
     }
 
+    displayRect = {
+        position: Vector2(0, 0),
+        scale: Vector2(window.innerWidth, window.innerHeight)
+    }
+
     running = false;
     guiObjects = [];
+    customUpdates = [];
 
     constructor(scene = new Scene([])) {
         this.scene = scene;
@@ -284,6 +304,14 @@ class Game {
             this.scene.gameObjects[i].update(dt);
         }
 
+        for (let i = 0; i < this.customUpdates.length; i++) {
+            try {
+                this.customUpdates[i](dt);
+            } finally {
+                continue;
+            }
+        }
+
         for (let i = 0; i < this.guiObjects; i++) {
             if (this.guiObjects[i].visible) this.guiObjects[i].update();
         }
@@ -300,33 +328,63 @@ class Game {
         for (let i = 0; i < this.scene.gameObjects.length; i++) this.scene.gameObjects[i].draw();
 
         for (let i = 0; i < this.guiObjects; i++) {
-            if (this.guiObjects[i].visible) this.guiObjects[i].draw();
+            if (this.guiObjects[i].visible && RectIntersection()) this.guiObjects[i].draw();
         }
     }
 }
 
 const game = new Game();
 
+class _Raycast {
+    constructor(beginX, beginY, endX, endY) {
+        this.beginPosition = Vector2(beginX, beginY);
+        this.endPosition = Vector2(endX, endY);
+
+        let result = [];
+
+        for (let i = 0; i < game.scene.gameObjects.length; i++) {
+            if (LineAndRectIntersection(this, game.scene.gameObjects[i])) {
+                result.push(game.scene.gameObjects[i]);
+            }
+        }
+
+        return result;
+    }
+}
+
+function Raycast(beginX, beginY, endX, endY) {
+    return new _Raycast(beginX, beginY, endX, endY);
+}
+
+class _Segment {
+    constructor(beginX, beginY, endX, endY) {
+        this.beginPosition = Vector2(beginX, beginY);
+        this.endPosition = Vector2(endX, endY);
+    }
+}
+
+function Segment(beginX, beginY, endX, endY) {
+    return new _Segment(beginX, beginY, endX, endY);
+}
+
 class InputHandler {
     #keysDown = {
-        w: false,
-        a: false,
-        s: false,
-        d: false,
-        up: false,
-        down: false,
-        left: false,
-        right: false,
-        space: false,
-        shift: false,
-        ctrl: false
+        W: false,
+        A: false,
+        S: false,
+        D: false,
+        Up: false,
+        Down: false,
+        Left: false,
+        Right: false,
+        Space: false,
+        Shift: false,
+        Ctrl: false
     }
 
-    #rawAxisKeysDown = {
-        up: false,
-        down: false,
-        left: false,
-        right: false
+    #rawAxisDirections = {
+        Horizontal: 0,
+        Vertical: 0
     }
 
     OnKeyDown = {
@@ -334,14 +392,14 @@ class InputHandler {
         A: () => {},
         S: () => {},
         D: () => {},
-        UP: () => {},
-        DOWN: () => {},
-        LEFT: () => {},
-        RIGHT: () => {},
-        SPACE: () => {},
-        SHIFT: () => {},
-        CTRL: () => {},
-        ESC: () => {},
+        Up: () => {},
+        Down: () => {},
+        Left: () => {},
+        Right: () => {},
+        Space: () => {},
+        Shift: () => {},
+        Control: () => {},
+        Escape: () => {}
     }
 
     OnKeyUp = {
@@ -349,39 +407,40 @@ class InputHandler {
         A: () => {},
         S: () => {},
         D: () => {},
-        UP: () => {},
-        DOWN: () => {},
-        LEFT: () => {},
-        RIGHT: () => {},
-        SPACE: () => {},
-        SHIFT: () => {},
-        CTRL: () => {}
+        Up: () => {},
+        Down: () => {},
+        Left: () => {},
+        Right: () => {},
+        Space: () => {},
+        Shift: () => {},
+        Control: () => {},
+        Escape: () => {}
     }
 
-    OnRawAxisKeyDown = {
-        UP: () => {},
-        DOWN: () => {},
-        LEFT: () => {},
-        RIGHT: () => {}
+    OnRawMovementKeyDown = {
+        Up: () => {},
+        Down: () => {},
+        Left: () => {},
+        Right: () => {}
     }
 
-    OnRawAxisKeyUp = {
-        UP: () => {},
-        DOWN: () => {},
-        LEFT: () => {},
-        RIGHT: () => {}
+    OnRawMovementKeyUp = {
+        Up: () => {},
+        Down: () => {},
+        Left: () => {},
+        Right: () => {}
     }
 
     constructor() {
         document.addEventListener('keydown', (e) => {
             switch(e.key) {
                 case 'w':
-                    this.#keysDown.w = true;
-                    this.#rawAxisKeysDown.up = true;
+                    this.#keysDown.W = true;
+                    this.#rawAxisDirections.Vertical -= 1;
 
                     try {
                         this.OnKeyDown.W();
-                        this.OnRawAxisKeyDown.UP();
+                        this.OnRawMovementKeyDown.Up();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -389,12 +448,12 @@ class InputHandler {
                 break;
 
                 case 'a':
-                    this.#keysDown.a = true;
-                    this.#rawAxisKeysDown.left = true;
+                    this.#keysDown.A = true;
+                    this.#rawAxisDirections.Horizontal -= 1;
 
                     try {
                         this.OnKeyDown.A();
-                        this.OnRawAxisKeyDown.LEFT();
+                        this.OnRawMovementKeyDown.Left();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -402,12 +461,12 @@ class InputHandler {
                 break;
                     
                 case 's':
-                    this.#keysDown.s = true;
-                    this.#rawAxisKeysDown.down = true;
+                    this.#keysDown.S = true;
+                    this.#rawAxisDirections.Vertical += 1;
 
                     try {
                         this.OnKeyDown.S();
-                        this.OnRawAxisKeyDown.DOWN();
+                        this.OnRawMovementKeyDown.Down();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -415,12 +474,12 @@ class InputHandler {
                 break;
 
                 case 'd':
-                    this.#keysDown.d = true;
-                    this.#rawAxisKeysDown.right = true;
+                    this.#keysDown.D = true;
+                    this.#rawAxisDirections.Horizontal += 1;
 
                     try {
                         this.OnKeyDown.D();
-                        this.OnRawAxisKeyDown.RIGHT();
+                        this.OnRawMovementKeyDown.Right();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -428,17 +487,25 @@ class InputHandler {
                 break;
 
                 case 'ArrowUp':
-                    this.#keysDown.up = true;
-                    this.#rawAxisKeysDown.up = true;
+                    this.#keysDown.Up = true;
+                    this.#rawAxisDirections.Vertical -= 1;
+
+                    try {
+                        this.OnKeyDown.Up();
+                        this.OnRawMovementKeyDown.Up();
+                    } catch (err) {
+                        throw new Error(err);
+                    }
+
                     break;
     
                 case 'ArrowLeft':
-                    this.#keysDown.left = true;
-                    this.#rawAxisKeysDown.left = true;
+                    this.#keysDown.Left = true;
+                    this.#rawAxisDirections.Horizontal -= 1;
 
                     try {
-                        this.OnKeyDown.LEFT();
-                        this.OnRawAxisKeyDown.LEFT();
+                        this.OnKeyDown.Left();
+                        this.OnRawMovementKeyDown.Left();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -446,15 +513,12 @@ class InputHandler {
                 break;
     
                 case 'ArrowRight':
-                    this.#keysDown.right = true;
-                    this.#rawAxisKeysDown.right = true;
-
-                    this.#keysDown.space = true;
-                    this.#rawAxisKeysDown.up = true;
+                    this.#keysDown.Right = true;
+                    this.#rawAxisDirections.Horizontal += 1;
 
                     try {
-                        this.OnKeyDown.RIGHT();
-                        this.OnRawAxisKeyDown.RIGHT();
+                        this.OnKeyDown.Right();
+                        this.OnRawMovementKeyDown.Right();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -462,12 +526,12 @@ class InputHandler {
                 break;
 
                 case 'ArrowDown':
-                    ths.#keysDown.down = true;
-                    this.#rawAxisKeysDown.down = true;
+                    ths.#keysDown.Down = true;
+                    this.#rawAxisDirections.Vertical += 1;
 
                     try {
-                        this.OnKeyDown.DOWN();
-                        this.OnRawAxisKeyDown.DOWN();
+                        this.OnKeyDown.Down();
+                        this.OnRawMovementKeyDown.Down();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -475,12 +539,11 @@ class InputHandler {
                 break;
 
                 case ' ':
-                    this.#keysDown.space = true;
-                    this.#rawAxisKeysDown.up = true;
+                    this.#keysDown.Space = true;
 
                     try {
-                        this.OnKeyDown.SPACE();
-                        this.OnRawAxisKeyDown.UP();
+                        this.OnKeyDown.Space();
+                        this.OnRawMovementKeyDown.Up();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -488,10 +551,10 @@ class InputHandler {
                 break;
 
                 case 'Shift':
-                    this.#keysDown.shift = true;
+                    this.#keysDown.Shift = true;
 
                     try {
-                        this.OnKeyDown.SHIFT();
+                        this.OnKeyDown.Shift();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -499,10 +562,10 @@ class InputHandler {
                 break;
             
                 case 'Control':
-                    this.#keysDown.ctrl = true;
+                    this.#keysDown.Ctrl = true;
 
                     try {
-                        this.OnKeyDown.CTRL();
+                        this.OnKeyDown.Control();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -511,7 +574,7 @@ class InputHandler {
 
                 case 'Escape':    
                     try {
-                        this.OnKeyDown.ESC();
+                        this.OnKeyDown.Escape();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -523,12 +586,12 @@ class InputHandler {
         document.addEventListener('keyup', (e) => {
             switch(e.key) {
                 case 'w':
-                    this.#keysDown.w = false;
-                    this.#rawAxisKeysDown.up = false;
+                    this.#keysDown.W = false;
+                    this.#rawAxisDirections.Vertical += 1;
 
                     try {
                         this.OnKeyUp.W();
-                        this.OnRawAxisKeyUp.UP();
+                        this.OnRawMovementKeyUp.Up();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -536,12 +599,12 @@ class InputHandler {
                 break;
 
                 case 'a':
-                    this.#keysDown.a = false;
-                    this.#rawAxisKeysDown.left = false;
+                    this.#keysDown.A = false;
+                    this.#rawAxisDirections.Horizontal += 1;
 
                     try {
                         this.OnKeyUp.A();
-                        this.OnRawAxisKeyUp.LEFT();
+                        this.OnRawMovementKeyUp.Left();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -549,12 +612,12 @@ class InputHandler {
                 break;
                     
                 case 's':
-                    this.#keysDown.s = false;
-                    this.#rawAxisKeysDown.down = false;
+                    this.#keysDown.S = false;
+                    this.#rawAxisDirections.Vertical -= 1;
 
                     try {
                         this.OnKeyUp.S();
-                        this.OnRawAxisKeyUp.DOWN();
+                        this.OnRawMovementKeyUp.Down();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -562,12 +625,12 @@ class InputHandler {
                 break;
 
                 case 'd':
-                    this.#keysDown.d = false;
-                    this.#rawAxisKeysDown.right = false;
+                    this.#keysDown.D = false;
+                    this.#rawAxisDirections.Horizontal -= 1;
 
                     try {
                         this.OnKeyUp.D();
-                        this.OnRawAxisKeyUp.RIGHT();
+                        this.OnRawMovementKeyUp.Right();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -575,17 +638,17 @@ class InputHandler {
                 break;
 
                 case 'ArrowUp':
-                    this.#keysDown.up = false;
-                    this.#rawAxisKeysDown.up = false;
+                    this.#keysDown.Up = false;
+                    this.#rawAxisDirections.Vertical += 1;
                     break;
     
                 case 'ArrowLeft':
-                    this.#keysDown.left = false;
-                    this.#rawAxisKeysDown.left = false;
+                    this.#keysDown.Left = false;
+                    this.#rawAxisDirections.Horizontal += 1;
 
                     try {
-                        this.OnKeyUp.LEFT();
-                        this.OnRawAxisKeyUp.LEFT();
+                        this.OnKeyUp.Left();
+                        this.OnRawMovementKeyUp.Left();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -593,15 +656,12 @@ class InputHandler {
                 break;
     
                 case 'ArrowRight':
-                    this.#keysDown.right = false;
-                    this.#rawAxisKeysDown.right = false;
-
-                    this.#keysDown.space = false;
-                    this.#rawAxisKeysDown.up = false;
+                    this.#keysDown.Right = false;
+                    this.#rawAxisDirections.Horizontal -= 1;
 
                     try {
-                        this.OnKeyUp.RIGHT();
-                        this.OnRawAxisKeyUp.RIGHT();
+                        this.OnKeyUp.Right();
+                        this.OnRawMovementKeyUp.Right();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -609,12 +669,12 @@ class InputHandler {
                 break;
 
                 case 'ArrowDown':
-                    ths.#keysDown.down = false;
-                    this.#rawAxisKeysDown.down = false;
+                    ths.#keysDown.Down = false;
+                    this.#rawAxisDirections.Horizontal -= 1;
 
                     try {
-                        this.OnKeyUp.DOWN();
-                        this.OnRawAxisKeyUp.DOWN();
+                        this.OnKeyUp.Down();
+                        this.OnRawMovementKeyUp.Down();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -622,12 +682,11 @@ class InputHandler {
                 break;
 
                 case ' ':
-                    this.#keysDown.space = false;
-                    this.#rawAxisKeysDown.up = false;
+                    this.#keysDown.Space = false;
 
                     try {
-                        this.OnKeyUp.SPACE();
-                        this.OnRawAxisKeyUp.UP();
+                        this.OnKeyUp.Space();
+                        this.OnRawMovementKeyUp.Up();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -635,10 +694,10 @@ class InputHandler {
                 break;
 
                 case 'Shift':
-                    this.#keysDown.shift = false;
+                    this.#keysDown.Shift = false;
 
                     try {
-                        this.OnKeyDown.SHIFT();
+                        this.OnKeyUp.Shift();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -646,19 +705,21 @@ class InputHandler {
                 break;
             
                 case 'Control':
-                    this.#keysDown.ctrl = false;
+                    this.#keysDown.Control = false;
 
                     try {
-                        this.OnKeyDown.CTRL();
+                        this.OnKeyUp.Control();
                     } catch (err) {
                         throw new Error(err);
                     }
-
+                
                 break;
 
-                case 'Escape':    
+                case 'Escape':
+                    this.#keysDown.Escape = false;
+
                     try {
-                        this.OnKeyDown.ESC();
+                        this.OnKeyUp.Escape();
                     } catch (err) {
                         throw new Error(err);
                     }
@@ -734,18 +795,55 @@ class InputHandler {
                 break;
             }
         });
+
+        window.addEventListener('blur', () => {
+            for (const [key] of Object.entries(this.#keysDown)) {
+                this.#keysDown[key] = false;
+            }
+
+            for (const [key] of Object.entries(this.#rawAxisDirections)) {
+                this.#keysDown[key] = 0;
+            }
+        });
     }
 
-    keyDown(key) {
+    KeyDown(key) {
         if (this.#keysDown[key]) return 1;
 
         return 0;
     }
 
-    rawAxisKeysDown(direction) {
-        if (this.#rawAxisKeysDown[direction]) return 1;
+    RawMovementKeysDown(direction) {
+        switch(direction) {
+            case 'Up': 
+                if (this.#keysDown.W || this.#keysDown.Up || this.#keysDown.Space) return true;
 
-        return 0;
+            return false;
+
+            case 'Down': 
+                if (this.#keysDown.S || this.#keysDown.Down) return true;
+
+            return false;
+
+            case 'Left':
+                if (this.#keysDown.A || this.#keysDown.Left) return true;
+
+            return false;
+
+            case 'Right':
+                if (this.#keysDown.D || this.#keysDown.Right) return true;
+
+            return false;
+
+            default:
+                console.error('Unacceptable direction: "' + direction + '"');
+
+            return false;
+        }
+    }
+
+    GetAxisRaw(direction) {
+        return this.#rawAxisDirections[direction];
     }
 
     AddKeyEvent(key, down, up) {
@@ -758,7 +856,7 @@ class InputHandler {
                         throw new Error(err);
                     }
                 
-                break;         
+                break;       
             }
         });
 
@@ -780,9 +878,12 @@ class InputHandler {
 const Input = new InputHandler();
 
 class GameObject {
-    destroyed = () => {}
-
     collisionEnabled = true;
+    colour = 'grey';
+    opacity = 0;
+    static = false;
+
+    destroyed = () => {}
 
     constructor(x, y, w, h) {
         this.position = Vector2(x, y);
@@ -810,18 +911,19 @@ class GameObject {
     destroy() {
         game.scene.remove(this);
 
-        this.destroyed();
-
-        delete this;
+        try {
+            this.destroyed();
+        } catch(e) {
+            console.error(e);
+        } finally {
+            delete this;
+        }
     }
 }
 
 class Rectangle extends GameObject {
     velocity = Vector2.ZERO;
-    static = false;
     img = null;
-    colour = 'grey';
-    transparency = 0;
 
     constructor(x, y, w, h) {
         super(x, y, w, h);
@@ -844,7 +946,7 @@ class Rectangle extends GameObject {
 
     draw() {
         if (!this.img) {
-            ctx.globalAlpha = this.transparency;
+            ctx.globalAlpha = this.opacity;
             ctx.fillStyle = this.colour;
             ctx.fillRect(this.position.x - game.camOffset.x, this.position.y - game.camOffset.y, this.scale.x, this.scale.y);
             
@@ -855,11 +957,54 @@ class Rectangle extends GameObject {
     }
 }
 
+class Circle extends GameObject {
+    velocity = Vector2.ZERO;
+
+    constructor(x, y, r) {
+        super(x, y);
+        this.r = r;
+    }
+
+    top() {
+        return this.y - this.r;
+    }
+
+    bottom() {
+        return this.y + this.r;
+    }
+
+    left() {
+        return this.x - this.r;
+    }
+
+    right() {
+        return this.x + this.r;
+    }
+
+    update() {
+        if (this.velocity.y < game.settings.maxFall) this.velocity.y += game.settings.gravity;
+        else if (this.velocity.y > game.settings.maxFall + game.settings.gravity) this.velocity.y -= game.settings.gravity;
+
+        for (let i = 0; i < game.scene.gameObjects.length; i++) {
+            if (CircleAndRectIntersection(this, game.scene.gameObjects[i])) {
+                if (game.scene.gameObjects[i].top() < this.top()) this.velocity.y = game.scene.gameObjects[i].bottom() - this.top();
+                else this.velocity.y = game.scene.gameObjects[i].top() - this.bottom();
+            }
+        }
+
+        this.position.x += this.velocity.x / dt;
+        this.position.y += this.velocity.y / dt;
+    }
+
+    draw() {
+
+    }
+}
+
 class GuiObject {
     visible = true;
-    bgTransparency = 0;
+    bgOpacity = 0;
     bgColour = 'rgb(200, 200, 200)';
-    type;
     outlineSize = 0;
     outlineColour = 'rgb(150, 150, 150)';
     font = 'Arial';
@@ -870,10 +1015,7 @@ class GuiObject {
     textAllignY = Enum.TextAllignY.Centre;
     textPadding = 3;
     textScaled = true;
-    textPosition = {
-        x: 0,
-        y: 0
-    }
+    textPosition = Vector2(0, 0);
 
     constructor(x, y, w, h, type) {
         this.position = Vector2(x, y);
@@ -885,7 +1027,7 @@ class GuiObject {
     }
 
     draw() {
-        ctx.globalAlpha = this.bgTransparency;
+        ctx.globalAlpha = this.bgOpacity;
         ctx.fillStyle = this.outlineColour;
         ctx.fillRect(this.position.x - this.outlineSize, ths.position.y - this.outlineSize, this.scale.x + this.outlineSize * 2, this.scale.y + this.outlineSize * 2);
         ctx.fillStyle = this.colour;
@@ -941,11 +1083,7 @@ class TextButton extends GuiObject {
         super(x, y, w, h, Enum.GuiTypes.Button);
 
         this.text = text;
-        this.textPos = {
-            x: 0,
-            y: fontSize,
-        }
-
+        this.textPos = Vector(0, fontSize);
         this.hasText = true;
         this.font = font;
         this.fontSize = fontSize;
@@ -978,7 +1116,7 @@ class ImageButton extends GuiObject {
     }
 
     draw() {
-        ctx.globalAlpha = this.bgTransparency;
+        ctx.globalAlpha = this.bgOpacity;
         ctx.fillStyle = this.outlineColour;
         ctx.fillRect(this.position.x - this.outlineSize, this.position.y - this.outlineSize, this.scale.x + this.outlineSize * 2, this.scale.y + this.outlineSize * 2);
         ctx.drawImage(this.img, this.position.x, this.position.y, this.scale.x, this.scale.y);
@@ -1005,7 +1143,7 @@ class ImageLabel extends GuiObject {
     }
 
     draw() {
-        ctx.globalAlpha = this.bgTransparency;
+        ctx.globalAlpha = this.bgOpacity;
         ctx.fillStyle = this.outlineColour;
         ctx.fillRect(this.position.x - this.outlineSize, this.position.y - this.outlineSize, this.scale.x + this.outlineSize * 2, this.scale.y + this.outlineSize * 2);
         ctx.drawImage(this.img, this.position.x, this.position.y, this.scale.x, this.scale.y);
@@ -1028,6 +1166,11 @@ window.addEventListener('load', () => {
     ctx.imageSmoothingEnabled = false;
 
     window.addEventListener('resize', () => {
+        game.displayRect = {
+            position: Vector2(0, 0),
+            scale: Vector2(window.innerWidth, window.innerHeight)
+        }
+
 		ctx.imageSmoothingEnabled = false;
 	});
 
