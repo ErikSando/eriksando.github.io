@@ -1,0 +1,15 @@
+Possible updates:
+- Multiple world saves
+- Enemy health + health bars (health completed)
+
+Maybe possible updates:
+- Weapons, tools
+
+Not possible at the moment:
+- Multiplayer
+
+Previous updates:
+- Add player + collision
+- Enemies (zombies, slimes)
+- Enemy AI
+- Enemy attacks

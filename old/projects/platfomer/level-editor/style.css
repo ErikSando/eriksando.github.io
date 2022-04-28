@@ -1,0 +1,51 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: rgb(10, 10, 20);
+    color: white;
+}
+
+#options {
+    height: 10vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: block;
+    text-align: center;
+    padding: 5px;
+}
+
+/* #left {
+    float: left;
+}
+
+#right {
+    float: right;
+} */
+
+#canvas {
+    margin: auto;
+    position: absolute;
+    top: 20vh;
+    left: 0;
+    right: 0;
+    border: 2px solid white;
+}
+
+#images {
+    position: absolute;
+    top: 8vh;
+    left: 0;
+    right: 0;
+}
+
+img { 
+    image-rendering: optimizeSpeed;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: -o-crisp-edges;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+    image-rendering: optimize-contrast;
+    -ms-interpolation-mode: nearest-neighbor;
+
+}

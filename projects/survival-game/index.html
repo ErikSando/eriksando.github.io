@@ -4,35 +4,41 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
         <title>Survival Game</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
-        <script src="script.js"></script>
     </head>
     <body>
-        <div id="left">
-            <a href="../../index.html">Home</a>
-            <h1>Survival game</h1>
-            Play <a id="play" href="project/index.html">here</a> <br>
-        </div>
-        <div id="updates">
-            <h2 id="updates-title">Updates & patch notes</h2>
-            <b>20/3/2022</b> <br>
-            - Fixed zombie falling through the world bug <br> <br>
-
-            <b>13/3/2022</b> <br>
-            - WASD keys will now work when caps lock is enabled <br> <br>
-            
-            <b>12/3/2022</b> <br>
-            - Added slimes <br>
-            - Improved game loop (now uses delta time) <br>
-            - Added a day/night cycle <br>
-            - Added mobile GUI (unasble at the moment) <br> <br>
-            
-            <b>9/3/2022</b> <br>
-            - Added player movement + collision <br>
-            - Added a health bar <br>
-            - Added zombies <br>
-            <br>
+        <div id="container">
+            <div id="title" class="dark-bg">
+                Survival Game
+            </div>
+            <div id="body">
+                <a href="../../index.html">Home</a> <br> <br>
+                <b>Play <a href="project/index.html">here</a></b> <br> <br>
+                <div id="updates">
+                    <h2 id="updates-title">Updates & patch notes</h2>
+                    <b>20/3/2022</b> <br>
+                    - Fixed zombie falling through the world bug <br> <br>
+                
+                    <b>13/3/2022</b> <br>
+                    - WASD keys will now work when caps lock is enabled <br> <br>
+                    
+                    <b>12/3/2022</b> <br>
+                    - Added slimes <br>
+                    - Improved game loop (now uses delta time) <br>
+                    - Added a day/night cycle <br>
+                    - Added mobile GUI (unasble at the moment) <br> <br>
+                    
+                    <b>9/3/2022</b> <br>
+                    - Added player movement + collision <br>
+                    - Added a health bar <br>
+                    - Added zombies <br>
+                    <br>
+                </div>
+            </div>
+            <div id="footer" class="dark-bg">
+                Copyright &copy; Erik Sando 2022
+            </div>
         </div>
     </body>
 </html>

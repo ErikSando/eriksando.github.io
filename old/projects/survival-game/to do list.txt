@@ -1,0 +1,12 @@
+UNCOMPLETED:
+- Fix dirt placement in world generation (will lead to more blocks added into world generation)
+- Fix enemy collision with world
+- Fix enemy health bars
+- Add day/night cycles
+
+COMPLETED:
+- Add zombies (will be improved on)
+
+EXTRA:
+- Added slimes (will be improved on)
+- Changes to game loop and update functions
