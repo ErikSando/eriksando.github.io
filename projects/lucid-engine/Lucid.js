@@ -157,25 +157,25 @@ class _Vector2 {
     }
 
     plus(vector) {
-        if (!vector instanceof Vector2) return;
+        if (!vector instanceof _Vector2) return;
 
         return Vector2(this.x + vector.x, this.y + vector.y);
     }
 
     minus(vector) {
-        if (!vector instanceof Vector2) return;
+        if (!vector instanceof _Vector2) return;
 
         return Vector2(this.x - vector.x, this.y - vector.y);
     }
 
     mutliply(vector) {
-        if (!vector instanceof Vector2) return;
+        if (!vector instanceof _Vector2) return;
 
         return Vector2(this.x * vector.x, this.y * vector.y);
     }
 
     divide(vector) {
-        if (!vector instanceof Vector2) return;
+        if (!vector instanceof _Vector2) return;
 
         return Vector2(this.x / vector.x, this.y / vector.y);
     }
@@ -205,7 +205,7 @@ class _Vector2 {
     }
 
     absolute() {
-        return Vecter(Math.abs(this.x), Math.abs(this.y));
+        return Vector2(Math.abs(this.x), Math.abs(this.y));
     }
 
     negated() {
