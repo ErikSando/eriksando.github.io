@@ -1,6 +1,8 @@
 window.addEventListener('load', () => {
     let canvas = document.getElementById('canvas');
 
+    Game.Settings.BgColour = 'white'
+
     Game.SetCanvas(canvas);
     Game.Start();
 });
@@ -16,22 +18,25 @@ let gameObj2 = new GameObject(Vector(50, 200), Vector(150, 150));
 gameObj.image = grass;
 gameObj2.image = dirt;
 
-let pp = new Frame(Vector(250, 250));
+let pp = new TextButton('Button', Vector(250, 250));
 pp.bgOpacity = 1;
-pp.bgColour = 'red';
+pp.bgColour = 'rgb(230, 0, 0)';
+pp.textSize = 40;
+pp.outlineSize = 2;
 
 pp.MouseEnter.AddListener(() => {
-    console.log('mouse entered');
+    pp.bgColour = 'rgb(220, 0, 0)';
 });
 
 pp.MouseExit.AddListener(() => {
-    console.log('mouse exited')
+    pp.bgColour = 'rgb(230, 0, 0)';
 });
 
 pp.MouseDown.AddListener(() => {
-    console.log('mouse down');
+    pp.bgColour = 'rgb(200, 0, 0)';
 });
 
 pp.MouseUp.AddListener(() => {
-    console.log('mouse up');
+    pp.bgColour = 'rgb(220, 0, 0)';
 });
+

@@ -1,3 +1,15 @@
+const TextAlignX = {
+    Left: 1,
+    Center: 2,
+    Right: 3
+}
+
+const TextAlignY = {
+    Top: 1,
+    Center: 2,
+    Bottom: 3
+}
+
 function Clamp(value, min, max) {
     if (value < min) return min;
     if (value < max) return max;
@@ -14,12 +26,45 @@ function RectIntersection(o1, o2) {
     return true;
 }
 
+function LineIntersection(line1, line2) {
+    let x1 = line1.startPos.x;
+    let x2 = line1.endPos.x;
+    let x3 = line2.startPos.x;
+    let x4 = line2.endPos.x;
+    let y1 = line1.startPos.y;
+    let y2 = line1.endPos.y;
+    let y3 = line2.startPos.y;
+    let y4 = line2.endPos.y;
+
+    if ((x1 === x2 && y1 === y2) || (x3 === x4 && y3 === y4)) {
+        return false;
+    }
+
+    denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+
+    if (!denominator) return false;
+
+    let ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator;
+    let ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator;
+
+    if (ua < 0 || ua > 1 || ub < 0 || ub > 1) return false;
+
+    let x = x1 + ua * (x2 - x1);
+    let y = y1 + ua * (y2 - y1);
+
+    return Vector(x, y);
+}
+
 function Raycast(startPos, endPos) {
     let hit;
     
     // find game object that the ray collides with
 
     return hit;
+}
+
+function Wait(time = 1000 / 60) {
+    return new Promise(resolve => setTimeout(resolve, time));
 }
 
 function Vector(x, y) {
@@ -61,6 +106,17 @@ function Vector(x, y) {
     }
 }
 
+function Segment(startPos, endPos) {
+    return {
+        startPos: startPos,
+        endPos: endPos,
+
+        magnitude() {
+            return Vector(endPos.x - startPos.x, endPos.y - startPos.y).magnitude();
+        }
+    }
+}
+
 Vector.zero = Vector(0, 0);
 Vector.one = Vector(1, 1);
 Vector.up = Vector(0, -1);
@@ -90,8 +146,8 @@ class _Animation {
     paused = false;
     fps = 12;
 
-    constructor(frames) {
-        this.#frames = frames || [];
+    constructor(frames = []) {
+        this.#frames = frames;
 
         if (this.#frames.length) this.#image = this.#frames[0];
     }
@@ -154,6 +210,7 @@ class _Animation {
 
 class _Event {
     #listeners = [];
+    #justfired = false;
 
     AddListener(listener) {
         if (typeof listener != 'function') return console.error('Event listener must be a function.');
@@ -167,8 +224,27 @@ class _Event {
         if (this.#listeners[index]) this.#listeners.splice(index, 1);
     }
 
+    Wait() {
+        return new Promise(resolve => {
+            let interval = setInterval(() => {
+                if (this.#justfired) {
+                    this.#justfired = false;
+                    clearInterval(interval);
+                    resolve();
+                }
+            });
+        });
+    }
+
     Fire(...args) {
         for (let listener of this.#listeners) listener(...args);
+
+        this.#justfired = true;
+
+        // want to make this smarter but dont know how :')
+        setTimeout(() => {
+            this.#justfired = false;
+        }, 10);
     }
 }
 
@@ -178,8 +254,8 @@ const Game = new class {
     #ctx;
 
     Settings = {
-        Gravity: 30,
-        TerminalVel: 3000,
+        Gravity: 40,
+        TerminalVel: 2400,
         BgImage: null,
         BgColour: 'black',
         ImageSmoothing: false,
@@ -462,6 +538,8 @@ const Input = new class {
             }
 
             for (let UIObj of Game.UI.GetUIObjects()) {
+                if (!UIObj.MouseDown) continue;
+
                 if (RectIntersection(MouseRect, UIObj)) {
                     UIObj.MouseDown.Fire(e.button, e.shiftKey, e.ctrlKey, e.altKey);
                 }
@@ -477,6 +555,8 @@ const Input = new class {
             }
 
             for (let UIObj of Game.UI.GetUIObjects()) {
+                if (!UIObj.MouseUp) continue;
+                
                 if (RectIntersection(MouseRect, UIObj)) {
                     UIObj.MouseUp.Fire(e.button, e.shiftKey, e.ctrlKey, e.altKey);
                 }
@@ -511,19 +591,14 @@ class UIObject {
     bgColour = 'grey';
     bgOpacity = 1;
     outlineColour = 'black';
-    outlineOpacity = 1;
     outlineSize = 1;
     visible = true;
-    MouseEnter = new _Event();
-    MouseExit = new _Event();
-    MouseDown = new _Event();
-    MouseUp = new _Event();
 
     #mouseover = false;
 
-    constructor(position, scale) {
-        this.position = position || Vector.zero;
-        this.scale = scale || Vector(150, 50);
+    constructor(position = Vector.zero, scale = Vector(150, 50)) {
+        this.position = position;
+        this.scale = scale;
 
         Game.UI.Add(this);
     }
@@ -551,24 +626,45 @@ class UIObject {
     }
 
     Draw(ctx) {
-        ctx.globalAlpha = this.outlineOpacity;
+        ctx.globalAlpha = this.bgOpacity;
         ctx.strokeStyle = this.outlineColour;
         ctx.lineWidth = this.outlineSize;
-        ctx.strokeRect(
-            this.position.x - this.outlineSize,
-            this.position.y - this.outlineSize,
-            this.scale.x + this.outlineSize * 2,
-            this.scale.y + this.outlineSize * 2
-        );
-
-        ctx.globalAlpha = this.bgOpacity;
         ctx.fillStyle = this.bgColour;
+        ctx.rect(this.position.x - this.outlineSize / 2, this.position.y - this.outlineSize / 2, this.scale.x + this.outlineSize, this.scale.y + this.outlineSize);
+        ctx.stroke();
+
         ctx.fillRect(this.position.x, this.position.y, this.scale.x, this.scale.y);
+
+        if (this.image) {
+            ctx.globalAlpha = this.imageOpacity;
+            ctx.drawImage(this.image, this.position.x, this.position.y, this.scale.x, this.scale.y);
+        }
 
         if (this.text) {
             ctx.globalAlpha = this.textOpacity;
-            ctx.font = this.textSize + ' px' + this.font;
-            ctx.fillText(this.text, this.position.x, this.position.y);
+            ctx.fillStyle = this.textColour;
+            ctx.font = this.textSize + 'px ' + this.font;
+
+            let textW = ctx.measureText(this.text).width;
+
+            let textX = this.position.x + (this.scale.x - textW) / 2;
+            let textY = this.position.y + this.scale.y / 2 + (this.textSize * 0.75 / 2);
+
+            if (this.textAlignX == TextAlignX.Left) {
+                textX = this.position.x;
+
+            } else if (this.textAlignX == TextAlignX.Right) {
+                textX = this.scale.x - textW;
+            }
+
+            if (this.textAlignY == TextAlignY.Top) {
+                textY = this.position.y + this.textSize;
+            
+            } else if (this.textAlignY == TextAlignY.Bottom) {
+                textY = this.position.y + this.scale.y;
+            }
+
+            ctx.fillText(this.text, textX, textY);
         }
     }
 
@@ -580,15 +676,62 @@ class UIObject {
 class Frame extends UIObject {}
 
 class TextLabel extends UIObject {
-    text = '';
     textSize = 15;
+    textColour = 'white';
     textOpacity = 1;
+    textAlignX = TextAlignX.Center;
+    textAlignY = TextAlignY.Center;
     font = 'Arial';
 
-    constructor(text, position, scale) {
+    constructor(text = '', position, scale) {
         super(position, scale);
 
         this.text = text;
+    }
+}
+
+class TextButton extends UIObject {
+    textSize = 15;
+    textColour = 'white';
+    textOpacity = 1;
+    textAlignX = TextAlignX.Center;
+    textAlignY = TextAlignY.Center;
+    font = 'Arial';
+
+    MouseEnter = new _Event();
+    MouseExit = new _Event();
+    MouseDown = new _Event();
+    MouseUp = new _Event();
+
+    constructor(text = '', position, scale) {
+        super(position, scale);
+
+        this.text = text;
+    }
+}
+
+class ImageLabel extends UIObject {
+    imageOpacity = 1;
+
+    constructor(image = null, position, scale) {
+        super(position, scale);
+
+        this.image = image;
+    }
+}
+
+class ImageButton extends UIObject {
+    imageOpacity = 1;
+
+    MouseEnter = new _Event();
+    MouseExit = new _Event();
+    MouseDown = new _Event();
+    MouseUp = new _Event();
+
+    constructor(image = null, position, scale) {
+        super(position, scale);
+
+        this.image = image;
     }
 }
 
@@ -597,9 +740,9 @@ class GameObject {
     colour = 'grey';
     opacity = 1;
 
-    constructor(position, scale) {
-        this.position = position || Vector.zero;
-        this.scale = scale || Vector(50, 50);
+    constructor(position = Vector.zero, scale = Vector(50, 50)) {
+        this.position = position;
+        this.scale = scale;
 
         Game.scene.Add(this);
     }
@@ -623,8 +766,8 @@ class GameObject {
 }
 
 class Scene {
-    constructor(gameObjects) {
-        this.gameObjects = gameObjects || [];
+    constructor(gameObjects = []) {
+        this.gameObjects = gameObjects;
     }
 
     Add(gameObject) {

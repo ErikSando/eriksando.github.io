@@ -24,7 +24,7 @@ const Player = new class extends UpdatesEachFrame {
     constructor() {
         super();
 
-        this.go = new GameObject(Vector(300, 300), Vector(48, 112));
+        this.go = new GameObject(Vector(300, 0), Vector(48, 112));
         this.anims = {
             left: {
                 idle: new _Animation(),
@@ -49,12 +49,14 @@ const Player = new class extends UpdatesEachFrame {
 
     Update(delta) {
         let hMovement = Input.GetAxisRaw('Horizontal');
+        let vMovement = Input.GetAxisRaw('Vertical');
 
         this.vel.x = hMovement * this.speed;
 
-        if (this.vel.x) {
-            this.anim = this.anims[this.direction].run;
-        }
+        if (this.vel.x) this.anim = this.anims[this.direction].run;
+        else this.anim = this.anims[this.direction].idle;
+
+        if ((vMovement == 1 || Input.GetKey('Space')) && this.grounded) this.vel.y = -this.jumpPower;
 
         if (this.vel.y < Game.Settings.TerminalVel) {
             this.vel.y += Game.Settings.Gravity;
@@ -66,6 +68,11 @@ const Player = new class extends UpdatesEachFrame {
             this.vel.y = (500 - this.go.position.y) / delta;
 
             this.grounded = true;
+        }
+
+        if (!this.grounded) {
+            if (this.vel.y > 0) {} // jump anim
+            else {} // fall anim
         }
 
         if (!this.anim.playing) this.anim.Play();

@@ -26,9 +26,7 @@ if not exist "Sounds" mkdir Sounds
 
 cd Scripts
 echo window.addEventListener('load', () =^> {>> Main.js
-echo     let canvas = document.getElementById('canvas');>>Main.js
-echo.>> Main.js
-echo     Game.SetCanvas(canvas);>> Main.js
+echo     Game.CreateCanvas();>> Main.js
 echo     Game.Start();>> Main.js
 echo });>> Main.js
 
@@ -41,7 +39,6 @@ echo 		^<script src="../../Engine.js"^>^</script^>>> index.html
 echo 		^<script src="Assets/Scripts/Main.js"^>^</script^>>> index.html
 echo 	^</head^>>> index.html
 echo 	^<body^>>> index.html
-echo 		^<canvas id="canvas"^>^</canvas^>>> index.html
 echo 	^</body^>>> index.html
 echo ^</html^>>> index.html
 
