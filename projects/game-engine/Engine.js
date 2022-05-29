@@ -17,11 +17,11 @@ function Clamp(value, min, max) {
     return value;
 }
 
-function RectIntersection(o1, o2) {
-    if(o1.position.x + o1.scale.x < o2.position.x
-    || o1.position.x > o2.position.x + o2.scale.x
-    || o1.position.y + o1.scale.y < o2.position.y
-    || o1.position.y > o2.position.y + o2.scale.y) return false;
+function RectIntersection(r1, r2) {
+    if(r1.position.x + r1.scale.x < r2.position.x
+    || r1.position.x > r2.position.x + r2.scale.x
+    || r1.position.y + r1.scale.y < r2.position.y
+    || r1.position.y > r2.position.y + r2.scale.y) return false;
 
     return true;
 }
@@ -78,6 +78,14 @@ function Vector(x, y) {
 
         normalised() {
             return Vector(this.x / this.magnitude(), this.y / this.magnitude());
+        },
+
+        negated() {
+            return Vector(-this.x, -this.y);
+        },
+
+        equals(vector) {
+            return this.x == vector.x && this.y == vector.y;
         },
 
         add(vector) {
@@ -350,6 +358,7 @@ const Game = new class {
             return;
         }
 
+        for (let gameObject of this.scene.gameObjects) gameObject.Update(delta);
         for (let member of this.UpdateGroup) if (member.Update) member.Update(delta);
         for (let UIObj of this.#UIObjects) UIObj.Update();
 
@@ -360,6 +369,7 @@ const Game = new class {
 
     #Draw() {
         this.#ctx.globalAlpha = 1;
+        this.#ctx.resetTransform();
 
         if (this.Settings.BgImage) {
             this.#ctx.drawImage(this.Settings.BgImage, 0, 0, this.#canvas.width, this.#canvas.height);
@@ -369,10 +379,10 @@ const Game = new class {
             this.#ctx.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
         }
 
-        //this.#ctx.setTransform(this.Camera.zoom, 0, 0, this.Camera.zoom, -this.Camera.position.x, -this.Camera.position.y);
-
-        for (let gameObject of this.scene.gameObjects) gameObject.Draw(this.#ctx);
         for (let UIObj of this.#UIObjects) UIObj.Draw(this.#ctx);
+
+        //this.#ctx.setTransform(this.Camera.zoom, 0, 0, this.Camera.zoom, -this.Camera.position.x, -this.Camera.position.y);
+        for (let gameObject of this.scene.gameObjects) gameObject.Draw(this.#ctx);
     }
 }
 
@@ -739,12 +749,18 @@ class GameObject {
     image;
     colour = 'grey';
     opacity = 1;
+    canCollide = true;
+    vel = Vector.zero;
+    static = false;
 
     constructor(position = Vector.zero, scale = Vector(50, 50)) {
         this.position = position;
         this.scale = scale;
 
         Game.scene.Add(this);
+    }
+
+    Update(delta) {
     }
 
     Draw(ctx) {

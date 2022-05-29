@@ -87,6 +87,8 @@ const Player = new class extends UpdatesEachFrame {
         let hMovement = Input.GetAxisRaw('Horizontal');
         let vMovement = Input.GetAxisRaw('Vertical');
 
+        if (this.vel.y < Game.Settings.TerminalVel) this.vel.y += Game.Settings.Gravity;
+
         this.vel.x = hMovement * this.speed;
 
         if (this.vel.x) {
@@ -98,10 +100,6 @@ const Player = new class extends UpdatesEachFrame {
         } else this.anim = this.anims[this.direction].idle;
 
         if ((vMovement == 1 || Input.GetKey('Space')) && this.grounded) this.vel.y = -this.jumpPower;
-
-        if (this.vel.y < Game.Settings.TerminalVel) {
-            this.vel.y += Game.Settings.Gravity;
-        }
 
         this.grounded = false;
 
@@ -122,5 +120,8 @@ const Player = new class extends UpdatesEachFrame {
 
         this.go.position.x += this.vel.x * delta;
         this.go.position.y += this.vel.y * delta;
+
+        // this.go.vel.x = this.vel.x;
+        // this.go.vel.y = this.vel.y;
     }
 }

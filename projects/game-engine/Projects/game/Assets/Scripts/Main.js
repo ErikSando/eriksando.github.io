@@ -18,7 +18,7 @@ let gameObj2 = new GameObject(Vector(50, 200), Vector(150, 150));
 gameObj.image = grass;
 gameObj2.image = dirt;
 
-let pp = new TextButton('Button', Vector(250, 250));
+let pp = new TextButton('Reset Y', Vector(250, 250), Vector(160, 50));
 pp.bgOpacity = 1;
 pp.bgColour = 'rgb(230, 0, 0)';
 pp.textSize = 40;
@@ -38,5 +38,7 @@ pp.MouseDown.AddListener(() => {
 
 pp.MouseUp.AddListener(() => {
     pp.bgColour = 'rgb(220, 0, 0)';
-});
 
+    Player.vel.y = 0;
+    Player.go.position.y = 0;
+});
