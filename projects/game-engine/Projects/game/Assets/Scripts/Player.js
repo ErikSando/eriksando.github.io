@@ -52,11 +52,11 @@ const Player = new class extends UpdatesEachFrame {
     jumpPower = 720;
     direction = 'right';
     vel = Vector.zero;
+    go = new GameObject(Vector(300, 0), Vector(48, 112));
     
     constructor() {
         super();
 
-        this.go = new GameObject(Vector(300, 0), Vector(48, 112));
         this.anims = {
             left: {
                 idle: new _Animation([lIdle1, lIdle2]),
@@ -121,7 +121,7 @@ const Player = new class extends UpdatesEachFrame {
         this.go.position.x += this.vel.x * delta;
         this.go.position.y += this.vel.y * delta;
 
-        // this.go.vel.x = this.vel.x;
-        // this.go.vel.y = this.vel.y;
+        //this.go.vel.x = this.vel.x;
+        //this.go.vel.y = this.vel.y;
     }
 }

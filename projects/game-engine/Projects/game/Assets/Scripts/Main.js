@@ -15,6 +15,8 @@ grass.src = 'Assets/Textures/grass.png';
 
 let gameObj = new GameObject(Vector(50, 50), Vector(150, 150));
 let gameObj2 = new GameObject(Vector(50, 200), Vector(150, 150));
+gameObj.static = true;
+gameObj2.static = true;
 gameObj.image = grass;
 gameObj2.image = dirt;
 
