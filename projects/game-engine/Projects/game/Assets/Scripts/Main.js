@@ -44,3 +44,14 @@ pp.MouseUp.AddListener(() => {
     Player.vel.y = 0;
     Player.go.position.y = 0;
 });
+
+let particleImage1 = new Image();
+let particleImage2 = new Image();
+particleImage1.src = 'Assets/Textures/particle1.png';
+particleImage2.src = 'Assets/Textures/particle2.png';
+
+let anim = new _Animation([particleImage1, particleImage2]);
+
+let particle = new Particle(anim, Vector(200, 200), Vector(20, 20));
+
+particle.velocity = Vector(300, 300);

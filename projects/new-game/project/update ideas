@@ -1,0 +1,9 @@
+change grounded thing so when the player is about to fall onto a block grounded will be true on the subsequent frame to make the player jump off the ground not a little above the ground when space is held.
+
+moving obstacles like bricks that go up and down with spikes on the bottom
+
+ability to place blocks to create path to avoid slimes (later levels)
+
+weapons (sword, bow)
+
+custom levels (need to make level editor)
