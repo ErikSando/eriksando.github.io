@@ -14,8 +14,6 @@ class UIObject {
     }
 
     Draw(ctx) {
-        if (!this.visible) return;
-
         if (this.outlineThickness > 0 && this.outlineOpacity > 0) {
             ctx.globalAlpha = this.outlineOpacity;
             ctx.strokeStyle = this.outlineColour;
@@ -77,6 +75,8 @@ class TextLabel extends UIObject {
     }
 
     Draw(ctx) {
+        if (!this.visible) return;
+
         super.Draw(ctx);
 
         ctx.font = this.textSize + "px " + this.font;
@@ -131,6 +131,8 @@ class TextButton extends Button {
     }
 
     Draw(ctx) {
+        if (!this.visible) return;
+
         super.Draw(ctx);
 
         ctx.font = this.textSize + "px " + this.font;
@@ -176,6 +178,8 @@ class ImageLabel extends UIObject {
     }
 
     Draw(ctx) {
+        if (!this.visible) return;
+
         super.Draw(ctx);
     }
 }
@@ -188,6 +192,10 @@ class ImageButton extends Button {
     }
 
     Draw(ctx) {
+        if (!this.visible) return;
+
         super.Draw(ctx);
+
+        ctx.drawImage(this.image, this.position.x, this.position.y, this.scale.x, this.scale.y);
     }
 }

@@ -72,6 +72,18 @@ class Player extends Entity {
         this.animation = this.animations.right.idle;
         this.image = this.animation.GetImage();
         this.direction = "right";
+
+        Game.RespawnButton.Mouse1Down.AddListener(() => {
+            console.log("clicked")
+
+            Game.RespawnButton.enabled = false;
+            Game.RespawnButton.visible = false;
+            this.dead = false;
+            this.vel = Vector(0, 0);
+            this.position = Vector(2 * Game.tileSize, window.innerHeight - Game.tileSize * 3);
+            Game.Camera.position.x = 0;
+            Game.Camera.position.y = Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
+        });
     }
 
     left() {
@@ -91,25 +103,25 @@ class Player extends Entity {
     }
 
     Kill() {
-        this.position = Vector(2 * Game.tileSize, window.innerHeight - Game.tileSize * 3);
-        Game.Camera.position.y = Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
+        this.dead = true;
+
+        Game.RespawnButton.enabled = true;
+        Game.RespawnButton.visible = true;
     }
     
     Update = (delta) => {
+        if (this.dead) return;
+
         this.vel.x = Input.GetAxisRaw("Horizontal") * this.speed;
 
         this.vel.y += 60;
         this.vel.y = Clamp(this.vel.y, -this.jumpPower, 1200);
 
-        if (Input.GetAxisRaw("Vertical") && this.#grounded) {
-            this.vel.y = -this.jumpPower;
-        }
+        if (Input.GetAxisRaw("Vertical") && this.#grounded) this.vel.y = -this.jumpPower;
 
-        this.#grounded = false;
-
-        let hitbox = {
-            position: this.position,
-            scale: this.scale
+        if (this.#dieNextFrame) {
+            this.Kill();
+            this.#dieNextFrame = false;
         }
 
         let nextFrameX = {
@@ -122,34 +134,24 @@ class Player extends Entity {
             scale: this.scale
         }
 
+        this.#grounded = false;
+        let setToZero = false;
+
         for (let block of Game.World.fg_blocks) {
             let blockHitbox = {
-                position: Vector(block.position.x, block.position.y - Game.Camera.position.y),
+                position: Vector(block.position.x - Game.Camera.position.x, block.position.y - Game.Camera.position.y),
                 scale: block.scale,
-
-                left() {
-                    return this.position.x;
-                },
-
-                right() {
-                    return this.position.x + this.scale.x;
-                },
-
-                top() {
-                    return this.position.y;
-                },
-
-                bottom() {
-                    return this.position.y + this.scale.y;
-                }
+                left: block.left,
+                right: block.right,
+                top: block.top,
+                bottom: block.bottom
             }
-            
-            if (RectIntersection(nextFrameX, blockHitbox)) {
-                if (this.vel.x >= 0) {
-                    this.vel.x = (blockHitbox.left() - this.right()) / delta;
-                
-                } else if (this.vel.x < 0) {
-                    this.vel.x = (blockHitbox.right() - this.left()) / delta;
+
+            let checkForDeath = (b) => {
+                let deathBlocks = ["Spikes", "Lava"]
+
+                if (deathBlocks.includes(b.ID)) {
+                    this.#dieNextFrame = true;
                 }
             }
 
@@ -157,10 +159,20 @@ class Player extends Entity {
                 if (this.vel.y >= 0) {
                     this.vel.y = (blockHitbox.top() - this.bottom()) / delta;
                     this.#grounded = true;
-
+                    
                 } else if (this.vel.y < 0) {
                     this.vel.y = (blockHitbox.bottom() - this.top()) / delta;
+                    setToZero = true;
                 }
+
+                checkForDeath(block);
+            }
+
+            if (RectIntersection(nextFrameX, blockHitbox)) {
+                if (this.vel.x >= 0 && this.left() < block.left()) this.vel.x = (blockHitbox.left() - this.right()) / delta;
+                else this.vel.x = (blockHitbox.right() - this.left()) / delta;
+
+                checkForDeath(block);
             }
         }
 
@@ -173,36 +185,57 @@ class Player extends Entity {
             else if (this.vel.x < 0) this.direction = "left";
         }
 
-        if (this.vel.y != 0) {
-            animation = "in_air";
-        }
-
-        if (this.animation != this.animations[this.direction][animation]) {
-            this.animation = this.animations[this.direction][animation];
-        }
+        if (this.vel.y != 0) animation = "in_air";
+        if (this.animation != this.animations[this.direction][animation]) this.animation = this.animations[this.direction][animation];
 
         this.image = this.animation.GetImage();
         this.animation.Update(delta);
 
-        this.position.x += this.vel.x * delta;
-        //Game.Camera.position.x += this.vel.x * delta;
+        let xCondition1 = this.position.x + this.vel.x * delta < window.innerWidth * 2/5 && this.position.x > window.innerWidth * 2/5;
+        let xCondition2 = this.position.x + this.scale.x + this.vel.x * delta > window.innerWidth * 3/5 && this.position.x + this.scale.x < window.innerWidth * 3/5;
+        let xCondition3 = Game.Camera.position.x + this.vel.x * delta >= 0;
+        let xCondition4 = Game.Camera.position.x + this.vel.x * delta <= Levels[Game.World.level][0].length * Game.tileSize - window.innerWidth;
 
-        // do this same thing below but with the player and camera x position
+        if ((xCondition1 || xCondition2) && xCondition3 && xCondition4) Game.Camera.position.x += this.vel.x * delta;
+        else this.position.x += this.vel.x * delta;
 
-        let condition1 = this.position.y + this.vel.y * delta < 300 && this.position.y > 300;
-        let condition2 = this.position.y + this.vel.y * delta > window.innerHeight - 400 && this.position.y < window.innerHeight - 400;
-        let condition3 = Game.Camera.position.y + this.vel.y * delta > 0;
-        let condition4 = Game.Camera.position.y + this.vel.y * delta < Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
+        let yCondition1 = this.position.y + this.vel.y * delta < window.innerHeight / 4 && this.position.y > window.innerHeight / 4;
+        let yCondition2 = this.position.y + this.scale.y + this.vel.y * delta > window.innerHeight * 3/4 && this.position.y + this.scale.y < window.innerHeight * 3/4;
+        let yCondition3 = Game.Camera.position.y + this.vel.y * delta >= 0;
+        let yCondition4 = Game.Camera.position.y + this.vel.y * delta <= Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
 
-        if ((condition1 || condition2) && condition3 && condition4) {
+        if ((yCondition1 || yCondition2) && yCondition3 && yCondition4) {
             Game.Camera.position.y += this.vel.y * delta;
-        
+
         } else {
             this.position.y += this.vel.y * delta;
+    
+            // trying to make it so the camera will go to exactly the top of the world and not slightly below, and to the bottom of the world and not slightly above
+            // (also do this with the camera x movement once a solution is found)
+
+            // console.log(Game.Camera.position.y, this.vel.y * delta);
+            // console.log(condition3);
+
+            // if (!condition3) {
+            //     Game.Camera.position.y = 0;
+            //     this.position.y += Game.Camera.position.y;
+            
+            // } else if (!condition4) {
+            //     let difference = Levels[Game.World.level].length * Game.tileSize - window.innerHeight - Game.Camera.position;
+            //     Game.Camera.position.y = Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
+            //     this.position.y += difference;
+            
+            // } else {
+            //     this.position.y += this.vel.y * delta;
+            // }
         }
+
+        if (setToZero) this.vel.y = 0;
     }
 
     Draw(ctx) {
+        if (this.dead) return;
+
         ctx.drawImage(this.image, this.position.x, this.position.y);
     }
 }

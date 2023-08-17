@@ -45,7 +45,7 @@ class World {
                     this.fg_blocks.push(brick);
                 
                 } else if (tile == 2) {
-                    let spikes = new Spikes(Vector(x * Game.tileSize, y * Game.tileSize + 8));
+                    let spikes = new Spikes(Vector(x * Game.tileSize + 2, y * Game.tileSize + 20));
                     let bg_brick = new BG_Brick(Vector(x * Game.tileSize, y * Game.tileSize));
 
                     this.blocks.push(bg_brick);

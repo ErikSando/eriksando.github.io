@@ -175,13 +175,18 @@ const Game = new class {
 
     UIObjects = [];
 
-    tileSize = 64;
+    tileSize = Clamp(64, window.innerWidth / 40, window.innerWidth / 20);
 
     CanvasChanged = new _Event();
 
+    UIAdded = new _Event();
+    UIRemoved = new _Event();
+
     constructor() {
         this.Camera = {
-            position: Vector.zero
+            position: Vector(0, 0),
+            zoom: Vector(2, 2),
+            zoomFocus: Vector(window.innerWidth / 2, window.innerHeight / 2)
         }
 
         this.UI = {
@@ -189,18 +194,36 @@ const Game = new class {
                 if (!UIObj instanceof UIObject) return console.error("Can only add UI Objects.");
 
                 this.UIObjects.push(UIObj);
+                this.UIAdded.Fire();
             },
 
             Remove: (UIObj) => {
                 if (!this.UIObjects.includes(UIObj)) return console.error("Can not find UI object, did not remove.");
 
                 this.UIObjects.splice(this.UIObjects.indexOf(UIObj), 1);
+                this.UIRemoved.Fire();
             }
         }
     }
 
     Init() {
-        this.CreateCanvas();
+        this.SetCanvas(document.querySelector("canvas"));
+        
+        this.FPS_Counter = new TextLabel(Vector(10,10), Vector(200, 0), "... FPS");
+        this.FPS_Counter.outlineThickness = 0;
+        this.FPS_Counter.bgOpacity = 0;
+        this.FPS_Counter.textAlignX = TextAlignX.Left;
+ 
+        let respawnImage = new Image();
+        respawnImage.src = "assets/textures/UI/respawn.png";
+
+        this.RespawnButton = new ImageButton(Vector(window.innerWidth / 2 - 141, window.innerHeight / 2 - 45), Vector(282, 90), respawnImage);
+        this.RespawnButton.outlineThickness = 0;
+        this.RespawnButton.visible = false;
+        this.RespawnButton.enabled = false;
+        
+        console.log(this.UIObjects);
+
         this.World = new World();
 
         let player_x = this.tileSize * 2;
@@ -217,7 +240,7 @@ const Game = new class {
     }
 
     CreateCanvas() {
-        this.#canvas = document.querySelector("canvas");
+        this.#canvas = document.createElement("canvas");
         this.#ctx = this.#canvas.getContext("2d");
 
         this.CanvasChanged.Fire();
@@ -248,11 +271,6 @@ const Game = new class {
     }
 
     Start = () => {
-        this.FPS_Counter = new TextLabel(Vector(10,10), Vector(200, 0), "... FPS (.../...)");
-        this.FPS_Counter.outlineThickness = 0;
-        this.FPS_Counter.bgOpacity = 0;
-        this.FPS_Counter.textAlignX = TextAlignX.Left;
-
         requestAnimationFrame(this.#Start);
     }
 
@@ -267,6 +285,8 @@ const Game = new class {
         const delta = (timestamp - this.#lastUpdate) / 1000;
         this.#lastUpdate = timestamp;
 
+        // this.tileSize = Clamp(64, window.innerWidth / 40, window.innerWidth / 20);
+
         if (!delta || isNaN(delta) || delta < 0 || delta > 1) {
             this.#Draw();
             
@@ -279,30 +299,21 @@ const Game = new class {
         
         if (timestamp - this.#lastDisplay > 200) {
             let totalFPS = 0;
-            let min = 1000;
-            let max = 0;
 
-            for (let fps of this.#fpses) {
-                totalFPS += fps;
-
-                if (fps < min) {
-                    min = fps;
-                }
-
-                if (fps > max) {
-                    max = fps;
-                }
-            }
+            for (let fps of this.#fpses) totalFPS += fps;
 
             let FPS = totalFPS / this.#fpses.length;
 
-            this.FPS_Counter.text = Math.round(FPS) + " FPS (" + Math.round(min) + "/" + Math.round(max) + ")";
+            this.FPS_Counter.text = Math.round(FPS) + " FPS";
 
             this.#fpses = [];
             this.#lastDisplay = timestamp;
         }
 
         this.Player.Update(delta);
+
+        Game.Camera.position.x = Math.round(Game.Camera.position.x);
+        Game.Camera.position.y = Math.round(Game.Camera.position.y);
 
         this.#Draw(delta);
 
@@ -312,6 +323,9 @@ const Game = new class {
     #Draw = (delta) => {
         this.#ctx.fillStyle = "black";
         this.#ctx.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
+
+        //this.#ctx.resetTransform();
+        //this.#ctx.setTransform(this.Camera.zoom.x, 0, 0, this.Camera.zoom.y, 0, 0);
 
         this.World.Draw(this.#ctx, delta);
 

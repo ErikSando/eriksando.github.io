@@ -1,3 +1,17 @@
+function MouseHandlers() {
+    return {
+        down: () => {
+
+        },
+
+        up: () => {
+
+        },
+
+
+    }
+}
+
 const Input = new class {
     #Keys = {
         Backspace: "BACKSPACE",
@@ -154,47 +168,52 @@ const Input = new class {
             document.addEventListener("mousemove", this.#MouseMove);
         });
 
-        document.addEventListener("mousedown", (e) => {
-            if (e.button == "0") this.Mouse1Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-            if (e.button == "2") this.Mouse2Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-            if (e.button == "1") this.Mouse3Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+        document.addEventListener("mousedown", this.#MouseDown);
+        document.addEventListener("mouseup", this.#MouseUp);
+    }
 
-            let MouseRect = {
-                position: this.#MousePos,
-                scale: Vector.one
+    #MouseDown = (e) => {
+        if (e.button == "0") this.Mouse1Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+        if (e.button == "2") this.Mouse2Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+        if (e.button == "1") this.Mouse3Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+
+        let MouseRect = {
+            position: this.#MousePos,
+            scale: Vector.one
+        }
+
+        for (let UIObj of Game.UIObjects) {
+            if (!(UIObj instanceof Button)) continue;
+            if (!UIObj.enabled) continue;
+
+            if (RectIntersection(MouseRect, UIObj)) {
+                if (e.button == "0") UIObj.Mouse1Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+                else if (e.button == "2") UIObj.Mouse2Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+                else if (e.button == "3") UIObj.Mouse3Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
             }
+        }
+    }
 
-            for (let UIObj of Game.UIObjects) {
-                if (UIObj instanceof Button) {
-                    if (RectIntersection(MouseRect, UIObj)) {
-                        if (e.button == "0") UIObj.Mouse1Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-                        else if (e.button == "2") UIObj.Mouse2Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-                        else if (e.button == "3") UIObj.Mouse3Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-                    }
-                }
+    #MouseUp = (e) => {
+        if (e.button == "0") this.Mouse1Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+        if (e.button == "2") this.Mouse2Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+        if (e.button == "1") this.Mouse3Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+
+        let MouseRect = {
+            position: this.#MousePos,
+            scale: Vector.one
+        }
+
+        for (let UIObj of Game.UIObjects) {
+            if (!UIObj instanceof Button) continue;
+            if (!UIObj.enabled) continue;
+
+            if (RectIntersection(MouseRect, UIObj)) {
+                if (e.button == "0") UIObj.Mouse1Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+                else if (e.button == "2") UIObj.Mouse2Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+                else if (e.button == "3") UIObj.Mouse3Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
             }
-        });
-
-        document.addEventListener("mouseup", (e) => {
-            if (e.button == "0") this.Mouse1Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-            if (e.button == "2") this.Mouse2Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-            if (e.button == "1") this.Mouse3Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-
-            let MouseRect = {
-                position: this.#MousePos,
-                scale: Vector.one
-            }
-
-            for (let UIObj of Game.UIObjects) {
-                if (UIObj instanceof Button) {
-                    if (RectIntersection(MouseRect, UIObj)) {
-                        if (e.button == "0") UIObj.Mouse1Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-                        else if (e.button == "2") UIObj.Mouse2Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-                        else if (e.button == "3") UIObj.Mouse3Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
-                    }
-                }
-            }
-        });
+        }
     }
 
     #MouseMove = (e) => {
@@ -209,17 +228,23 @@ const Input = new class {
         }
 
         for (let UIObj of Game.UIObjects) {
-            if (UIObj instanceof Button) {
-                if (RectIntersection(MouseRect, UIObj)) {
-                    if (UIObj.mouseover == false) UIObj.MouseEnter.Fire();
+            if (!(UIObj instanceof Button)) continue;
+            if (!UIObj.enabled) continue;
 
-                    return UIObj.mouseover = true;
-                }
+            let willContinue = false;
 
-                if (UIObj.mouseover) UIObj.MouseExit.Fire();
+            if (RectIntersection(MouseRect, UIObj)) {
+                if (UIObj.mouseover == false) UIObj.MouseEnter.Fire();
 
-                UIObj.mouseover = false;
+                UIObj.mouseover = true;
+                willContinue = true;
             }
+
+            if (willContinue) continue;
+
+            if (UIObj.mouseover) UIObj.MouseExit.Fire();
+
+            UIObj.mouseover = false;
         }
     }
 
@@ -245,3 +270,10 @@ const Input = new class {
         return this.#MousePos;
     }
 }
+
+
+const Main = () => {
+    let nigga = 1;
+}
+
+Main();

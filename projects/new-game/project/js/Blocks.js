@@ -24,8 +24,7 @@ class Block {
     }
 
     Draw(ctx) {
-        // ctx.drawImage(this.image, this.position.x - Game.Camera.position.x, this.position.y - Game.Camera.position.y);
-        ctx.drawImage(this.image, this.position.x, this.position.y - Game.Camera.position.y);
+        ctx.drawImage(this.image, this.position.x - Game.Camera.position.x, this.position.y - Game.Camera.position.y);
     }
 }
 
@@ -59,8 +58,11 @@ class AnimatedBlock {
     }
 
     Draw(ctx) {
-        // ctx.drawImage(this.image, this.position.x - Game.Camera.position.x, this.position.y - Game.Camera.position.y);
-        ctx.drawImage(this.image, this.position.x, this.position.y - Game.Camera.position.y);
+        ctx.drawImage(
+            this.image,
+            this.position.x - Game.Camera.position.x,
+            this.position.y - Game.Camera.position.y
+        );
     }
 }
 
