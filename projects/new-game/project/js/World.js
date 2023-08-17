@@ -27,6 +27,10 @@ class World {
     }
 
     #Update() {
+        this.blocks = [];
+        this.animated_blocks = [];
+        this.fg_blocks = [];
+
         this.#data = Levels[this.level];
 
         for (let y = 0; y < this.#data.length; y++) {

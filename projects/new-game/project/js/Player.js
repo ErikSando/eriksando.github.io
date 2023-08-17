@@ -74,8 +74,6 @@ class Player extends Entity {
         this.direction = "right";
 
         Game.RespawnButton.Mouse1Down.AddListener(() => {
-            console.log("clicked")
-
             Game.RespawnButton.enabled = false;
             Game.RespawnButton.visible = false;
             this.dead = false;
