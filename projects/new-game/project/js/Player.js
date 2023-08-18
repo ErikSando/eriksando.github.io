@@ -64,6 +64,7 @@ class Player extends Entity {
     vel = Vector(0, 0);
     #grounded = false;
     #dieNextFrame = false;
+    #collideNextFrame = "";
     scale = Vector(52, 128);
 
     constructor(position) {
@@ -73,14 +74,20 @@ class Player extends Entity {
         this.image = this.animation.GetImage();
         this.direction = "right";
 
+        //Game.RespawnButton.Mouse1Down.AddListener(this.Respawn);
         Game.RespawnButton.Mouse1Down.AddListener(() => {
+            console.log("clicked");
             Game.RespawnButton.enabled = false;
             Game.RespawnButton.visible = false;
+            console.log("made not enabled and not visible ", Game.RespawnButton.enabled, Game.RespawnButton.visible);
             this.dead = false;
+            console.log("made not dead ", this.dead);
             this.vel = Vector(0, 0);
             this.position = Vector(2 * Game.tileSize, window.innerHeight - Game.tileSize * 3);
+            console.log("reset position and velocity ", this.vel.x, this.vel.y, this.position.x, this.position.y);
             Game.Camera.position.x = 0;
             Game.Camera.position.y = Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
+            console.log("reset camera ", Game.Camera.position.x, Game.Camera.position.y);
         });
     }
 
@@ -106,7 +113,17 @@ class Player extends Entity {
         Game.RespawnButton.enabled = true;
         Game.RespawnButton.visible = true;
     }
-    
+
+    Respawn() {
+        // Game.RespawnButton.enabled = false;
+        // Game.RespawnButton.visible = false;
+        // this.dead = false;
+        // this.vel = Vector(0, 0);
+        // this.position = Vector(2 * Game.tileSize, window.innerHeight - Game.tileSize * 3);
+        // Game.Camera.position.x = 0;
+        // Game.Camera.position.y = Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
+    }
+
     Update = (delta) => {
         if (this.dead) return;
 
@@ -117,9 +134,23 @@ class Player extends Entity {
 
         if (Input.GetAxisRaw("Vertical") && this.#grounded) this.vel.y = -this.jumpPower;
 
-        if (this.#dieNextFrame) {
+        // if (this.#dieNextFrame) {
+        //     this.Kill();
+        //     this.#dieNextFrame = false;
+        // }
+
+        if (this.#collideNextFrame == "Obstacle") {
             this.Kill();
-            this.#dieNextFrame = false;
+            this.#collideNextFrame = "";
+        
+        } else if (this.#collideNextFrame == "Portal") {
+            this.vel = Vector(0, 0);
+            this.position = Vector(2 * Game.tileSize, window.innerHeight - Game.tileSize * 3);
+            Game.Camera.position.x = 0;
+            Game.World.NextLevel();
+            Game.Camera.position.y = Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
+
+            this.#collideNextFrame = "";
         }
 
         let nextFrameX = {
@@ -145,32 +176,41 @@ class Player extends Entity {
                 bottom: block.bottom
             }
 
-            let checkForDeath = (b) => {
+            let checkBlock = (b) => {
                 let deathBlocks = ["Spikes", "Lava"]
 
-                if (deathBlocks.includes(b.ID)) {
-                    this.#dieNextFrame = true;
-                }
+                if (deathBlocks.includes(b.ID)) this.#collideNextFrame = "Obstacle";
+                //if (deathBlocks.includes(b.ID)) this.#dieNextFrame = true;
+
+                if (b.ID == "Portal") this.#collideNextFrame = "Portal";
+
+                // if (b.ID == "Portal") {
+                //     this.vel = Vector(0, 0);
+                //     this.position = Vector(2 * Game.tileSize, window.innerHeight - Game.tileSize * 3);
+                //     Game.Camera.position.x = 0;
+                //     Game.World.NextLevel();
+                //     Game.Camera.position.y = Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
+                // }
             }
 
             if (RectIntersection(nextFrameY, blockHitbox)) {
                 if (this.vel.y >= 0) {
                     this.vel.y = (blockHitbox.top() - this.bottom()) / delta;
                     this.#grounded = true;
-                    
+
                 } else if (this.vel.y < 0) {
                     this.vel.y = (blockHitbox.bottom() - this.top()) / delta;
                     setToZero = true;
                 }
 
-                checkForDeath(block);
+                checkBlock(block);
             }
 
             if (RectIntersection(nextFrameX, blockHitbox)) {
                 if (this.vel.x >= 0 && this.left() < block.left()) this.vel.x = (blockHitbox.left() - this.right()) / delta;
                 else this.vel.x = (blockHitbox.right() - this.left()) / delta;
 
-                checkForDeath(block);
+                checkBlock(block);
             }
         }
 
@@ -189,8 +229,8 @@ class Player extends Entity {
         this.image = this.animation.GetImage();
         this.animation.Update(delta);
 
-        let xCondition1 = this.position.x + this.vel.x * delta < window.innerWidth * 2/5 && this.position.x > window.innerWidth * 2/5;
-        let xCondition2 = this.position.x + this.scale.x + this.vel.x * delta > window.innerWidth * 3/5 && this.position.x + this.scale.x < window.innerWidth * 3/5;
+        let xCondition1 = this.position.x + this.vel.x * delta < window.innerWidth * 2 / 5 && this.position.x > window.innerWidth * 2 / 5;
+        let xCondition2 = this.position.x + this.scale.x + this.vel.x * delta > window.innerWidth * 3 / 5 && this.position.x + this.scale.x < window.innerWidth * 3 / 5;
         let xCondition3 = Game.Camera.position.x + this.vel.x * delta >= 0;
         let xCondition4 = Game.Camera.position.x + this.vel.x * delta <= Levels[Game.World.level][0].length * Game.tileSize - window.innerWidth;
 
@@ -198,7 +238,7 @@ class Player extends Entity {
         else this.position.x += this.vel.x * delta;
 
         let yCondition1 = this.position.y + this.vel.y * delta < window.innerHeight / 4 && this.position.y > window.innerHeight / 4;
-        let yCondition2 = this.position.y + this.scale.y + this.vel.y * delta > window.innerHeight * 3/4 && this.position.y + this.scale.y < window.innerHeight * 3/4;
+        let yCondition2 = this.position.y + this.scale.y + this.vel.y * delta > window.innerHeight * 3 / 4 && this.position.y + this.scale.y < window.innerHeight * 3 / 4;
         let yCondition3 = Game.Camera.position.y + this.vel.y * delta >= 0;
         let yCondition4 = Game.Camera.position.y + this.vel.y * delta <= Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
 
@@ -207,7 +247,7 @@ class Player extends Entity {
 
         } else {
             this.position.y += this.vel.y * delta;
-    
+
             // trying to make it so the camera will go to exactly the top of the world and not slightly below, and to the bottom of the world and not slightly above
             // (also do this with the camera x movement once a solution is found)
 
@@ -217,12 +257,12 @@ class Player extends Entity {
             // if (!condition3) {
             //     Game.Camera.position.y = 0;
             //     this.position.y += Game.Camera.position.y;
-            
+
             // } else if (!condition4) {
             //     let difference = Levels[Game.World.level].length * Game.tileSize - window.innerHeight - Game.Camera.position;
             //     Game.Camera.position.y = Levels[Game.World.level].length * Game.tileSize - window.innerHeight;
             //     this.position.y += difference;
-            
+
             // } else {
             //     this.position.y += this.vel.y * delta;
             // }

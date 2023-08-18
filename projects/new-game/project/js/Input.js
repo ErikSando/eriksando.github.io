@@ -173,9 +173,9 @@ const Input = new class {
     }
 
     #MouseDown = (e) => {
-        if (e.button == "0") this.Mouse1Down.Fire(this.#MousePos, e.shiftKey, e.ctrlKey, e.altKey);
-        if (e.button == "2") this.Mouse2Down.Fire(this.#MousePos, e.shiftKey, e.ctrlKey, e.altKey);
-        if (e.button == "1") this.Mouse3Down.Fire(this.#MousePos, e.shiftKey, e.ctrlKey, e.altKey);
+        if (e.button == "0") this.Mouse1Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+        if (e.button == "2") this.Mouse2Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+        if (e.button == "1") this.Mouse3Down.Fire(e.shiftKey, e.ctrlKey, e.altKey);
 
         let MouseRect = {
             position: this.#MousePos,
@@ -195,9 +195,9 @@ const Input = new class {
     }
 
     #MouseUp = (e) => {
-        if (e.button == "0") this.Mouse1Up.Fire(this.#MousePos, e.shiftKey, e.ctrlKey, e.altKey);
-        if (e.button == "2") this.Mouse2Up.Fire(this.#MousePos, e.shiftKey, e.ctrlKey, e.altKey);
-        if (e.button == "1") this.Mouse3Up.Fire(this.#MousePos, e.shiftKey, e.ctrlKey, e.altKey);
+        if (e.button == "0") this.Mouse1Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+        if (e.button == "2") this.Mouse2Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
+        if (e.button == "1") this.Mouse3Up.Fire(e.shiftKey, e.ctrlKey, e.altKey);
 
         let MouseRect = {
             position: this.#MousePos,
