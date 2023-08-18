@@ -11,15 +11,6 @@ class World {
         this.#Update();
     }
 
-    // #RenderLayer = (delta, ctx, layer) => {
-    //     for (let block in this.blocks) {
-    //         if (block.layer != layer) continue;
-
-    //         block.Update(delta);
-    //         block.Draw(ctx);
-    //     }
-    // }
-
     NextLevel(reset) {
         this.level++;
         
@@ -91,10 +82,6 @@ class World {
     }
 
     Draw(ctx, delta) {
-        // for (let layer = 0; layer++; layer < 3) {
-        //     this.#RenderLayer(delta, ctx, layer);
-        // }
-    
         for (let block of this.blocks) {
             block.Draw(ctx);
         }

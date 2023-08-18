@@ -96,8 +96,6 @@ const Random = {
 
 class _Event {
     #listeners = [];
-    //#justfired = false;
-
     AddListener(listener) {
         if (typeof listener != "function") return console.error("Event listener must be a function.");
 
@@ -110,27 +108,8 @@ class _Event {
         if (this.#listeners[index]) this.#listeners.splice(index, 1);
     }
 
-    // Wait() {
-    //     return new Promise(resolve => {
-    //         let interval = setInterval(() => {
-    //             if (this.#justfired) {
-    //                 this.#justfired = false;
-    //                 clearInterval(interval);
-    //                 resolve();
-    //             }
-    //         });
-    //     });
-    // }
-
     Fire(...args) {
         for (let listener of this.#listeners) listener(...args);
-
-        //this.#justfired = true;
-
-        // want to make this smarter but dont know how :")
-        // setTimeout(() => {
-        //     this.#justfired = false;
-        // }, 10);
     }
 }
 
@@ -174,14 +153,12 @@ const Game = new class {
     #fpses = [];
     #canvas;
     #ctx;
-    #World;
-    #Player;
 
     #stopwatch = new Stopwatch();
 
     UIObjects = [];
 
-    tileSize = Clamp(64, window.innerWidth / 40, window.innerWidth / 20);
+    tileSize = 64;
 
     CanvasChanged = new _Event();
 
@@ -230,11 +207,6 @@ const Game = new class {
     Init() {
         this.SetCanvas(document.querySelector("canvas"));
         
-        // this.Stopwatch = new TextLabel(Vector(10, 15), Vector(200, 0), "00:00.000");
-        // this.Stopwatch.outlineThickness = 0;
-        // this.Stopwatch.bgOpacity = 0;
-        // this.Stopwatch.textAlignX = TextAlignX.Left;
-        
         this.#StartScreen.world = new World(this.#StartScreen.camera);
 
         let windowTopCorner = Vector(
@@ -252,22 +224,17 @@ const Game = new class {
         this.#StartScreen.targetPos = worldTopCorner;
         this.#StartScreen.cameraDirection = windowTopCorner.vectorTo(worldTopCorner).normalised();
 
-        console.log(this.#StartScreen.cameraDirection);
-
         this.#StopwatchDisplay = new TextLabel(Vector(10, 15), Vector(200, 0), "00:00.000");
         this.#StopwatchDisplay.outlineThickness = 0;
         this.#StopwatchDisplay.bgOpacity = 0;
         this.#StopwatchDisplay.textAlignX = TextAlignX.Left;
+        this.#StopwatchDisplay.textSize = 35;
 
-        this.#FPSDisplay = new TextLabel(Vector(10, 45), Vector(200, 0), "... FPS");
+        this.#FPSDisplay = new TextLabel(Vector(10, 55), Vector(200, 0), "... FPS");
         this.#FPSDisplay.outlineThickness = 0;
         this.#FPSDisplay.bgOpacity = 0;
         this.#FPSDisplay.textAlignX = TextAlignX.Left;
-
-        // this.FPSDisplay = new TextLabel(Vector(10, 45), Vector(200, 0), "... FPS");
-        // this.FPSDisplay.outlineThickness = 0;
-        // this.FPSDisplay.bgOpacity = 0;
-        // this.FPSDisplay.textAlignX = TextAlignX.Left;
+        this.#FPSDisplay.textSize = 35;
 
         let startImage = new Image();
         startImage.src = "assets/textures/UI/start.png";
@@ -350,8 +317,6 @@ const Game = new class {
         const delta = (timestamp - this.#lastUpdate) / 1000;
         this.#lastUpdate = timestamp;
 
-        // this.tileSize = Clamp(64, window.innerWidth / 40, window.innerWidth / 20);
-
         if (!delta || isNaN(delta) || delta < 0 || delta > 1) {
             this.#Draw();
             requestAnimationFrame(this.#Update);
@@ -391,8 +356,10 @@ const Game = new class {
             cameraPos.y += direction.y * speed * delta;
 
             this.#StartScreen.camera.position = cameraPos;
+            this.#StartScreen.camera.position.x = Math.round(this.#StartScreen.camera.position.x);
+            this.#StartScreen.camera.position.y = Math.round(this.#StartScreen.camera.position.y);
 
-            if (cameraPos.x > targetPos.x || cameraPos.y < targetPos.y) {
+            if (cameraPos.x + window.innerWidth > targetPos.x || cameraPos.y < targetPos.y) {
                 this.#StartScreen.world.NextLevel(true);
 
                 let windowTopCorner = Vector(
@@ -436,8 +403,7 @@ const Game = new class {
     }
 
     #Draw = (delta) => {
-        this.#ctx.fillStyle = "black";
-        this.#ctx.fillRect(0, 0, this.#canvas.width, this.#canvas.height);
+        this.#ctx.clearRect(0, 0, this.#canvas.width, this.#canvas.height);
 
         // made a start screen where the camera is moving through the levels
 
@@ -445,17 +411,12 @@ const Game = new class {
             this.#StartScreen.world.Draw(this.#ctx, delta);
             this.StartButton.Draw(this.#ctx);
 
-            return
-        }
-        if (this.#state == "End") {
+            return;
+
+        } else if (this.#state == "End") {
 
             return;
         }
-
-        console.log("game playing");
-
-        //this.#ctx.resetTransform();
-        //this.#ctx.setTransform(this.Camera.zoom.x, 0, 0, this.Camera.zoom.y, 0, 0);
 
         this.World.Draw(this.#ctx, delta);
 

@@ -8,7 +8,7 @@ class Stopwatch {
     }
 
     Update(delta) { // delta = time since last update in seconds
-        let ms = delta * 100; // not including the last digit
+        let ms = delta * 100; // not including the last digit (will count in increments of 10 milliseconds)
         let s = 0;
         let m = 0
 

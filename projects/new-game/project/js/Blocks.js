@@ -99,7 +99,7 @@ torch_1.src = "assets/textures/blocks/torch_1.png";
 class Torch extends AnimatedBlock {
     constructor(camera, position) {
         let animation = new _Animation([torch_0, torch_1]);
-        animation.fps = 1 + (Math.random() - 0.5) / 2;
+        animation.fps = 1 + (Random.Float() - 0.5) / 2;
 
         super(camera, position, "Torch", animation);
     }

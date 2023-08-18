@@ -1,17 +1,3 @@
-function MouseHandlers() {
-    return {
-        down: () => {
-
-        },
-
-        up: () => {
-
-        },
-
-
-    }
-}
-
 const Input = new class {
     #Keys = {
         Backspace: "BACKSPACE",
