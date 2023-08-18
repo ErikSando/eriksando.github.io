@@ -270,10 +270,3 @@ const Input = new class {
         return this.#MousePos;
     }
 }
-
-
-const Main = () => {
-    let nigga = 1;
-}
-
-Main();
