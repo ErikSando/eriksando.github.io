@@ -12,27 +12,26 @@ function factorial(n) {
     return answer; 
 }
 
-function sqrt(n) {
-    return Math.sqrt(n);
+const pow = Math.pow;
+const sqrt = Math.sqrt;
+const mod = Math.abs;
+const sin = Math.sin;
+const cos = Math.cos;
+const tan = Math.tan;
+const ln = Math.log;
+
+function log(base, n) {
+    return Math.log(n) / Math.log(base);
 }
 
 function root(n, root) {
-    return Math.pow(n, 1 / root);
+    return pow(n, 1 / root);
 }
 
-function mod(n) {
-    return Math.abs(n);
-}
+// constants
+const e = Math.E;
+const pi = Math.PI;
 
-function pow(n, amount) {
-    let answer = n;
-    
-    for (let i = 0; i < amount - 1; i++) {
-        answer *= n;
-    }
-
-    return answer;
-}
 
 window.onload = () => {
     let ruleInput = document.getElementById('rule');
