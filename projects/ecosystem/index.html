@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Ecosystem</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="js/Core.js"></script>
+        <script src="js/Images.js"></script>
+        <script src="js/Entities.js"></script>
+        <script src="js/Stopwatch.js"></script>
+        <script src="js/Main.js"></script>
+    </head>
+    <body>
+        <div id="options">
+            <div id="title-div">
+                <span id="title">Ecosystem</span>
+            </div>
+            <hr>
+            <input id="starting-prey" type="number" placeholder="Starting prey (30)"> <br>
+            <input id="starting-predators" type="number" placeholder="Starting predators (5)"> <br>
+            <input id="food-spawn-rate" type="number" placeholder="Food spawn rate (1)"> <br>
+            <input id="simulation-speed" type="number" placeholder="Simulation speed (1)"> <br>
+            Note: speeds above ~20 are not simulated correctly <br> <br>
+            <button id="start">Start</button> <br> <hr>
+            <span class="heading">Statistics</span> <br> <br>
+            <span id="prey">0</span> prey <span id="dead-prey"></span><br>
+            <span id="predators">0</span> predators <br> <br>
+            Runtime: <span id="runtime">0s</span> <br> <br>
+            <span id="total-prey">0</span> total prey <br>
+            <span id="total-predators">0</span> total predators <br> <br>
+            Average prey stats: <br>
+            Speed: <span id="prey-speed">...</span> <br>
+            Vision: <span id="prey-vision">...</span> <br>
+            Energy: <span id="prey-energy">...</span> <br>
+            Reproduction Time: <span id="prey-reproduction">...</span> <br> <br>
+            Average predator stats: <br>
+            Speed: <span id="predator-speed">...</span> <br>
+            Vision: <span id="predator-vision">...</span> <br>
+            Energy: <span id="predator-energy">...</span> <br>
+            Reproduction Time: <span id="predator-reproduction">...</span> <br> <br>
+        </div>
+        <canvas id="canvas"></canvas>
+    </body>
+</html>

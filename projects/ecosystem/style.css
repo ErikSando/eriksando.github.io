@@ -1,0 +1,66 @@
+* {
+    background: rgb(20, 40, 80);
+    color: white;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: min(2vh, 1.2vw);
+}
+
+html {
+    margin: 0;
+    padding: 0;
+}
+
+#options {
+    margin: auto;
+    position: absolute;
+    top: 2vh;
+    bottom: 0;
+    left: 1vw;
+    width: 25vw;
+}
+
+#title-div {
+    text-align: center;
+}
+
+#title {
+    font-size: min(3vh, 2vw);
+}
+
+hr {
+    color: white;
+    border: 1px solid white;
+    height: 0;
+}
+
+.heading {
+    font-size: min(2.5vh, 1.5vw);
+}
+
+input {
+    border: 1px solid white;
+    margin: 2px;
+    border-radius: 4px;
+}
+
+button {
+    border: 1px solid white;
+    border-radius: 4px;
+    background-image: linear-gradient(rgb(30, 60, 120), rgb(40, 80, 160));
+}
+
+button:hover {
+    background-image: linear-gradient(rgb(40, 80, 160), rgb(50, 100, 200));
+}
+
+button:active {
+    background-image: linear-gradient(rgb(30, 60, 120), rgb(40, 80, 160));
+}
+
+#canvas {
+    border: 5px solid white;
+    margin: auto;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+}
