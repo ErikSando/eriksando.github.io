@@ -204,8 +204,8 @@ window.addEventListener("load", () => {
         SimulationInfo.totalPrey = 0;
         SimulationInfo.totalPredators = 0;
 
-        window.localStorage.setItem("PreyStats", "[{}]");
-        window.localStorage.setItem("PredatorStats", "[{}]");
+        window.localStorage.setItem("PreyStats", "[]");
+        window.localStorage.setItem("PredatorStats", "[]");
 
         for (let i = 0; i < startingPrey; i++) {
             prey.push(new Prey(new Vector(canvas.width / startingPrey * i + canvas.width / startingPrey / 2 - 12, 10), 180));
