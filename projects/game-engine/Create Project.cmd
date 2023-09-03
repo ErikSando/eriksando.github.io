@@ -1,6 +1,6 @@
 @echo off
 color 0f
-title Create Game Engine Project
+title Create Project
 
 :start
 cls
@@ -20,35 +20,47 @@ cd %name%
 if not exist "Assets" mkdir Assets
 
 cd Assets
-if not exist "Scripts" mkdir Scripts
-if not exist "Textures" mkdir Textures
-if not exist "Sounds" mkdir Sounds
 
-cd Scripts
-echo window.addEventListener('load', () =^> {>> Main.js
+echo // Runs once the engine is finished setting up> Main.js
+echo Game.Loaded.AddListener(() =^> {>> Main.js
 echo     Game.CreateCanvas();>> Main.js
 echo     Game.Start();>> Main.js
 echo });>> Main.js
 
-cd ../..
-echo ^<html^>> index.html
-echo 	^<head^>>> index.html
-echo 		^<title^>Game^</title^>>> index.html
-echo 		^<link rel="stylesheet" type="text/css" href="style.css"^>>> index.html
-echo 		^<script src="https://eriksando.github.io/lib/game-engine/Engine.js"^>^</script^>>> index.html
-echo 		^<script src="Assets/Scripts/Main.js"^>^</script^>>> index.html
-echo 	^</head^>>> index.html
-echo 	^<body^>>> index.html
-echo 	^</body^>>> index.html
-echo ^</html^>>> index.html
+cd ..
 
-echo #canvas {>> style.css
-echo     position: absolute;>> style.css
-echo     top: 0;>> style.css
-echo     bottom: 0;>> style.css
-echo     left: 0;>> style.css
-echo     right: 0;>> style.css
-echo }>> style.css
+(
+echo ^<html^>
+echo 	^<head^>
+echo 		^<title^>Game^</title^>
+echo 		^<link rel="stylesheet" type="text/css" href="style.css"^>
+echo 		^<script src="../../Engine.js"^>^</script^>
+echo 		^<script src="Assets/Main.js"^>^</script^>
+echo 	^</head^>
+echo 	^<body^>
+echo 	^</body^>
+echo ^</html^>
+)> index.html
+
+(
+echo * {
+echo     background:black;
+echo }
+echo.
+echo html {
+echo     margin: 0;
+echo     padding: 0;
+echo }
+echo.
+echo canvas {
+echo     margin: auto;
+echo     position: absolute;
+echo     top: 0;
+echo     bottom: 0;
+echo     left: 0;
+echo     right: 0;
+echo }
+)> style.css
 
 echo Successfully created project "%name%" (find in directory Projects/%name%)
 echo You can play the game by running "index.html" found in the project directory

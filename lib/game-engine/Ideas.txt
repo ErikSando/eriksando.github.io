@@ -1,0 +1,17 @@
+Particle System:
+
+- create particles function (n, time)
+
+- creates n amount of particles
+- each particle has:
+  - position (origin of particle whatever point)
+  - velocity (random x, negative y)
+  - velocity change (random x, positive y)
+  - life span (random within time * 0.8, time * 1.2)
+- particle velocity is changed by velocity change
+- after time has passed, particles get deleted
+
+
+maybe make it so the particles get removed at slightly different times?
+
+Mobile UI
