@@ -130,8 +130,8 @@ window.addEventListener("load", () => {
             p.Update(delta);
         }
 
-        if (timestamp - lastFood > 200 / foodSpawnRate / simulationSpeed) {
-            let foodToSpawn = (timestamp - lastFood) / (200 / foodSpawnRate / simulationSpeed);
+        if (timestamp - lastFood > 400 / foodSpawnRate / simulationSpeed) {
+            let foodToSpawn = (timestamp - lastFood) / (400 / foodSpawnRate / simulationSpeed);
 
             for (let i = 0; i < foodToSpawn; i++) {
                 food.push(new Food(new Vector(Random.Integer(0, 1280 - Images.food.width), Random.Integer(0, 720 - Images.food.height))));
@@ -152,27 +152,7 @@ window.addEventListener("load", () => {
         runtime.textContent = Stopwatch.GetTime();
 
         if (timestamp - lastAverageTest > 3000) {
-            let preyStats = GetPreyStats();
-            let predatorStats = GetPredatorStats();
-
-            avgPreySpeed.textContent = preyStats.speed;
-            avgPreyVision.textContent = preyStats.vision;
-            avgPreyEnergy.textContent = preyStats.energy;
-            avgPreyReproduction.textContent = preyStats.cloneTime;
-
-            avgPredatorSpeed.textContent = predatorStats.speed;
-            avgPredatorVision.textContent = predatorStats.vision;
-            avgPredatorEnergy.textContent = predatorStats.energy;
-            avgPredatorReproduction.textContent = predatorStats.cloneTime;
-
-            let currentPreyStats = JSON.parse(window.localStorage.getItem("PreyStats"));
-            let currentPredatorStats = JSON.parse(window.localStorage.getItem("PredatorStats"))
-
-            currentPreyStats.push(preyStats);
-            currentPredatorStats.push(predatorStats);
-
-            window.localStorage.setItem("PreyStats", JSON.stringify(currentPreyStats));
-            window.localStorage.setItem("PredatorStats", JSON.stringify(currentPredatorStats));
+            AddData();
 
             lastAverageTest = timestamp;
         }
@@ -189,6 +169,30 @@ window.addEventListener("load", () => {
     }
 
     requestAnimationFrame(Start);
+
+    function AddData() {
+        let preyStats = GetPreyStats();
+        let predatorStats = GetPredatorStats();
+
+        avgPreySpeed.textContent = preyStats.speed;
+        avgPreyVision.textContent = preyStats.vision;
+        avgPreyEnergy.textContent = preyStats.energy;
+        avgPreyReproduction.textContent = preyStats.cloneTime;
+
+        avgPredatorSpeed.textContent = predatorStats.speed;
+        avgPredatorVision.textContent = predatorStats.vision;
+        avgPredatorEnergy.textContent = predatorStats.energy;
+        avgPredatorReproduction.textContent = predatorStats.cloneTime;
+
+        let currentPreyStats = JSON.parse(window.localStorage.getItem("PreyStats"));
+        let currentPredatorStats = JSON.parse(window.localStorage.getItem("PredatorStats"))
+
+        currentPreyStats.push(preyStats);
+        currentPredatorStats.push(predatorStats);
+
+        window.localStorage.setItem("PreyStats", JSON.stringify(currentPreyStats));
+        window.localStorage.setItem("PredatorStats", JSON.stringify(currentPredatorStats));
+    }
 
     function StartSimulation(timestamp) {
         prey.splice(0, prey.length);
@@ -216,6 +220,8 @@ window.addEventListener("load", () => {
             predators.push(new Predator(new Vector(canvas.width / startingPredators * i + canvas.width / startingPredators / 2 - 12, canvas.height - 38)));
             SimulationInfo.totalPredators++;
         }
+
+        AddData();
 
         lastUpdate = timestamp;
         state = GameState.Run;

@@ -57,6 +57,9 @@ class Entity {
         this.hasTarget = false;
 
         //if (this.energy <= 0) this.Remove();
+        
+        this.position.x = Clamp(this.position.x, 0, 1280 - this.scale.x);
+        this.position.y = Clamp(this.position.y, 0, 720 - this.scale.y);
     }
 
     Draw(ctx) {
@@ -195,7 +198,7 @@ class Prey extends Entity {
         let childPosition = Vector.Add(this.position, new Vector(Clamp(Random.Choice([-24, 24]), 0, 1256), Clamp(Random.Choice([-28, 28]), 0, 692)));
         let childSpeed = this.speed + Random.Integer(-this.speed / 20, this.speed / 20);
         let childVision = this.vision + Random.Integer(-this.vision / 20, this.vision / 20);
-        let childEnergy = Clamp(this.energy + Random.Integer(-this.energy / 20, this.energy / 20), 0, 1200);
+        let childEnergy = Clamp(this.maxEnergy + Random.Integer(-this.maxEnergy / 20, this.maxEnergy / 20), 0, 1200);
         let childCloneTime = Clamp(this.cloneTime + Random.Integer(-this.cloneTime / 20, this.cloneTime / 20), 20, 100);
 
         let child = new Prey(childPosition, 0, childSpeed, childVision, childEnergy, childCloneTime);
@@ -210,7 +213,7 @@ class Prey extends Entity {
 }
 
 class Predator extends Entity {
-    constructor(position, orientation, speed, vision, energy, cloneTime) {
+    constructor(position, orientation, speed, vision, energy = Random.Integer(1000, 1500), cloneTime = Random.Integer(40, 50)) {
         super(position, orientation, Images.predator, speed, vision, energy, cloneTime);
     }
 
@@ -272,8 +275,8 @@ class Predator extends Entity {
         let childPosition = Vector.Add(this.position, new Vector(Clamp(Random.Choice([-24, 24]), 0, 1256), Clamp(Random.Choice([-28, 28]), 0, 692)));
         let childSpeed = this.speed + Random.Integer(-this.speed / 20, this.speed / 20);
         let childVision = this.vision + Random.Integer(-this.vision / 20, this.vision / 20);
-        let childEnergy = Clamp(this.energy + Random.Integer(-this.energy / 20, this.energy / 20), 0, 1200);
-        let childCloneTime = Clamp(this.cloneTime + Random.Integer(-this.cloneTime / 20, this.cloneTime / 20), 20, 100);
+        let childEnergy = Clamp(this.maxEnergy + Random.Integer(-this.maxEnergy / 20, this.maxEnergy / 20), 0, 1200);
+        let childCloneTime = Clamp(this.cloneTime + Random.Integer(-this.cloneTime / 20, this.cloneTime / 20), 40, 200);
 
         let child = new Predator(childPosition, 0, childSpeed, childVision, childEnergy, childCloneTime);
 
