@@ -1,8 +1,8 @@
 let images = Images.player;
 
 class Player extends UpdatesEachFrame {
-    speed = 400;
-    jumpForce = 600;
+    speed = 600;
+    jumpForce = 800;
 
     direction = "right";
     animation = "idle";
@@ -36,16 +36,19 @@ class Player extends UpdatesEachFrame {
         this.GameObject.animation = this.animations.right.idle;
 
         this.GameObject.CollisionEnter.AddListener((gameObject) => {
-            if (gameObject.tag == "Fire") {
-                this.GameObject.position = new Vector(200, 780);
-                this.GameObject.velocity = Vector.zero();
-            }
+            if (gameObject.tag == "Fire") this.Reset();
         });
+    }
+
+    Reset() {
+        this.GameObject.position = new Vector(200, 780);
+        this.GameObject.velocity = Vector.zero();
     }
 
     Update() {
         this.GameObject.velocity.x = Input.GetAxisRaw("Horizontal") * this.speed;
 
+        // find a better way to do this
         let grounded =
         Raycast(this.GameObject.center(), new Vector(this.GameObject.center().x, this.GameObject.bottom()), [this.GameObject]) ||
         Raycast(new Vector(this.GameObject.left() + 1, this.GameObject.center().y), new Vector(this.GameObject.left() + 1, this.GameObject.bottom()), [this.GameObject]) ||
@@ -62,7 +65,8 @@ class Player extends UpdatesEachFrame {
         if (this.GameObject.velocity.y < 0) this.animation = "jump";
 
         let newAnimation = this.animations[this.direction][this.animation];
-
         if (this.GameObject.animation != newAnimation) this.GameObject.animation = newAnimation;
+
+        if (this.GameObject.position.y > 1500) this.Reset();
     }
 }

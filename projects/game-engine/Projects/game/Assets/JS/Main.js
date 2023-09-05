@@ -1,21 +1,27 @@
 const FPS = new TextLabel(new Vector(15, 5), new Vector(150, 50));
 FPS.bgOpacity = 0;
 FPS.outlineThickness = 0;
-FPS.textColour = "black";
+FPS.textColour = "white";
 FPS.textSize = 40;
 FPS.textAlignX = TextAlignX.Left;
 FPS.textAlignY = TextAlignY.Top;
+FPS.textStrokeOpacity = 1;
+FPS.textStrokeThickness = 4;
 
 const ground = new GameObject(new Vector(0, 980), new Vector(1920, 100), true);
+ground.tag = "Ground";
 ground.colour = "rgb(0, 200, 0)";
 
 const block1 = new GameObject(new Vector(1000, 880), new Vector(100, 100), true);
+block1.tag = "PurpleBlock";
 block1.colour = "purple";
 
 const block2 = new GameObject(new Vector(1200, 0), new Vector(100, 200), false);
+block2.tag = "BlueBlock";
 block2.colour = "blue";
 
 const block3 = new GameObject(new Vector(1300, 880), new Vector(100, 100), true);
+block3.tag = "OrangeBlock";
 block3.colour = "orange";
 
 const player = new Player();
@@ -70,6 +76,9 @@ Game.Loaded.AddListener(() => {
 
 Game.Update.AddListener(() => {
     FPS.text = Math.round(Game.GetFPS()) + " FPS";
+
+    Game.Camera.position.x = player.GameObject.position.x - (Game.Settings.NativeWidth - player.GameObject.scale.x) / 2;
+    Game.Camera.position.y = player.GameObject.position.y - (Game.Settings.NativeHeight - player.GameObject.scale.y) / 2;
 });
 
 let blocks = 0;

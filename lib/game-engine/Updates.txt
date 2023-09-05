@@ -1,0 +1,4 @@
+1.0.1:
+Improved input handler
+Improved rendering
+Increased default gravity

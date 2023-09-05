@@ -1,4 +1,4 @@
-let worldLength = 3000;
+let worldLength = 8000;
 
 class WorldGenerator {
     constructor() {
