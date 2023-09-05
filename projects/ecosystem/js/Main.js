@@ -248,6 +248,8 @@ window.addEventListener("load", () => {
         let cloneTime = 0;
 
         for (let p of prey) {
+            if (p.energy <= 0) continue;
+
             speed += p.speed;
             vision += p.vision;
             energy += p.maxEnergy;
