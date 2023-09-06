@@ -48,13 +48,7 @@ class Player extends UpdatesEachFrame {
     Update() {
         this.GameObject.velocity.x = Input.GetAxisRaw("Horizontal") * this.speed;
 
-        // find a better way to do this
-        let grounded =
-        Raycast(this.GameObject.center(), new Vector(this.GameObject.center().x, this.GameObject.bottom()), [this.GameObject]) ||
-        Raycast(new Vector(this.GameObject.left() + 1, this.GameObject.center().y), new Vector(this.GameObject.left() + 1, this.GameObject.bottom()), [this.GameObject]) ||
-        Raycast(new Vector(this.GameObject.right() - 1, this.GameObject.center().y), new Vector(this.GameObject.right() - 1, this.GameObject.bottom()), [this.GameObject]);
-
-        if (Input.GetAxisRaw("Vertical") > 0 && grounded) this.GameObject.velocity.y = -this.jumpForce;
+        if (Input.GetAxisRaw("Vertical") > 0 && this.GameObject.collisionBelow) this.GameObject.velocity.y = -this.jumpForce;
 
         if (this.GameObject.velocity.x > 0) this.direction = "right";
         else if (this.GameObject.velocity.x < 0) this.direction = "left";
