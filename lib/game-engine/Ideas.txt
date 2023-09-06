@@ -11,7 +11,8 @@ Particle System:
 - particle velocity is changed by velocity change
 - after time has passed, particles get deleted
 
-
 maybe make it so the particles get removed at slightly different times?
+
+Vector tweening
 
 Mobile UI

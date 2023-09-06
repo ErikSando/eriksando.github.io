@@ -6,7 +6,7 @@ FPS.textSize = 40;
 FPS.textAlignX = TextAlignX.Left;
 FPS.textAlignY = TextAlignY.Top;
 FPS.textStrokeOpacity = 1;
-FPS.textStrokeThickness = 4;
+FPS.textStrokeThickness = 2;
 
 const ground = new GameObject(new Vector(0, 980), new Vector(1920, 100), true);
 ground.tag = "Ground";
@@ -71,14 +71,25 @@ Game.LoadScene(scene);
 
 Game.Loaded.AddListener(() => {
     Game.CreateCanvas();
+
+    Game.Settings.BackgroundColour = "rgb(100, 200, 250)";
+
     Game.Start();
 });
 
-Game.Update.AddListener(() => {
+Game.Update.AddListener((delta) => {
     FPS.text = Math.round(Game.GetFPS()) + " FPS";
 
-    Game.Camera.position.x = player.GameObject.position.x - (Game.Settings.NativeWidth - player.GameObject.scale.x) / 2;
-    Game.Camera.position.y = player.GameObject.position.y - (Game.Settings.NativeHeight - player.GameObject.scale.y) / 2;
+    let targetPosition = new Vector(
+        player.GameObject.position.x - (Game.Settings.NativeWidth - player.GameObject.scale.x) / 2,
+        player.GameObject.position.y - (Game.Settings.NativeHeight - player.GameObject.scale.y) / 2
+    );
+
+    Game.Camera.position = Vector.Lerp(
+        Game.Camera.position,
+        targetPosition,
+        10 * delta
+    );
 });
 
 let blocks = 0;
