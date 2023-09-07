@@ -110,9 +110,12 @@ for (let level in LevelData) {
             }
 
             if (OnWall[tile]) {
-                let bgBrick = new GameObject(position, new Vector(1, 1), true, false);
+                console.log("bg brick at: ", position);
+
+                let bgBrick = new GameObject(position, new Vector(blockSize, blockSize), true, false);
                 bgBrick.tag = "bg_brick";
                 bgBrick.image = Textures.blocks.bg_brick;
+                bgBrick.layer = 1;
 
                 Levels[level].Add(bgBrick);
             }
