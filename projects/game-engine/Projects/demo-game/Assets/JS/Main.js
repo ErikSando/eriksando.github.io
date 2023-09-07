@@ -78,7 +78,7 @@ Game.Loaded.AddListener(() => {
 });
 
 Game.PostUpdate.AddListener((delta) => {
-    FPS.text = Math.round(Game.GetFPS()) + " FPS";
+    FPS.text = Game.GetFPS() + " FPS";
 
     let targetPosition = new Vector(
         player.GameObject.position.x - (Game.Settings.NativeWidth - player.GameObject.scale.x) / 2,

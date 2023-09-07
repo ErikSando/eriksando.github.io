@@ -84,7 +84,7 @@ Game.Loaded.AddListener(() => {
 Game.PostUpdate.AddListener((delta) => {
     Game.scene.UIObjects = UI[gameState];
 
-    FpsDisplay.text = Math.round(Game.GetFPS()) + " FPS";
+    FpsDisplay.text = Game.GetFPS() + " FPS";
 
     if (gameState == "Start") {
         scale = window.innerWidth / Game.Settings.NativeWidth;
