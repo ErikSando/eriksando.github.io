@@ -1,6 +1,12 @@
 1.0.1 (06/09/2023):
 Improved input handler
 Improved rendering
-Increased default gravity
 Added layers to rendering
 Improved UI
+
+1.0.2 (07/09/2023):
+Collision bug fixes
+Fixed game objects falling extremely far when switching tabs
+Added stopwatch
+Added more events
+Disabled context menu
