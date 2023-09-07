@@ -13,6 +13,6 @@ Particle System:
 
 maybe make it so the particles get removed at slightly different times?
 
-Vector tweening
+Tweening for better animations
 
 Mobile UI
