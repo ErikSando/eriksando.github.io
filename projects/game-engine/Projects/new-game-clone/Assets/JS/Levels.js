@@ -115,7 +115,6 @@ for (let level in LevelData) {
                 let bgBrick = new GameObject(position, new Vector(blockSize, blockSize), true, false);
                 bgBrick.tag = "bg_brick";
                 bgBrick.image = Textures.blocks.bg_brick;
-                bgBrick.layer = 1;
 
                 Levels[level].Add(bgBrick);
             }
