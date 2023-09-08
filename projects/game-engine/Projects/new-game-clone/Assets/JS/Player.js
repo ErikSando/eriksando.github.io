@@ -7,6 +7,8 @@ class Player extends UpdatesEachFrame {
     alive = true;
 
     #mobileInput = 0;
+    #ignoreNextEndL = false;
+    #ignoreNextEndR = false;
 
     constructor(position, scale, scene) {
         super();
@@ -54,21 +56,49 @@ class Player extends UpdatesEachFrame {
 
             this.alive = true;
         });
+
+        LeftButton.TouchDown.AddListener(() => this.#mobileInput--);
+        LeftButton.TouchEnter.AddListener(() => this.#ignoreNextEndL = true);
+
+        LeftButton.TouchEnd.AddListener(() => {
+            if (this.#ignoreNextEndL) {
+                this.#ignoreNextEndL = false;
+                return;
+            }
+
+            this.#mobileInput++;
+        });
+
+        RightButton.TouchDown.AddListener(() => this.#mobileInput++);
+        RightButton.TouchEnter.AddListener(() => this.#ignoreNextEndR = true);
+
+        RightButton.TouchEnd.AddListener(() => {
+            if (this.#ignoreNextEndR) {
+                this.#ignoreNextEndR = false;
+                return;
+            }
+
+            this.#mobileInput--;
+        });
+
+        JumpButton.TouchDown.AddListener(() => {
+            if (this.GameObject.collisionBelow) this.GameObject.velocity.y = -this.jumpPower;
+        });
     }
 
     Update() {
         if (!this.alive) return;
 
-        let mobileInput = 0;
+        // let mobileInput = 0;
 
-        if (LeftButton.mouseover) mobileInput--;
-        if (RightButton.mouseover) mobileInput++;
+        // if (LeftButton.mouseover) mobileInput--;
+        // if (RightButton.mouseover) mobileInput++;
 
-        this.GameObject.velocity.x = Clamp(Input.GetAxisRaw("Horizontal") + mobileInput, -1, 1) * this.speed;
+        this.GameObject.velocity.x = Clamp(Input.GetAxisRaw("Horizontal") + this.#mobileInput, -1, 1) * this.speed;
 
         let grounded = this.GameObject.collisionBelow;
 
-        if ((Input.GetAxisRaw("Vertical") > 0 || JumpButton.mouseover) && grounded) this.GameObject.velocity.y = -this.jumpPower;
+        if ((Input.GetAxisRaw("Vertical") > 0/* || JumpButton.mouseover */) && grounded) this.GameObject.velocity.y = -this.jumpPower;
 
         if (this.GameObject.velocity.x > 0) this.direction = "right";
         else if (this.GameObject.velocity.x < 0) this.direction = "left";
