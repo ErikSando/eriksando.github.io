@@ -3,16 +3,29 @@ playerSpritesheet.src = "Assets/Textures/player/spritesheet.png";
 
 const Textures = {
     player: {
+        // It seems that the canvas cannot acurratly draw offseted images
+        // left: {
+        //     idle: LoadSpritesheet(playerSpritesheet, new Vector(13, 32)),
+        //     run: LoadSpritesheet(playerSpritesheet, new Vector(13, 32), 4, 1, new Vector(26, 0)),
+        //     inair: LoadSpritesheet(playerSpritesheet, new Vector(13, 32), 1, 1, new Vector(13, 0))
+        // },
+
+        // right: {
+        //     idle: LoadSpritesheet(playerSpritesheet, new Vector(13, 32), 1, 1, new Vector(0, 32)),
+        //     run: LoadSpritesheet(playerSpritesheet, new Vector(13, 32), 4, 1, new Vector(26, 32)),
+        //     inair: LoadSpritesheet(playerSpritesheet, new Vector(13, 32), 1, 1, new Vector(13, 32))
+        // }
+
         left: {
-            idle: LoadSpritesheet(playerSpritesheet, new Vector(13, 32)),
-            run: LoadSpritesheet(playerSpritesheet, new Vector(13, 32), 4, 1, new Vector(26, 0)),
-            inair: LoadSpritesheet(playerSpritesheet, new Vector(13, 32), 1, 1, new Vector(13, 0))
+            idle: [ new Image() ],
+            run: [ new Image(), new Image(), new Image(), new Image() ],
+            inair: [ new Image() ]
         },
 
         right: {
-            idle: LoadSpritesheet(playerSpritesheet, new Vector(13, 32), 1, 1, new Vector(0, 32)),
-            run: LoadSpritesheet(playerSpritesheet, new Vector(13, 32), 4, 1, new Vector(26, 32)),
-            inair: LoadSpritesheet(playerSpritesheet, new Vector(13, 32), 1, 1, new Vector(13, 32))
+            idle: [ new Image() ],
+            run: [ new Image(), new Image(), new Image(), new Image() ],
+            inair: [ new Image() ]
         }
     },
 
@@ -31,6 +44,14 @@ const Textures = {
         left: new Image(),
         right: new Image(),
         up: new Image()
+    }
+}
+
+for (let direction in Textures.player) {
+    for (let animation in Textures.player[direction]) {
+        for (let i = 0; i < Textures.player[direction][animation].length; i++) {
+            Textures.player[direction][animation][i].src = "Assets/Textures/player/" + direction + "_" + animation + "_" + i + ".png";
+        }
     }
 }
 

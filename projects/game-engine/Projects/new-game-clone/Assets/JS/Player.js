@@ -29,6 +29,8 @@ class Player extends UpdatesEachFrame {
             }
         }
 
+        console.log(this.animations);
+
         this.GameObject = new GameObject(position, scale);
         this.GameObject.layer = 3;
         scene.Add(this.GameObject);
@@ -36,14 +38,12 @@ class Player extends UpdatesEachFrame {
         this.GameObject.CollisionEnter.AddListener((gameObject) => {
             let name = gameObject.tag;
 
-            // if (name == "spikes" || name == "lava") {
-            //     console.log("hit spikes or lava");
-
-            //     this.alive = false;
-            //     this.GameObject.opacity = 0;
-            //     RespawnButton.visible = true;
-            // }
-            // else if (name == "portal") LevelComplete();
+            if (name == "spikes" || name == "lava") {
+                this.alive = false;
+                this.GameObject.opacity = 0;
+                RespawnButton.visible = true;
+            }
+            else if (name == "portal") LevelComplete();
         });
 
         RespawnButton.Mouse1Down.AddListener(() => {
@@ -84,7 +84,7 @@ class Player extends UpdatesEachFrame {
         });
 
         JumpButton.TouchDown.AddListener(() => {
-            if (this.GameObject.collisionBelow) this.GameObject.velocity.y = -this.jumpPower;
+            if (this.GameObject.collision.below) this.GameObject.velocity.y = -this.jumpPower;
         });
     }
 
@@ -98,7 +98,7 @@ class Player extends UpdatesEachFrame {
 
         this.GameObject.velocity.x = Clamp(Input.GetAxisRaw("Horizontal") + this.#mobileInput, -1, 1) * this.speed;
 
-        let grounded = this.GameObject.collisionBelow;
+        let grounded = this.GameObject.collision.below;
 
         if ((Input.GetAxisRaw("Vertical") > 0/* || JumpButton.mouseover */) && grounded) this.GameObject.velocity.y = -this.jumpPower;
 

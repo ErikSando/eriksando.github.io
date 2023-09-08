@@ -114,6 +114,7 @@ Game.PostUpdate.AddListener((delta) => {
             else level++;
 
             Game.scene = Levels[level];
+            Game.scene.UIObjects = UI.Start;
             Game.Camera.position = new Vector(0, LevelData[level].length * blockSize - Game.Settings.NativeHeight);
         }
 

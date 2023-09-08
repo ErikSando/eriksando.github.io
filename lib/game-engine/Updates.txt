@@ -24,3 +24,4 @@ Added touch events to buttons, mobile UI will now use touch events rather than m
 2.4.0 (08/09/2023):
 Added spritesheet support
 Mobile UI bug fixes
+Added functions for getting the directions of a game object
