@@ -790,7 +790,6 @@ const Game = new class {
         if (!delta || isNaN(delta) || delta < 0 || delta > 1) {
             this.#Draw();
             requestAnimationFrame(this.#Update);
-            
             return;
         }
 
@@ -1193,121 +1192,97 @@ const Input = new class {
         });
 
         Game.Started.AddListener(() => {
-            document.addEventListener("mousedown", this.#MouseDown);
-            document.addEventListener("mouseup", this.#MouseUp);
-            document.addEventListener("mousemove", this.#MouseMove);
-            document.addEventListener("touchstart", this.#TouchStart);
-            document.addEventListener("touchend", this.#TouchEnd);
-            //document.addEventListener("touchcancel", this.#TouchCancel);
-        });
+            document.addEventListener("mousedown", (e) => {
+                if (e.button == "0") this.Mouse1Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+                else if (e.button == "2") this.Mouse2Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+                else if (e.button == "1") this.Mouse3Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+
+                let MouseRect = {
+                    position: this.#MousePos,
+                    scale: Vector.one()
+                }
+
+                function CheckButton(button) {
+                    if (RectIntersection(MouseRect, button)) {
+                        if (e.button == "0") button.Mouse1Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+                        else if (e.button == "2") button.Mouse2Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+                        else if (e.button == "3") button.Mouse3Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+                    }
+                }
+
+                for (let uiObject of Game.scene.UIObjects) {
+                    if (uiObject instanceof Button && uiObject.visible && uiObject.enabled) CheckButton(uiObject);
+                }
+
+                if (Game.mobile) {
+                    for (let uiObject of Game.MobileUI) {
+                        if (uiObject instanceof Button && uiObject.visible && uiObject.enabled) CheckButton(uiObject);
+                    }
+                }
+            });
+
+            document.addEventListener("mouseup", (e) => {
+                if (e.button == "0") this.Mouse1Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+                else if (e.button == "2") this.Mouse2Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+                else if (e.button == "1") this.Mouse3Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+
+                let MouseRect = {
+                    position: this.#MousePos,
+                    scale: Vector.one()
+                }
+
+                function CheckButton(button) {
+                    if (RectIntersection(MouseRect, button)) {
+                        if (e.button == "0") button.Mouse1Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+                        else if (e.button == "2") button.Mouse2Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+                        else if (e.button == "3") button.Mouse3Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
+                    }
+                }
+
+                for (let uiObject of Game.scene.UIObjects) {
+                    if (uiObject instanceof Button && uiObject.visible && uiObject.enabled) CheckButton(uiObject);
+                }
+
+                if (Game.mobile) {
+                    for (let uiObject of Game.MobileUI) {
+                        if (uiObject instanceof Button && uiObject.visible && uiObject.enabled) CheckButton(uiObject);
+                    }
+                }
+            });
+
+            document.addEventListener("mousemove", (e) => {
+                let canvas = Game.GetCanvas();
+                let rect = Game.GetCanvas().getBoundingClientRect();
+                let scale = Game.Settings.NativeWidth / canvas.width;
+
+                this.#MousePos = new Vector((e.clientX - rect.x), (e.clientY - rect.y)).multiply(scale);
+                this.MouseMove.Invoke(e.button, e.shiftKey, e.ctrlKey, e.altKey);
+
+                let MouseRect = {
+                    position: this.#MousePos,
+                    scale: Vector.one()
+                }
+
+                for (let uiObject of Game.scene.UIObjects) {
+                    if (!(uiObject instanceof Button) || !uiObject.visible || !uiObject.enabled) continue;
+
+                    if (RectIntersection(MouseRect, uiObject)) {
+                        if (uiObject.mouseover == false) uiObject.MouseEnter.Invoke();
+
+                        uiObject.mouseover = true;
+
+                        continue;
+                    }
+
+                    if (uiObject.mouseover) uiObject.MouseExit.Invoke();
+
+                    uiObject.mouseover = false;
+                }
+            });
+        })
+
+        
     }
-
-    #CheckButton = (mousePos, uiObject) => {
-        if (!(uiObject instanceof Button) || !uiObject.visible || !uiObject.enabled) return false;
-
-        let mouseRect = {
-            position: mousePos,
-            scale: Vector.one()
-        }
-
-        return RectIntersection(mouseRect, uiObject);
-    }
-
-    #MouseDown = (e) => {
-        if (Game.mobile) return;
-
-        if (e.button == "0") this.Mouse1Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-        else if (e.button == "2") this.Mouse2Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-        else if (e.button == "1") this.Mouse3Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-
-        for (let uiObject of Game.scene.UIObjects) {
-            if (!this.#CheckButton(this.#MousePos, uiObject)) continue;
-
-            if (e.button == "0") uiObject.Mouse1Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-            else if (e.button == "2") uiObject.Mouse2Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-            else if (e.button == "3") uiObject.Mouse3Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-        }
-    }
-
-    #MouseUp = (e) => {
-        if (Game.mobile) return;
-
-        if (e.button == "0") this.Mouse1Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-        else if (e.button == "2") this.Mouse2Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-        else if (e.button == "1") this.Mouse3Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-
-        for (let uiObject of Game.scene.UIObjects) {
-            if (!this.#CheckButton(this.#MousePos, uiObject)) continue;
-
-            if (e.button == "0") uiObject.Mouse1Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-            else if (e.button == "2") uiObject.Mouse2Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-            else if (e.button == "3") uiObject.Mouse3Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-        }
-    }
-
-    #MouseMove = (e) => {
-        let canvas = Game.GetCanvas();
-        let rect = Game.GetCanvas().getBoundingClientRect();
-        let scale = Game.Settings.NativeWidth / canvas.width;
-
-        this.#MousePos = new Vector((e.clientX - rect.x), (e.clientY - rect.y)).multiply(scale);
-        this.MouseMove.Invoke(e.button, e.shiftKey, e.ctrlKey, e.altKey);
-
-        let MouseRect = {
-            position: this.#MousePos,
-            scale: Vector.one()
-        }
-
-        for (let uiObject of Game.scene.UIObjects) {
-            if (!(uiObject instanceof Button) || !uiObject.visible || !uiObject.enabled) continue;
-
-            if (RectIntersection(MouseRect, uiObject)) {
-                if (uiObject.mouseover == false) uiObject.MouseEnter.Invoke();
-                uiObject.mouseover = true;
-
-                continue;
-            }
-
-            if (uiObject.mouseover) uiObject.MouseExit.Invoke();
-            uiObject.mouseover = false;
-        }
-    }
-
-    #TouchStart = (e) => {
-        let scale = Game.Settings.NativeWidth / Game.GetCanvas().width;
-        let mousePos = new Vector(e.changedTouches[0].clientX, e.changedTouches[0].clientY).multiply(scale);
-
-        for (let uiObject of Game.scene.UIObjects) {
-            if (this.#CheckButton(mousePos, uiObject)) uiObject.Mouse1Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-        }
-
-        for (let uiObject of Game.MobileUI) {
-            if (this.#CheckButton(mousePos, uiObject)) uiObject.Mouse1Down.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-        }
-    }
-
-    #TouchEnd = (e) => {
-        let scale = Game.Settings.NativeWidth / Game.GetCanvas().width;
-        let mousePos = new Vector(e.changedTouches[0].clientX, e.changedTouches[0].clientY).multiply(scale);
-
-        for (let uiObject of Game.scene.UIObjects) {
-            if (this.#CheckButton(mousePos, uiObject)) uiObject.Mouse1Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-        }
-
-        for (let uiObject of Game.MobileUI) {
-            if (this.#CheckButton(mousePos, uiObject)) uiObject.Mouse1Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-        }
-    }
-
-    // #TouchCancel = (e) => {
-    //     for (let uiObject of Game.scene.UIObjects) {
-    //         if (uiObject instanceof Button) uiObject.Mouse1Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-    //     }
-
-    //     for (let uiObject of Game.MobileUI) {
-    //         if (uiObject instanceof Button) uiObject.Mouse1Up.Invoke(e.shiftKey, e.ctrlKey, e.altKey);
-    //     }
-    // }
 
     GetKey(keyCode) {
         return this.#KeysDown[keyCode];
@@ -1424,4 +1399,4 @@ window.addEventListener("load", () => {
     Game.Loaded.Invoke();
 });
 
-console.log("Engine v2.3.0");
+console.log("Engine v1.0.2");
