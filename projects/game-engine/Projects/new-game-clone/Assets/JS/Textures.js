@@ -24,7 +24,10 @@ const Textures = {
 
     UI: {
         start: new Image(),
-        respawn: new Image()
+        respawn: new Image(),
+        left: new Image(),
+        right: new Image(),
+        up: new Image()
     }
 }
 

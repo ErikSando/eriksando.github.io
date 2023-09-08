@@ -24,10 +24,20 @@ const RespawnButton = new ImageButton(
 );
 RespawnButton.visible = false;
 
+const LeftButton = new ImageButton(new Vector(100, Game.Settings.NativeHeight - 300), new Vector(200, 200), Textures.UI.left);
+LeftButton.imageOpacity = 0.5;
+
+const RightButton = new ImageButton(new Vector(400, Game.Settings.NativeHeight - 300), new Vector(200, 200), Textures.UI.right);
+RightButton.imageOpacity = 0.5;
+
+const JumpButton = new ImageButton(new Vector(Game.Settings.NativeWidth - 300, Game.Settings.NativeHeight - 300), new Vector(200, 200), Textures.UI.up);
+JumpButton.imageOpacity = 0.5;
+
 const UI = {
     Start: [ StartButton ],
     Play: [ Time, FpsDisplay, RespawnButton ],
-    End: [ VictoryText, FinalTime ]
+    End: [ VictoryText, FinalTime ],
+    Mobile: [ LeftButton, RightButton, JumpButton ]
 }
 
 let totalLevels = Levels.length - 1;
@@ -70,6 +80,8 @@ StartButton.Mouse1Down.AddListener(() => {
     );
 
     gameState = "Play";
+
+    Game.MobileUI = UI.Mobile;
 });
 
 Game.Loaded.AddListener(() => {
@@ -105,6 +117,8 @@ Game.PostUpdate.AddListener((delta) => {
     
     } else if (gameState == "End") {
         FinalTime.text = "Time: " + stopwatch.GetTime();
+
+        Game.MobileUI = [];
 
         return;
     }

@@ -6,6 +6,8 @@ class Player extends UpdatesEachFrame {
     animation = "idle";
     alive = true;
 
+    #mobileInput = 0;
+
     constructor(position, scale, scene) {
         super();
 
@@ -52,12 +54,33 @@ class Player extends UpdatesEachFrame {
 
             this.alive = true;
         });
+
+        LeftButton.Mouse1Down.AddListener(() => {
+            this.#mobileInput -= 1;
+        });
+
+        LeftButton.Mouse1Up.AddListener(() => {
+            this.#mobileInput += 1;
+        });
+
+        RightButton.Mouse1Down.AddListener(() => {
+            this.#mobileInput += 1;
+        });
+
+        RightButton.Mouse1Up.AddListener(() => {
+            this.#mobileInput -= 1;
+        });
+
+        JumpButton.Mouse1Down.AddListener(() => {
+            console.log("jump button pressed");
+            if (this.GameObject.collisionBelow) this.GameObject.velocity.y = -this.jumpPower;
+        });
     }
 
     Update() {
         if (!this.alive) return;
 
-        this.GameObject.velocity.x = Input.GetAxisRaw("Horizontal") * this.speed;
+        this.GameObject.velocity.x = Clamp(Input.GetAxisRaw("Horizontal") + this.#mobileInput, -1, 1) * this.speed;
 
         let grounded = this.GameObject.collisionBelow;
 
