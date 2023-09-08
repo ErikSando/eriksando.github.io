@@ -51,7 +51,7 @@ const GameStarted = new _Event();
 
 function LoadLevel(level) {
     let scene = Levels[level];
-    Game.scene = scene;
+    Game.LoadScene(scene);
 
     Game.Camera.position = new Vector(0, LevelData[level].length * blockSize - Game.Settings.NativeHeight);
 }
@@ -72,6 +72,8 @@ function LevelComplete() {
 
 StartButton.Mouse1Down.AddListener(() => {
     level = 1;
+    LoadLevel(level);
+    
     player = new Player(new Vector(128, (LevelData[level].length - 1) * blockSize - 112), new Vector(52, 112), Game.scene);
 
     Game.Camera.position = new Vector(
