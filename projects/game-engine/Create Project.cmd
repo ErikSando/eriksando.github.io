@@ -34,7 +34,7 @@ echo ^<html^>
 echo 	^<head^>
 echo 		^<title^>Game^</title^>
 echo 		^<link rel="stylesheet" type="text/css" href="style.css"^>
-echo 		^<script src="../../Engine.js"^>^</script^>
+echo 		^<script src="https://eriksando.github.io/lib/game-engine/Engine.js"^>^</script^>
 echo 		^<script src="Assets/Main.js"^>^</script^>
 echo 	^</head^>
 echo 	^<body^>

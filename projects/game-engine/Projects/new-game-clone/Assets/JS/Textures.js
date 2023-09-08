@@ -31,22 +31,22 @@ const Textures = {
 for (let direction in Textures.player) {
     for (let animation in Textures.player[direction]) {
         for (let i = 0; i < Textures.player[direction][animation].length; i++) {
-            Textures.player[direction][animation][i].src = "Assets/textures/player/" + direction + "_" + animation + "_" + i + ".png";
+            Textures.player[direction][animation][i].src = "Assets/Textures/player/" + direction + "_" + animation + "_" + i + ".png";
         }
     }
 }
 
 for (let block in Textures.blocks) {
     if (Textures.blocks[block] instanceof Image) {
-        Textures.blocks[block].src = "Assets/textures/blocks/" + block + ".png";
+        Textures.blocks[block].src = "Assets/Textures/blocks/" + block + ".png";
         continue;
     }
 
     for (let i = 0; i < Textures.blocks[block].length; i++) {
-        Textures.blocks[block][i].src = "Assets/textures/blocks/" + block + "_" + i + ".png";
+        Textures.blocks[block][i].src = "Assets/Textures/blocks/" + block + "_" + i + ".png";
     }
 }
 
 for (let uiObject in Textures.UI) {
-    Textures.UI[uiObject].src = "Assets/textures/UI/" + uiObject + ".png";
+    Textures.UI[uiObject].src = "Assets/Textures/UI/" + uiObject + ".png";
 }
