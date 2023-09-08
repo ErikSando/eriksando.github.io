@@ -54,37 +54,21 @@ class Player extends UpdatesEachFrame {
 
             this.alive = true;
         });
-
-        LeftButton.Mouse1Down.AddListener(() => {
-            this.#mobileInput -= 1;
-        });
-
-        LeftButton.Mouse1Up.AddListener(() => {
-            this.#mobileInput += 1;
-        });
-
-        RightButton.Mouse1Down.AddListener(() => {
-            this.#mobileInput += 1;
-        });
-
-        RightButton.Mouse1Up.AddListener(() => {
-            this.#mobileInput -= 1;
-        });
-
-        JumpButton.Mouse1Down.AddListener(() => {
-            console.log("jump button pressed");
-            if (this.GameObject.collisionBelow) this.GameObject.velocity.y = -this.jumpPower;
-        });
     }
 
     Update() {
         if (!this.alive) return;
 
-        this.GameObject.velocity.x = Clamp(Input.GetAxisRaw("Horizontal") + this.#mobileInput, -1, 1) * this.speed;
+        let mobileInput = 0;
+
+        if (LeftButton.mouseover) mobileInput--;
+        if (RightButton.mouseover) mobileInput++;
+
+        this.GameObject.velocity.x = Clamp(Input.GetAxisRaw("Horizontal") + mobileInput, -1, 1) * this.speed;
 
         let grounded = this.GameObject.collisionBelow;
 
-        if (Input.GetAxisRaw("Vertical") > 0 && grounded) this.GameObject.velocity.y = -this.jumpPower;
+        if ((Input.GetAxisRaw("Vertical") > 0 || JumpButton.mouseover) && grounded) this.GameObject.velocity.y = -this.jumpPower;
 
         if (this.GameObject.velocity.x > 0) this.direction = "right";
         else if (this.GameObject.velocity.x < 0) this.direction = "left";

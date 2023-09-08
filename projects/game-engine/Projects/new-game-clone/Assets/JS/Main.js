@@ -70,7 +70,7 @@ function LevelComplete() {
     player = new Player(new Vector(128, (LevelData[level].length - 1) * blockSize - 112), new Vector(52, 112), Game.scene);
 }
 
-StartButton.Mouse1Down.AddListener(() => {
+function StartGame() {
     level = 1;
     LoadLevel(level);
     
@@ -84,7 +84,9 @@ StartButton.Mouse1Down.AddListener(() => {
     gameState = "Play";
 
     Game.MobileUI = UI.Mobile;
-});
+}
+
+StartButton.Mouse1Down.AddListener(StartGame);
 
 Game.Loaded.AddListener(() => {
     Game.CreateCanvas();

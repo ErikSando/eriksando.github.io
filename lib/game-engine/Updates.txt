@@ -17,3 +17,6 @@ Disabled context menu
 
 2.3.0 (08/09/2023):
 Added basic mobile support
+
+2.3.1 (08/09/2023):
+Added touch events to buttons, mobile UI will now use touch events rather than mouse events.
