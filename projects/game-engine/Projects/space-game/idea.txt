@@ -1,0 +1,9 @@
+IDEA:
+
+Player is in a space ship, space ship will be located at bottom of camera
+
+Map in bottom right corner so player can know what part of the map they are in
+
+Enemy space ships (AI)
+
+Can shoot from the front of the ship

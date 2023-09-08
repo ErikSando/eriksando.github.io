@@ -36,12 +36,14 @@ class Player extends UpdatesEachFrame {
         this.GameObject.CollisionEnter.AddListener((gameObject) => {
             let name = gameObject.tag;
 
-            if (name == "spikes" || name == "lava") {
-                this.alive = false;
-                this.GameObject.opacity = 0;
-                RespawnButton.visible = true;
-            }
-            else if (name == "portal") LevelComplete();
+            // if (name == "spikes" || name == "lava") {
+            //     console.log("hit spikes or lava");
+
+            //     this.alive = false;
+            //     this.GameObject.opacity = 0;
+            //     RespawnButton.visible = true;
+            // }
+            // else if (name == "portal") LevelComplete();
         });
 
         RespawnButton.Mouse1Down.AddListener(() => {

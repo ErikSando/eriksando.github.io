@@ -16,7 +16,7 @@ const block1 = new GameObject(new Vector(1000, 880), new Vector(100, 100), true)
 block1.tag = "PurpleBlock";
 block1.colour = "purple";
 
-const block2 = new GameObject(new Vector(1200, 0), new Vector(100, 200), false);
+const block2 = new GameObject(new Vector(1200, 0), new Vector(100, 200));
 block2.tag = "BlueBlock";
 block2.colour = "blue";
 
@@ -48,26 +48,9 @@ particleObject.opacity = 1;
 particleObject.animation = particleAnimation;
 particleObject.tag = "Fire";
 
-function MouseOver() {
-    ResetPositionButton.bgColour = "rgb(130, 130, 130)";
-}
+const scene1 = new Scene("Main", [ground, block1, block2, block3, particleObject, player.GameObject], [FPS, ResetPositionButton]);
 
-function MouseDown() {
-    ResetPositionButton.bgColour = "rgb(100, 100, 100)";
-}
-
-function MouseExit() {
-    ResetPositionButton.bgColour = "rgb(150, 150, 150)";
-}
-
-ResetPositionButton.MouseEnter.AddListener(MouseOver);
-ResetPositionButton.Mouse1Down.AddListener(MouseDown);
-ResetPositionButton.Mouse1Up.AddListener(MouseOver);
-ResetPositionButton.MouseExit.AddListener(MouseExit);
-
-const scene = new Scene("Main", [ground, block1, block2, block3, particleObject, player.GameObject], [FPS, ResetPositionButton]);
-
-Game.LoadScene(scene);
+Game.LoadScene(scene1);
 
 Game.Loaded.AddListener(() => {
     Game.CreateCanvas();

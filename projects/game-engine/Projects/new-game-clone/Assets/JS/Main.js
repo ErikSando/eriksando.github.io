@@ -52,6 +52,7 @@ const GameStarted = new _Event();
 function LoadLevel(level) {
     let scene = Levels[level];
     Game.LoadScene(scene);
+    Game.scene.UIObjects = UI.Play;
 
     Game.Camera.position = new Vector(0, LevelData[level].length * blockSize - Game.Settings.NativeHeight);
 }
@@ -61,6 +62,8 @@ function LevelComplete() {
         Game.scene = EndScene;
         Game.Camera.position = new Vector(0, 0);
         gameState = "End";
+        Game.scene.UIObjects = UI.End;
+        Game.MobileUI = [];
     
         return;
     }
@@ -83,6 +86,7 @@ StartButton.Mouse1Down.AddListener(() => {
 
     gameState = "Play";
 
+    Game.scene.UIObjects = UI.Play;
     Game.MobileUI = UI.Mobile;
 });
 
@@ -92,12 +96,12 @@ Game.Loaded.AddListener(() => {
 
     LoadLevel(level);
 
+    Game.scene.UIObjects = UI.Start;
+
     Game.Start();
 });
 
 Game.PostUpdate.AddListener((delta) => {
-    Game.scene.UIObjects = UI[gameState];
-
     FpsDisplay.text = Game.GetFPS() + " FPS";
 
     if (gameState == "Start") {
@@ -119,8 +123,6 @@ Game.PostUpdate.AddListener((delta) => {
     
     } else if (gameState == "End") {
         FinalTime.text = "Time: " + stopwatch.GetTime();
-
-        Game.MobileUI = [];
 
         return;
     }
