@@ -87,12 +87,12 @@ for (let level in LevelData) {
             let name = BlockNames[tile];
             let collidable = BlockCollidable[tile];
             let hasAnimation = HasAnimation[tile];
-            let scale = BlockDetails[tile].scale.multiply(blockSize);
+            let scale = BlockDetails[tile].scale.multiplied(blockSize);
             let position = new Vector(x * blockSize, y * blockSize)
-            let offset = BlockDetails[tile].offset.multiply(blockSize);
+            let offset = BlockDetails[tile].offset.multiplied(blockSize);
             let layer = BlockDetails[tile].layer;
 
-            let block = new GameObject(Vector.Add(position, offset), scale, true);
+            let block = new GameObject(position.plus(offset), scale, true);
             block.tag = name;
             block.collidable = collidable;
             block.layer = layer;

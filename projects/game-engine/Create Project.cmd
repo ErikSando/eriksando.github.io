@@ -4,7 +4,7 @@ title Create Project
 
 :start
 cls
-set /p name=Project name: 
+set /p name=Project name (no spaces): 
 echo.
 
 if "%name%" == " " goto start

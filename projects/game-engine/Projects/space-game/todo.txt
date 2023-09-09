@@ -1,0 +1,8 @@
+To do now:
+- enemy ai
+
+To do later:
+- waves/endless
+
+Bugs to fix:
+- Weird bullet behaviour

@@ -1,9 +1,10 @@
 class Player extends UpdatesEachFrame {
     cruisingSpeed = 300;
-    flyingSpeed = 500;
-    speed = 300;
+    boostingSpeed = 600;
+    speed = 400;
     steeringSpeed = 80;
-    bulletSpeed = 600;
+    bulletSpeed = 1000;
+    bulletSpread = 0;
 
     shootCooldown = 0.25;
     #timeSinceLastShot = 0;
@@ -14,13 +15,35 @@ class Player extends UpdatesEachFrame {
         this.GameObject = new GameObject(position, new Vector(104, 144), false, false);
         this.GameObject.animation = new _Animation(Textures.player);
         this.GameObject.useGravity = false;
+        this.GameObject.alive = true;
 
-        this.Hitbox = new GameObject(new Vector(position.x + 32, position.y), new Vector(40, 144), false, true);
+        this.Hitbox = new GameObject(new Vector(position.x + 32, position.y), new Vector(40, 144), false, false);
         this.Hitbox.opacity = 0;
         this.Hitbox.tag = "player";
         this.Hitbox.useGravity = false;
 
+        this.Hitbox.hit = new _Event();
+        this.Hitbox.hit.AddListener(() => this.Kill());
+
+        this.Hitbox.TouchEnter.AddListener((gameObject) => {
+            if (gameObject.tag == "border") this.Kill();
+        });
+
         World.Add(this.GameObject, this.Hitbox);
+    }
+
+    Kill() {
+        this.GameObject.alive = false;
+
+        let animation = new _Animation(Textures.explosion);
+        animation.fps = 10;
+
+        let explosion = new Particle(this.Hitbox.center.minus(new Vector(80, 80)), new Vector(160, 160), animation, true);
+        World.AddParticles(explosion);
+
+        World.Remove(this.GameObject, this.Hitbox);
+        this.Remove();
+        delete this;
     }
 
     Update(delta) {
@@ -30,21 +53,18 @@ class Player extends UpdatesEachFrame {
 
         this.speed = this.cruisingSpeed;
         if (Input.GetKey(KeyCode.KeyW) || Input.GetKey(KeyCode.ArrowUp)) {
-            this.speed = this.flyingSpeed;
+            this.speed = this.boostingSpeed;
         }
 
         if (Input.GetKey("Space") && this.#timeSinceLastShot > this.shootCooldown) {
             this.#timeSinceLastShot = 0;
 
-            let bulletPosition = new Vector(this.GameObject.position.x, this.GameObject.position.y);
-            let bullet = new Bullet(bulletPosition, this.GameObject, this.bulletSpeed);
+            let bulletPosition = this.GameObject.center.plus(this.GameObject.direction.forward().multiplied(65)).plus(this.GameObject.direction.left().multiplied(3));
+            let bullet = new Bullet(bulletPosition, this.GameObject, "player", this.bulletSpeed, this.bulletSpread);
         }
 
-        this.GameObject.velocity = this.GameObject.direction.forward().multiply(this.speed);
-
+        this.GameObject.velocity = this.GameObject.direction.forward().multiplied(this.speed);
         this.Hitbox.velocity = this.GameObject.velocity;
         this.Hitbox.orientation = this.GameObject.orientation;
-
-        //Game.Settings.BackgroundImageStart = Vector.Subtract(Game.Settings.BackgroundImageStart, this.GameObject.forward().multiply(this.speed / 2));
     }
 }

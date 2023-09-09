@@ -1,3 +1,9 @@
+Multiple touch pointers so mobile games can be playable
+
+UI that is not rendered relative to camera, for things like damage indicators
+
+Tweening for better animations
+
 Particle System:
 
 - create particles function (n, time)
@@ -12,7 +18,3 @@ Particle System:
 - after time has passed, particles get deleted
 
 maybe make it so the particles get removed at slightly different times?
-
-Tweening for better animations
-
-Mobile UI

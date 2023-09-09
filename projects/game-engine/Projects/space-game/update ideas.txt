@@ -1,0 +1,4 @@
+- Enemy AI
+- Difficulty levels (change speeds, bullet spreads, bullet speeds, fire rates)
+- Different guns (multi-fire, rapid fire, splash damage?)
+- Waves/endless game mode

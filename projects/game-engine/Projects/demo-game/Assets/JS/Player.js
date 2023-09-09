@@ -48,7 +48,7 @@ class Player extends UpdatesEachFrame {
     Update() {
         this.GameObject.velocity.x = Input.GetAxisRaw("Horizontal") * this.speed;
 
-        if (Input.GetAxisRaw("Vertical") > 0 && this.GameObject.collisionBelow) this.GameObject.velocity.y = -this.jumpForce;
+        if (Input.GetAxisRaw("Vertical") > 0 && this.GameObject.collision.below) this.GameObject.velocity.y = -this.jumpForce;
 
         if (this.GameObject.velocity.x > 0) this.direction = "right";
         else if (this.GameObject.velocity.x < 0) this.direction = "left";

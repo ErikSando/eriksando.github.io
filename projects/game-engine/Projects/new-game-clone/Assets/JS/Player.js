@@ -29,8 +29,6 @@ class Player extends UpdatesEachFrame {
             }
         }
 
-        console.log(this.animations);
-
         this.GameObject = new GameObject(position, scale);
         this.GameObject.layer = 3;
         scene.Add(this.GameObject);

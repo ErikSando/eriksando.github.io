@@ -25,3 +25,7 @@ Added touch events to buttons, mobile UI will now use touch events rather than m
 Added spritesheet support
 Mobile UI bug fixes
 Added functions for getting the directions of a game object
+
+2.5.0 (10/09/2023):
+Added layers to UI rendering
+Added collision groups

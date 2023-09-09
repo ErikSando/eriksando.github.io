@@ -1,0 +1,15 @@
+TO DO:
+
+make characters more distinguishable (hair, clothing, ...)
+
+selecting characters
+
+finish character animations
+
+loading world
+
+dashing
+
+punching
+
+abilities

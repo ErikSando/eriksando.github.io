@@ -107,7 +107,7 @@ Game.PostUpdate.AddListener((delta) => {
     if (gameState == "Start") {
         scale = window.innerWidth / Game.Settings.NativeWidth;
         let topLeftCorner = new Vector(LevelData[level][0].length * blockSize - Game.Settings.NativeWidth, 0);
-        let direction = Vector.Subtract(topLeftCorner, Game.Camera.position);
+        let direction = topLeftCorner.minus(Game.Camera.position);
 
         if (direction.y >= 0) {
             if (level >= Levels.length - 1) level = 1;
@@ -118,7 +118,7 @@ Game.PostUpdate.AddListener((delta) => {
             Game.Camera.position = new Vector(0, LevelData[level].length * blockSize - Game.Settings.NativeHeight);
         }
 
-        Game.Camera.position.add(direction.normalised().multiply(100 * delta));
+        Game.Camera.position.add(direction.normalised.multiplied(100 * delta));
 
         return;
     
