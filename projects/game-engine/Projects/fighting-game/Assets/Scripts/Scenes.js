@@ -1,7 +1,7 @@
 const startMenuBG = new UIObject(Vector.zero(), new Vector(Game.Settings.NativeWidth, Game.Settings.NativeHeight));
 startMenuBG.bgColour = "rgb(100, 100, 100)";
 
-const title = new TextLabel(new Vector(0, 50), new Vector(Game.Settings.NativeWidth, 100), "LOTF Fighting Game");
+const title = new TextLabel(new Vector(0, 50), new Vector(Game.Settings.NativeWidth, 100), "Fighting Game");
 title.textSize = 60;
 
 const player1title = new TextLabel(new Vector(0, 200), new Vector(Game.Settings.NativeWidth / 2, 60), "Player 1");
