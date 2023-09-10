@@ -1,0 +1,86 @@
+=== STORY GAME ===
+Player chooses a character (each one has different path)
+
+premise: erik, savas, and eryx want to defeat nythan and vice versa
+
+erik:
+ - find recourses to craft a device to find nythans location
+ - find and defeat nythan
+
+savas:
+ - train and unlock abilities before nythan comes to fight him
+ - find and defeat nythan
+
+eryx:
+ - escape prison that nythan put him in
+ - find and defeat nythan
+
+nythan (hardest):
+ - needs to find recourses to unlock abilities and train to improve stats
+ - find and defeat erik, savas, and eryx
+
+=== FIGHTING GAME ===
+
+2 player mode
+player 1: WASD, Q dash, E punch, R ability1, F ability2
+player 2: IJKL, U dash, O punch, P ability1, SemiColon ability2
+
+1 player mode against npc
+
+=== Characters ===
+
+character strengths/weaknesses
+Erik - high strength, high agility, high dura / weak abilities
+Savas - strong abilitys / low agility
+Nythan - high agility, strong abilities / low strength, low dura
+Eryx - high strength, high dura / low agility, weak abilities
+
+Erik
+- colour: dark blue
+- strength: 12
+- defence: 120
+- ability 1: slash in front
+  - damage: 20
+  - indication: small charge up
+  - cooldown: 8s
+- ability 2: teleport slice attack
+  - damage: 30
+  - cooldown: 12s
+
+Savas
+- colour: dark green
+- strength: 10
+- defence: 100
+- ability 1: ki blast with explosion on impact
+  - damage: 20
+  - indication: none
+  - cooldown: 8s
+- ability 2: energy blast
+  - damage: 40
+  - cooldown: 15s
+
+Nythan
+- colour: dark red
+- strength: 8
+- defence: 80
+- ability 1: flame pool
+  - damage: 10/s, lasts for 3 seconds
+  - indication: none
+  - cooldown: 8s
+- ability 2: air slash
+  - damage: 40
+  - indication: attack delayed after animation
+  - cooldown: 12s
+
+Eryx
+- colour: gold
+- strength: 14
+- defence: 140
+- ability 1: tackle
+  - damage: 20
+  - indication: none
+  - cooldown: 10s
+- ability 2: shockwave punch
+  - damage: 35
+  - indication: attack delayed after animation
+  - cooldown: 15s

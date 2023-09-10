@@ -31,3 +31,6 @@ Added layers to UI rendering
 Added collision groups
 Added functions to vectors
 Added functions relating to rotated rectangles, more will come in the future
+
+2.5.1 (10/09/2023):
+Animations can now be flipped
