@@ -17,9 +17,9 @@ const CharacterStats = {
         strength: 12,
         speed: 700,
         defence: 120,
-        jumpForce: 1000,
-        dashForce: 800,
-        maxDoubleJumps: 2,
+        jumpForce: 1150,
+        dashForce: 1400,
+        doubleJumps: 1,
         abilityCooldowns: {
             1: 10,
             2: 15
@@ -34,9 +34,9 @@ const CharacterStats = {
         strength: 10,
         speed: 550,
         defence: 100,
-        jumpForce: 900,
-        dashForce: 700,
-        maxDoubleJumps: 2,
+        jumpForce: 1000,
+        dashForce: 1100,
+        doubleJumps: 1,
         abilityCooldowns: {
             1: 8,
             2: 12
@@ -51,9 +51,9 @@ const CharacterStats = {
         strength: 8,
         speed: 650,
         defence: 80,
-        jumpForce: 950,
-        dashForce: 750,
-        maxDoubleJumps: 3,
+        jumpForce: 1100,
+        dashForce: 1250,
+        doubleJumps: 2,
         abilityCooldowns: {
             1: 8,
             2: 12
@@ -68,9 +68,9 @@ const CharacterStats = {
         strength: 14,
         speed: 600,
         defence: 140,
-        jumpForce: 850,
-        dashForce: 650,
-        maxDoubleJumps: 1,
+        jumpForce: 1050,
+        dashForce: 1200,
+        doubleJumps: 1,
         abilityCooldowns: {
             1: 10,
             2: 15

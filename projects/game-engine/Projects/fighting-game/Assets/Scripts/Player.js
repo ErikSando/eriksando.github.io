@@ -8,9 +8,6 @@ class Player extends UpdatesEachFrame {
         }
     }
 
-    jumpForce = JumpForce;
-    dashForce = DashForce;
-
     stunned = false;
     usingAbility = false;
     doubleJumps = 1;
@@ -18,6 +15,7 @@ class Player extends UpdatesEachFrame {
     animation = "idle";
 
     #maxHealthBarWidth;
+    #dashing = true;
 
     constructor(position, ID, scene, animations, stats) {
         super();
@@ -27,6 +25,8 @@ class Player extends UpdatesEachFrame {
         this.defence = stats.defence;
         this.maxDefence = stats.defence;
         this.maxDoubleJumps = stats.doubleJumps;
+        this.jumpForce = stats.jumpForce;
+        this.dashForce = stats.dashForce;
         this.animations = animations;
         this.healthbar = ID == 1 ? healthBar1 : healthBar2;
         this.#maxHealthBarWidth = this.healthbar.scale.x;
@@ -39,11 +39,12 @@ class Player extends UpdatesEachFrame {
         // Game object used to display animations
         this.GO = new GameObject(position, new Vector(100, 200));
         this.GO.collisionGroup = PlayerCollisionGroup;
+        this.GO.CombatManager = new CombatManager(this);
 
         // Hitbox used for combat
-        this.Hitbox = new GameObject(position, new Vector(100, 200));
-        this.Hitbox.tag = "player" + ID;
-        this.Hitbox.CombatManager = new CombatManager(this);
+        // this.Hitbox = new GameObject(position, new Vector(100, 200));
+        // this.Hitbox.tag = "player" + ID;
+        // this.Hitbox.CombatManager = new CombatManager(this);
 
         this.keybinds = ID == 1 ? Player1Keybinds : Player2Keybinds;
 
@@ -57,36 +58,46 @@ class Player extends UpdatesEachFrame {
         if (Input.GetKey(this.keybinds.left)) xMovement--;
         if (Input.GetKey(this.keybinds.right)) xMovement++;
 
-        this.GO.velocity.x = xMovement * this.speed// >= Math.abs(this.GO.velocity.x) ? xMovement * this.speed : this.GO.velocity.x;
+        this.GO.velocity.x = !this.#dashing ? xMovement * this.speed : this.GO.velocity.x;
 
         let grounded = this.GO.collision.below;
         if (grounded) this.doubleJumps = this.maxDoubleJumps;
 
-        if (Input.GetKey(this.keybinds.jump) && (grounded || this.doubleJumps > 0)) {
-            if (!grounded) this.doubleJumps--;
+        if (Input.GetKey(this.keybinds.jump) && (grounded || this.doubleJumps > 0)) {            
+            let allowedToJump = true;
             
-            this.GO.velocity.y = -this.jumpForce;
+            if (!grounded) {
+                if (Input.GetKeyDown(this.keybinds.jump)) this.doubleJumps--;
+                else allowedToJump = false;
+            }
+            
+            if (allowedToJump) this.GO.velocity.y = -this.jumpForce;
         }
 
         // Slow down if dashing
         if (this.GO.velocity.x > this.speed) {
             this.animation = "dash";
-            this.GO.velocity.x -= 10;
+            this.GO.velocity.x -= 20;
         
         } else if (this.GO.velocity.x < -this.speed) {
             this.animation = "dash";
-            this.GO.velocity.x += 10;
-        }
+            this.GO.velocity.x += 20;
+        
+        } else this.#dashing = false;
+
+        if (this.GO.velocity.x > 0) this.direction = "right";
+        else if (this.GO.velocity.x < 0) this.direction = "left";
 
         this.#cooldownProgress.dash += delta;
         this.#cooldownProgress.punch += delta;
         this.#cooldownProgress.ability[1] += delta;
         this.#cooldownProgress.ability[2] += delta;
 
-        if (Input.GetKey(this.keybinds.dash) && this.#cooldownProgress.dash >= this.#cooldownProgress.dash && !this.usingAbility) {
+        if (Input.GetKey(this.keybinds.dash) && this.#cooldownProgress.dash >= this.cooldowns.dash && !this.usingAbility) {
             this.#cooldownProgress.dash = 0;
 
-            this.velocity.x = this.direction == "right" ? this.dashForce : -this.dashForce;
+            this.GO.velocity.x = this.direction == "right" ? this.dashForce : -this.dashForce;
+            this.#dashing = true;
         }
 
         if (Input.GetKey(this.keybinds.ability[1]) && this.#cooldownProgress.ability[1] >= this.cooldowns.ability[1] && !this.usingAbility) {

@@ -157,6 +157,8 @@ const healthBar2 = new UIObject(new Vector(Game.Settings.NativeWidth - 320, 20),
 healthBar2.bgColour = "rgb(0, 200, 0)";
 healthBar2.outlineThickness = 0;
 
+const victoryText = new TextLabel(new Vector(0, 20), new Vector(Game.Settings.NativeWidth, 50));
+
 const PlayGameObjects = [ground, leftBorder, rightBorder, topBorder];
 const PlayUI = [healthBar1BG, healthBar1, healthBar2BG, healthBar2];
 

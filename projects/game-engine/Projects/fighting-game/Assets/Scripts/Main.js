@@ -2,11 +2,13 @@ Game.LoadScene(StartMenu);
 
 const PlayerCollisionGroup = new CollisionGroup("player", [], true);
 
+let player1, player2;
+
 startButton.Mouse1Down.AddListener(() => {
     console.log("Start button clicked");
 
-    let player1 = new CharacterClasses[player1selected](new Vector(200, Game.Settings.NativeHeight - 400), 1, PlayScene);
-    let player2 = new CharacterClasses[player2selected](new Vector(Game.Settings.NativeWidth - 200, Game.Settings.NativeHeight - 400), 2, PlayScene);
+    player1 = new CharacterClasses[player1selected](new Vector(200, Game.Settings.NativeHeight - 400), 1, PlayScene);
+    player2 = new CharacterClasses[player2selected](new Vector(Game.Settings.NativeWidth - 200, Game.Settings.NativeHeight - 400), 2, PlayScene);
 
     Game.LoadScene(PlayScene);
 });
