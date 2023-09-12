@@ -1,0 +1,11 @@
+STOP ZOMBIE FROM LAGGING THE GAME!!!!!
+
+improve the lighting so blocks will only be visible if they are next to air and the air they are connected to is not blocked from the player by other blocks
+
+add an inventory system
+
+add item holding (finish inventory and hotbar first)
+
+make inventory render on top of zombie
+
+make enemies non visible unless in a visible area

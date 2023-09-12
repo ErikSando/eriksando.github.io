@@ -1,24 +1,9 @@
 const Spritesheets = {
     Characters: {
-        Erik: {
-            left: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() },
-            right: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() }
-        },
-
-        Savas: {
-            left: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() },
-            right: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() }
-        },
-
-        Nythan: {
-            left: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() },
-            right: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() }
-        },
-
-        Eryx: {
-            left: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() },
-            right: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() }
-        }
+        Erik: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() },
+        Savas: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() },
+        Nythan: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() },
+        Eryx: { idle: new Image(), run: new Image(), jump: new Image(), fall: new Image(), dash: new Image(), punch: new Image() }
     },
     
     Attacks: {
@@ -28,10 +13,8 @@ const Spritesheets = {
 }
 
 for (let character in Spritesheets.Characters) {
-    for (let direction in Spritesheets.Characters[character]) {
-        for (let animation in Spritesheets.Characters[character][direction]) {
-            //spritesheets.Characters[character][direction][animation].src = "Assets/Sprites/" + Characters + "/" + left + animation + ".png";
-        }
+    for (let animation in Spritesheets.Characters[character]) {
+        Spritesheets.Characters[character][animation].src = "Assets/Sprites/" + character + "/" + animation + ".png";
     }
 }
 
@@ -47,75 +30,39 @@ const Sprites = {
 
     Characters: {
         Erik: {
-            left: {
-                // idle: LoadSpritesheet(),
-                // dash: LoadSpritesheet(),
-                // run: LoadSpritesheet(),
-                // jump: LoadSpritesheet(),
-                // fall: LoadSpritesheet()
-            },
-
-            right: {
-                // idle: LoadSpritesheet(),
-                // dash: LoadSpritesheet(),
-                // run: LoadSpritesheet(),
-                // jump: LoadSpritesheet(),
-                // fall: LoadSpritesheet()
-            }
+            idle: LoadSpritesheet(Spritesheets.Characters.Erik.idle, new Vector(64, 64), 2, 1),
+            dash: LoadSpritesheet(Spritesheets.Characters.Erik.dash),
+            run: LoadSpritesheet(Spritesheets.Characters.Erik.run, new Vector(64, 64), 2, 1),
+            jump: LoadSpritesheet(Spritesheets.Characters.Erik.jump, new Vector(64, 64), 2, 1),
+            fall: LoadSpritesheet(Spritesheets.Characters.Erik.fall, new Vector(64, 64), 2, 1),
+            punch: LoadSpritesheet(Spritesheets.Characters.Erik.punch, new Vector(64, 64), 2, 1)
         },
 
         Savas: {
-            left: {
-                // idle: LoadSpritesheet(),
-                // dash: LoadSpritesheet(),
-                // run: LoadSpritesheet(),
-                // jump: LoadSpritesheet(),
-                // fall: LoadSpritesheet()
-            },
-
-            right: {
-                // idle: LoadSpritesheet(),
-                // dash: LoadSpritesheet(),
-                // run: LoadSpritesheet(),
-                // jump: LoadSpritesheet(),
-                // fall: LoadSpritesheet()
-            }
+            idle: LoadSpritesheet(Spritesheets.Characters.Savas.idle, new Vector(64, 64), 2, 1),
+            dash: LoadSpritesheet(Spritesheets.Characters.Savas.dash),
+            run: LoadSpritesheet(Spritesheets.Characters.Savas.run, new Vector(64, 64), 2, 1),
+            jump: LoadSpritesheet(Spritesheets.Characters.Savas.jump, new Vector(64, 64), 2, 1),
+            fall: LoadSpritesheet(Spritesheets.Characters.Savas.fall, new Vector(64, 64), 2, 1),
+            punch: LoadSpritesheet(Spritesheets.Characters.Savas.punch, new Vector(64, 64), 2, 1)
         },
 
         Nythan: {
-            left: {
-                // idle: LoadSpritesheet(),
-                // dash: LoadSpritesheet(),
-                // run: LoadSpritesheet(),
-                // jump: LoadSpritesheet(),
-                // fall: LoadSpritesheet()
-            },
-
-            right: {
-                // idle: LoadSpritesheet(),
-                // dash: LoadSpritesheet(),
-                // run: LoadSpritesheet(),
-                // jump: LoadSpritesheet(),
-                // fall: LoadSpritesheet()
-            }
+            idle: LoadSpritesheet(Spritesheets.Characters.Nythan.idle, new Vector(64, 64), 2, 1),
+            dash: LoadSpritesheet(Spritesheets.Characters.Nythan.dash),
+            run: LoadSpritesheet(Spritesheets.Characters.Nythan.run, new Vector(64, 64), 2, 1),
+            jump: LoadSpritesheet(Spritesheets.Characters.Nythan.jump, new Vector(64, 64), 2, 1),
+            fall: LoadSpritesheet(Spritesheets.Characters.Nythan.fall, new Vector(64, 64), 2, 1),
+            punch: LoadSpritesheet(Spritesheets.Characters.Nythan.punch, new Vector(64, 64), 2, 1)
         },
 
         Eryx: {
-            left: {
-                // idle: LoadSpritesheet(),
-                // dash: LoadSpritesheet(),
-                // run: LoadSpritesheet(),
-                // jump: LoadSpritesheet(),
-                // fall: LoadSpritesheet()
-            },
-
-            right: {
-                // idle: LoadSpritesheet(),
-                // dash: LoadSpritesheet(),
-                // run: LoadSpritesheet(),
-                // jump: LoadSpritesheet(),
-                // fall: LoadSpritesheet()
-            }
+            idle: LoadSpritesheet(Spritesheets.Characters.Eryx.idle, new Vector(64, 64), 2, 1),
+            dash: LoadSpritesheet(Spritesheets.Characters.Eryx.dash),
+            run: LoadSpritesheet(Spritesheets.Characters.Eryx.run, new Vector(64, 64), 2, 1),
+            jump: LoadSpritesheet(Spritesheets.Characters.Eryx.jump, new Vector(64, 64), 2, 1),
+            fall: LoadSpritesheet(Spritesheets.Characters.Eryx.fall, new Vector(64, 64), 2, 1),
+            punch: LoadSpritesheet(Spritesheets.Characters.Eryx.punch, new Vector(64, 64), 2, 1)
         }
     },
 
@@ -147,9 +94,12 @@ const Sprites = {
         KiBlast: LoadSpritesheet(Spritesheets.Attacks.KiBlast, new Vector(48, 48), 3, 2),
         //EnergyBeam: LoadSpritesheet(),
         FlyingSlash: new Image(),
+        ShockwavePunch: new Image()
 
     }
 }
+
+console.log(Sprites);
 
 for (let character in Sprites.Icons) {
     for (let direction in Sprites.Icons[character]) {

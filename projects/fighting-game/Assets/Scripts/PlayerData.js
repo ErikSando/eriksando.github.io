@@ -14,9 +14,9 @@ const Characters = ["Erik", "Savas", "Nythan", "Eryx"];
 
 const CharacterStats = {
     Erik: {
-        strength: 12,
+        strength: 18,
         speed: 700,
-        defence: 120,
+        defence: 200,
         jumpForce: 1150,
         dashForce: 2000,
         doubleJumps: 1,
@@ -25,15 +25,15 @@ const CharacterStats = {
             2: 12
         },
         abilityDamage: {
-            1: 20,
-            2: 30
+            1: 30,
+            2: 45
         }
     },
 
     Savas: {
-        strength: 10,
+        strength: 16,
         speed: 550,
-        defence: 100,
+        defence: 180,
         jumpForce: 1000,
         dashForce: 1500,
         doubleJumps: 1,
@@ -42,15 +42,15 @@ const CharacterStats = {
             2: 10
         },
         abilityDamage: {
-            1: 25,
-            2: 40
+            1: 35,
+            2: 60
         }
     },
 
     Nythan: {
-        strength: 8,
+        strength: 14,
         speed: 650,
-        defence: 80,
+        defence: 160,
         jumpForce: 1100,
         dashForce: 1800,
         doubleJumps: 2,
@@ -59,15 +59,15 @@ const CharacterStats = {
             2: 10
         },
         abilityDamage: {
-            1: 40, // this ability will be rapid damage, so not all damage is likely to be taken by opponent
-            2: 40
+            1: 60, // this ability will be rapid damage, so not all damage is likely to be taken by opponent
+            2: 60
         }
     },
 
     Eryx: {
-        strength: 14,
+        strength: 20,
         speed: 600,
-        defence: 140,
+        defence: 240,
         jumpForce: 1050,
         dashForce: 1600,
         doubleJumps: 1,
@@ -76,93 +76,51 @@ const CharacterStats = {
             2: 12
         },
         abilityDamage: {
-            1: 25,
-            2: 35
+            1: 35,
+            2: 55
         }
     }
 }
 
 const CharacterAnimations = {
     Erik: {
-        left: {
-            idle: new _Animation(),
-            run: new _Animation(),
-            jump: new _Animation(),
-            fall: new _Animation(),
-            dash: new _Animation(),
-            punch: new _Animation()
-        },
-
-        right: {
-            idle: new _Animation(),
-            run: new _Animation(),
-            jump: new _Animation(),
-            fall: new _Animation(),
-            dash: new _Animation(),
-            punch: new _Animation()
-        }
+        idle: new _Animation(Sprites.Characters.Erik.idle, 1),
+        run: new _Animation(Sprites.Characters.Erik.run),
+        jump: new _Animation(Sprites.Characters.Erik.jump),
+        fall: new _Animation(Sprites.Characters.Erik.fall),
+        dash: new _Animation(Sprites.Characters.Erik.dash),
+        punch: new _Animation(Sprites.Characters.Erik.punch)
     },
 
     Savas: {
-        left: {
-            idle: new _Animation(),
-            run: new _Animation(),
-            jump: new _Animation(),
-            fall: new _Animation(),
-            dash: new _Animation(),
-            punch: new _Animation()
-        },
-
-        right: {
-            idle: new _Animation(),
-            run: new _Animation(),
-            jump: new _Animation(),
-            fall: new _Animation(),
-            dash: new _Animation(),
-            punch: new _Animation()
-        }
+        idle: new _Animation(Sprites.Characters.Savas.idle, 1),
+        run: new _Animation(Sprites.Characters.Savas.run),
+        jump: new _Animation(Sprites.Characters.Savas.jump),
+        fall: new _Animation(Sprites.Characters.Savas.fall),
+        dash: new _Animation(Sprites.Characters.Savas.dash),
+        punch: new _Animation(Sprites.Characters.Savas.punch)
     },
 
     Nythan: {
-        left: {
-            idle: new _Animation(),
-            run: new _Animation(),
-            jump: new _Animation(),
-            fall: new _Animation(),
-            dash: new _Animation(),
-            punch: new _Animation()
-        },
-
-        right: {
-            idle: new _Animation(),
-            run: new _Animation(),
-            jump: new _Animation(),
-            fall: new _Animation(),
-            dash: new _Animation(),
-            punch: new _Animation()
-        }
+        idle: new _Animation(Sprites.Characters.Nythan.idle, 1),
+        run: new _Animation(Sprites.Characters.Nythan.run),
+        jump: new _Animation(Sprites.Characters.Nythan.jump),
+        fall: new _Animation(Sprites.Characters.Nythan.fall),
+        dash: new _Animation(Sprites.Characters.Nythan.dash),
+        punch: new _Animation(Sprites.Characters.Nythan.punch)
     },
 
     Eryx: {
-        left: {
-            idle: new _Animation(),
-            run: new _Animation(),
-            jump: new _Animation(),
-            fall: new _Animation(),
-            dash: new _Animation(),
-            punch: new _Animation()
-        },
-
-        right: {
-            idle: new _Animation(),
-            run: new _Animation(),
-            jump: new _Animation(),
-            fall: new _Animation(),
-            dash: new _Animation(),
-            punch: new _Animation()
-        }
+        idle: new _Animation(Sprites.Characters.Eryx.idle, 1),
+        run: new _Animation(Sprites.Characters.Eryx.run),
+        jump: new _Animation(Sprites.Characters.Eryx.jump),
+        fall: new _Animation(Sprites.Characters.Eryx.fall),
+        dash: new _Animation(Sprites.Characters.Eryx.dash),
+        punch: new _Animation(Sprites.Characters.Eryx.punch)
     }
 }
+
+console.log(CharacterAnimations);
 
 const Player1Tag = "player1";
 const Player2Tag = "player2";

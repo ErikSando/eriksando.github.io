@@ -1,3 +1,7 @@
+Try to re make the whole thing in Java
+
+Text input UI
+
 More debug functionality (different colours, life span of objects)
 
 Multiple touch pointers so mobile games can be playable

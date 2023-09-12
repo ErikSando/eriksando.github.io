@@ -17,5 +17,5 @@ Game.Loaded.AddListener(() => {
 Game.PostUpdate.AddListener((delta) => {
     obj1.orientation += 60 * delta;
 
-    if (RotatedRectIntersection(obj1, obj2)) console.log("Intersection");
+    // if (RotatedRectIntersection(obj1, obj2)) console.log("Intersection");
 });

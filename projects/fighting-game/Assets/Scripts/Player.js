@@ -11,7 +11,6 @@ class Player extends UpdatesEachFrame {
     stunned = false;
     debounce = false;
     doubleJumps = 1;
-    direction = "right";
     animation = "idle";
 
     #maxHealthBarWidth;
@@ -31,33 +30,43 @@ class Player extends UpdatesEachFrame {
         this.dashForce = stats.dashForce;
         this.abilityDamage = stats.abilityDamage;
         this.healthbar = ID == 1 ? healthBar1 : healthBar2;
+        this.healthtext = ID == 1 ? healthText1 : healthText2;
         this.#maxHealthBarWidth = this.healthbar.scale.x;
+        this.direction = ID == 1 ? "right" : "left";
         this.cooldowns = {
             dash: cooldowns.dash,
             punch: cooldowns.punch,
             ability: stats.abilityCooldowns
         }
 
+        this.dashCooldown = ID == 1 ? dashCooldown1 : dashCooldown2;
+        this.punchCooldown = ID == 1 ? punchCooldown1 : punchCooldown2;
+        this.ability1Cooldown = ID == 1 ? ability1Cooldown1 : ability1Cooldown2;
+        this.ability2Cooldown = ID == 1 ? ability2Cooldown1 : ability2Cooldown2;
+
         // Game object used to display animations
-        this.GO = new GameObject(position, new Vector(100, 200));
-        this.GO.tag = "player" + ID;
+        this.GO = new GameObject(position, new Vector(120, 192), false, true, true);
+        // this.GO.tag = "player" + ID;
         this.GO.collisionGroup = PlayerCollisionGroup;
-        this.GO.CombatManager = new CombatManager(this);
+        // this.GO.CombatManager = new CombatManager(this);
 
         this.target = ID == 1 ? "player2" : "player1";
 
         // Hitbox used for combat
-        // this.Hitbox = new GameObject(position, new Vector(100, 200));
-        // this.Hitbox.tag = "player" + ID;
-        // this.Hitbox.CombatManager = new CombatManager(this);
+        this.Hitbox = new GameObject(new Vector(position.x + 10, position.y), new Vector(100, 192), false, false, false);
+        this.Hitbox.opacity = 0;
+        this.Hitbox.tag = "player" + ID;
+        this.Hitbox.CombatManager = new CombatManager(this);
+
+        //Debug.AddRectangle(this.Hitbox);
 
         this.keybinds = ID == 1 ? Player1Keybinds : Player2Keybinds;
 
-        this.GO.CombatManager.OnDeath.AddListener(() => {
+        this.Hitbox.CombatManager.OnDeath.AddListener(() => {
 
         });
 
-        scene.Add(this.GO)//, this.Hitbox);
+        scene.Add(this.GO, this.Hitbox);
     }
 
     // Declaration
@@ -66,6 +75,14 @@ class Player extends UpdatesEachFrame {
 
     Update(delta) {
         this.healthbar.scale.x = (this.defence / this.maxDefence) * this.#maxHealthBarWidth;
+        this.healthtext.text = this.defence + " / " + this.maxDefence;
+
+        // TODO: fix the shitty cooldowns UI
+        // reposition the cooldown things so that the cooldown goes down
+        this.dashCooldown.scale.y = 50 * Clamp(Math.abs(this.#cooldownProgress.dash - this.cooldowns.dash), 0, 1);
+        this.punchCooldown.scale.y = 50 * Clamp(Math.abs(this.#cooldownProgress.punch - this.cooldowns.punch), 0, 1);
+        this.ability1Cooldown.scale.y = 50 * Clamp(Math.abs(this.#cooldownProgress.ability[1] - this.cooldowns.ability[1]), 0, 1);
+        this.ability2Cooldown.scale.y = 50 * Clamp(Math.abs(this.#cooldownProgress.ability[2] - this.cooldowns.ability[2]), 0, 1);
 
         let xMovement = 0;
         if (Input.GetKey(this.keybinds.left)) xMovement--;
@@ -101,10 +118,24 @@ class Player extends UpdatesEachFrame {
         if (this.GO.velocity.x > 0) this.direction = "right";
         else if (this.GO.velocity.x < 0) this.direction = "left";
 
-        this.#cooldownProgress.dash += delta;
-        this.#cooldownProgress.punch += delta;
-        this.#cooldownProgress.ability[1] += delta;
-        this.#cooldownProgress.ability[2] += delta;
+        this.animation = "idle";
+
+        if (this.GO.velocity.x != 0 && grounded) this.animation = "run";
+
+        if (this.GO.velocity.y < 0) this.animation = "jump";
+        else if (this.GO.velocity.y > 0) this.animation = "fall";
+
+        if (this.dashing) this.animation = "dash";
+
+        let newAnimation = this.animations[this.animation];
+
+        newAnimation.flipX = this.direction == "right" ? false : true;
+        if (this.GO.animation != newAnimation) this.GO.animation = newAnimation;
+
+        this.#cooldownProgress.dash = Clamp(this.#cooldownProgress.dash + delta, 0, this.cooldowns.dash);
+        this.#cooldownProgress.punch = Clamp(this.#cooldownProgress.punch + delta, 0, this.cooldowns.punch);
+        this.#cooldownProgress.ability[1] = Clamp(this.#cooldownProgress.ability[1] + delta, 0, this.cooldowns.ability[1]);
+        this.#cooldownProgress.ability[2] = Clamp(this.#cooldownProgress.ability[2] + delta, 0, this.cooldowns.ability[2]);
 
         if (Input.GetKey(this.keybinds.dash) && this.#cooldownProgress.dash >= this.cooldowns.dash && !this.debounce) {
             this.#cooldownProgress.dash = 0;
@@ -128,26 +159,28 @@ class Player extends UpdatesEachFrame {
             }
         }
 
-        if (Input.GetKey(this.keybinds.ability[1]) && this.#cooldownProgress.ability[1] >= this.cooldowns.ability[1] && !this.debounce) {
+        if (Input.GetKeyDown(this.keybinds.ability[1]) && this.#cooldownProgress.ability[1] >= this.cooldowns.ability[1] && !this.debounce) {
             this.#cooldownProgress.ability[1] = 0;
             this.debounce = true;
 
             this.Ability1();
         }
 
-        if (Input.GetKey(this.keybinds.ability[2]) && this.#cooldownProgress.ability[2] >= this.cooldowns.ability[2] && !this.debounce) {
+        if (Input.GetKeyDown(this.keybinds.ability[2]) && this.#cooldownProgress.ability[2] >= this.cooldowns.ability[2] && !this.debounce) {
             this.#cooldownProgress.ability[2] = 0;
             this.debounce = true;
 
-            console.log("ability 2");
-
             this.Ability2();
         }
+
+        this.GO.animation.Update(delta);
+
+        this.Hitbox.position = this.GO.position.copy();
     }
 }
 
 class Erik extends Player {
-    #ability1Debounce = 400;
+    #ability1Duration = 400;
     
     constructor(position, ID, scene) {
         super(position, ID, scene, CharacterAnimations.Erik, CharacterStats.Erik);
@@ -171,7 +204,7 @@ class Erik extends Player {
 
         this.scene.AddParticles(effect);
 
-        let hits = GameObjectsInRect(hitbox, [this.GO]);
+        let hits = GameObjectsInRect(hitbox, [this.Hitbox]);
 
         for (let hit of hits) {
             if (hit.tag == this.target) hit.CombatManager.Damage(this.abilityDamage[1]);
@@ -180,33 +213,71 @@ class Erik extends Player {
         setTimeout(() => {
             this.debounce = false;
 
-        }, this.#ability1Debounce);
+        }, this.#ability1Duration);
     }
 
     // teleportation slice
     Ability2() {
-
+        this.debounce = false;
     }
 }
 
 class Savas extends Player {
+    #ability1Duration = 400;
+
     constructor(position, ID, scene) {
         super(position, ID, scene, CharacterAnimations.Savas, CharacterStats.Savas);
     }
 
     // ki blast
     Ability1() {
+        let hitbox = new GameObject(new Vector(this.GO.center.x - 13, this.GO.center.y - 18), new Vector(26, 18), false, false, false);
+        hitbox.velocity.x = this.direction == "right" ? 1200 : -1200;
 
+        hitbox.image = Sprites.Attacks.KiBall;
+
+        hitbox.TouchEnter.AddListener((gameObject) => {
+            // if (gameObject.tag == this.target) {
+            //     gameObject.CombatManager.Damage(this.abilityDamage[2]);
+            // }
+
+            if (this.GO == gameObject || this.Hitbox == gameObject || !gameObject.collidable) return;
+
+            this.scene.Remove(hitbox);
+
+            let exploRadius = 100;
+
+            let explosionAnimation = new _Animation(Sprites.Attacks.KiBlast, 20);
+            let explosion = new Particle(new Vector(hitbox.center.x - exploRadius, hitbox.center.y - exploRadius), new Vector(exploRadius * 2, exploRadius * 2), explosionAnimation, true);
+
+            let explosionHitbox = new Circle(new Vector(explosion.position.x + explosion.scale.x / 2, explosion.position.y + explosion.scale.y / 2), exploRadius);
+
+            this.scene.AddParticles(explosion);
+
+            let hits = GameObjectsInCircle(explosionHitbox);
+
+            for (let hit of hits) {
+                if (hit.tag == this.target) hit.CombatManager.Damage(this.abilityDamage[1]);
+            }
+        });
+
+        this.scene.Add(hitbox);
+
+        setTimeout(() => {
+            this.debounce = false;
+
+        }, this.#ability1Duration);
     }
 
     // energy beam
     Ability2() {
-        
+        this.debounce = false;
     }
 }
 
 class Nythan extends Player {
-    #ability1Duration = 750;
+    #ability1Duration = 500;
+    #ability2Duration = 750;
 
     constructor(position, ID, scene) {
         super(position, ID, scene, CharacterAnimations.Nythan, CharacterStats.Nythan);
@@ -214,16 +285,26 @@ class Nythan extends Player {
 
     // flames
     Ability1() {
-
+        this.debounce = false;
     }
 
     // Flying air slash
     Ability2() {
-        let hitbox = new GameObject(new Vector(this.GO.position.x, this.GO.position.y), new Vector(this.GO.scale.y / 2, this.GO.scale.y), false, false, false);
+        let hitboxH = this.GO.scale.y * 1.5;
+        let hitboxW = hitboxH / 2;
+
+        let hitboxPosition;
+
+        if (this.direction == "right") hitboxPosition = new Vector(this.GO.position.x, this.GO.center.y - hitboxH / 2);
+        else hitboxPosition = new Vector(this.GO.position.x, this.GO.center.y - hitboxH / 2);
+
+        let hitbox = new GameObject(hitboxPosition, new Vector(hitboxW, hitboxH), false, false, false);
         hitbox.image = Sprites.Attacks.FlyingSlash;
         hitbox.velocity.x = this.direction == "right" ? 800 : -800;
         hitbox.image.flipX = this.direction == "right" ? false : true;
 
+        Debug.AddRectangle(hitbox);
+        
         let hits = [];
 
         hitbox.TouchEnter.AddListener((gameObject) => {
@@ -236,16 +317,17 @@ class Nythan extends Player {
         this.scene.Add(hitbox);
 
         setTimeout(() => {
+            Debug.RemoveRectangle(hitbox);
             this.scene.Remove(hitbox);
             this.debounce = false;
         
-        }, this.#ability1Duration);
+        }, this.#ability2Duration);
     }
 }
 
 class Eryx extends Player {
     #ability1Duration = 800;
-    #ability2Duration = 1500;
+    #ability2Duration = 750;
 
     #tackleSpeed = 2200;
 
@@ -278,7 +360,40 @@ class Eryx extends Player {
 
     // Shockwave punch
     Ability2() {
+        let image = Sprites.Attacks.ShockwavePunch;
+
+        let hitboxH = this.GO.scale.y * 1.5;
+        let hitboxW = hitboxH * image.width / image.height;
+
+        let hitboxPosition;
+
+        if (this.direction == "right") hitboxPosition = new Vector(this.GO.position.x, this.GO.center.y - hitboxH / 2);
+        else hitboxPosition = new Vector(this.GO.position.x - hitboxW /2 , this.GO.center.y - hitboxH / 2);
+
+        let hitbox = new GameObject(hitboxPosition, new Vector(hitboxW, hitboxH), false, false, false);
+        hitbox.image = image;
+        hitbox.velocity.x = this.direction == "right" ? 600 : -600;
+        hitbox.image.flipX = this.direction == "right" ? false : true;
+
+        Debug.AddRectangle(hitbox);
+
+        let hits = [];
+
+        hitbox.TouchEnter.AddListener((gameObject) => {
+            if (hits.includes(gameObject)) return;
+            hits.push(gameObject);
+
+            if (gameObject.tag == this.target) gameObject.CombatManager.Damage(this.abilityDamage[2]);
+        });
+
+        this.scene.Add(hitbox);
+
+        setTimeout(() => {
+            Debug.RemoveRectangle(hitbox);
+            this.scene.Remove(hitbox);
+            this.debounce = false;
         
+        }, this.#ability2Duration);
     }
 }
 

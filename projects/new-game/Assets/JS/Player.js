@@ -10,6 +10,8 @@ class Player extends UpdatesEachFrame {
     #ignoreNextEndL = false;
     #ignoreNextEndR = false;
 
+    #mobileJumping = false;
+
     constructor(position, scale, scene) {
         super();
 
@@ -29,19 +31,25 @@ class Player extends UpdatesEachFrame {
             }
         }
 
-        this.GameObject = new GameObject(position, scale);
+        this.GameObject = new GameObject(position, scale, false, true, true);
+        this.GameObject.collisionGroup = new CollisionGroup("player", ["kill"]);
         this.GameObject.layer = 3;
-        scene.Add(this.GameObject);
 
-        this.GameObject.CollisionEnter.AddListener((gameObject) => {
-            let name = gameObject.tag;
+        this.Hitbox = new GameObject(new Vector(position.x + 8, position.y + 8), new Vector(scale.x - 16, scale.y - 16), false, false, false);
+        this.Hitbox.opacity = 0;
 
-            if (name == "spikes" || name == "lava") {
+        scene.Add(this.GameObject, this.Hitbox);
+
+        this.GameObject.TouchEnter.AddListener((gameObject) => {
+            if (gameObject.tag == "portal") LevelComplete();
+        })
+
+        this.Hitbox.TouchEnter.AddListener((gameObject) => {
+            if (gameObject.tag == "spikes" || gameObject.tag == "lava") {
                 this.alive = false;
                 this.GameObject.opacity = 0;
                 RespawnButton.visible = true;
             }
-            else if (name == "portal") LevelComplete();
         });
 
         RespawnButton.Mouse1Down.AddListener(() => {
@@ -82,11 +90,15 @@ class Player extends UpdatesEachFrame {
         });
 
         JumpButton.TouchDown.AddListener(() => {
-            if (this.GameObject.collision.below) this.GameObject.velocity.y = -this.jumpPower;
+            this.#mobileJumping = true;
+        });
+
+        JumpButton.TouchEnd.AddListener(() => {
+            this.#mobileJumping = false;
         });
     }
 
-    Update() {
+    Update(delta) {
         if (!this.alive) return;
 
         // let mobileInput = 0;
@@ -98,7 +110,10 @@ class Player extends UpdatesEachFrame {
 
         let grounded = this.GameObject.collision.below;
 
-        if ((Input.GetAxisRaw("Vertical") > 0/* || JumpButton.mouseover */) && grounded) this.GameObject.velocity.y = -this.jumpPower;
+        if ((Input.GetAxisRaw("Vertical") > 0 || this.#mobileJumping)/* || JumpButton.mouseover */ && grounded) {
+            this.GameObject.velocity.y = -this.jumpPower;
+            this.grounded = false;
+        }
 
         if (this.GameObject.velocity.x > 0) this.direction = "right";
         else if (this.GameObject.velocity.x < 0) this.direction = "left";
@@ -109,5 +124,7 @@ class Player extends UpdatesEachFrame {
 
         let newAnimation = this.animations[this.direction][this.animation];
         if (this.GameObject.animation != newAnimation) this.GameObject.animation = newAnimation;
+
+        this.Hitbox.position = new Vector(this.GameObject.position.x + 8 + this.GameObject.velocity.x * delta, this.GameObject.position.y + 8 + this.GameObject.velocity.y * delta);
     }
 }

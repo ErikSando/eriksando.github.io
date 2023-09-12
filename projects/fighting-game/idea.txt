@@ -21,11 +21,16 @@ nythan (hardest):
 
 === FIGHTING GAME ===
 
-2 player mode
+2 player mode against human
 player 1: WASD, Q dash, E punch, R ability1, F ability2
 player 2: IJKL, U dash, O punch, P ability1, SemiColon ability2
 
 1 player mode against npc
+
+UI:
+start menu with character selected
+health bars
+cooldown indicators
 
 === Characters ===
 

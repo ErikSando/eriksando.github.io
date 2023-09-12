@@ -12,15 +12,13 @@ class Player extends UpdatesEachFrame {
     constructor(position) {
         super();
 
-        this.GameObject = new GameObject(position, new Vector(104, 144), false, false);
+        this.GameObject = new GameObject(position, new Vector(104, 144), false, false, false);
         this.GameObject.animation = new _Animation(Textures.player);
-        this.GameObject.useGravity = false;
         this.GameObject.alive = true;
 
-        this.Hitbox = new GameObject(new Vector(position.x + 32, position.y), new Vector(40, 144), false, false);
+        this.Hitbox = new GameObject(new Vector(position.x + 32, position.y), new Vector(40, 144), false, false, false);
         this.Hitbox.opacity = 0;
         this.Hitbox.tag = "player";
-        this.Hitbox.useGravity = false;
 
         this.Hitbox.hit = new _Event();
         this.Hitbox.hit.AddListener(() => this.Kill());

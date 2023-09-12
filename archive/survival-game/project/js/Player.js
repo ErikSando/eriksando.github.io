@@ -73,7 +73,7 @@ class Player {
         if (Input.left) this.dx -= this.speed;
         if (Input.right) this.dx += this.speed;
 
-        if (this.dy < maxFall) this.dy += gravity;
+        if (this.dy < maxFall) this.dy += gravity * dt;
 
         this.hitboxes = {
             x: {

@@ -48,13 +48,15 @@ class Player extends UpdatesEachFrame {
     Update() {
         this.GameObject.velocity.x = Input.GetAxisRaw("Horizontal") * this.speed;
 
-        if (Input.GetAxisRaw("Vertical") > 0 && this.GameObject.collision.below) this.GameObject.velocity.y = -this.jumpForce;
+        let grounded = this.GameObject.collision.below;
+
+        if (Input.GetAxisRaw("Vertical") > 0 && grounded) this.GameObject.velocity.y = -this.jumpForce;
 
         if (this.GameObject.velocity.x > 0) this.direction = "right";
         else if (this.GameObject.velocity.x < 0) this.direction = "left";
 
         this.animation = "idle";
-        if (this.GameObject.velocity.x != 0) this.animation = "run";
+        if (this.GameObject.velocity.x != 0 && grounded) this.animation = "run";
         if (this.GameObject.velocity.y > 0) this.animation = "fall";
         if (this.GameObject.velocity.y < 0) this.animation = "jump";
 

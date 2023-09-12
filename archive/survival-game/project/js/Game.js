@@ -40,7 +40,7 @@ const bgColour = {
     b: 250    
 }
 
-const gravity = 30;
+const gravity = 1800;
 const maxFall = 2400;
 
 const playerW = 48;
@@ -141,8 +141,8 @@ function startGame(newSave) {
     }, 15000);
 
     // Zombie and slime test
-    enemies.push(new Zombie(worldLength / 2 / tileSize, -128, playerW, playerH, null, 100, 20, 200, 600, 5));
-    enemies.push(new Slime(worldLength / 2 / tileSize, -128, playerW, 48, null, 50, 15, 200, 750, 5));
+    // enemies.push(new Zombie(worldLength / 2 / tileSize, -128, playerW, playerH, null, 100, 20, 200, 600, 5));
+    // enemies.push(new Slime(worldLength / 2 / tileSize, -128, playerW, 48, null, 50, 15, 200, 750, 5));
 
     window.onresize = () => {
         canvas.width = window.innerWidth;

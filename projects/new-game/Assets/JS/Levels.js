@@ -10,6 +10,8 @@ const BlockNames = {
     5: "portal"
 }
 
+const KillCollisionGroup = new CollisionGroup("kill", ["player"]);
+
 const BlockDetails = {
     0: {
         scale: new Vector(1, 1),
@@ -26,13 +28,15 @@ const BlockDetails = {
     2: {
         scale: new Vector(0.9375, 0.6875),
         offset: new Vector(0.03125, 0.325),
-        layer: 4
+        layer: 4,
+        kill: true
     },
 
     3: {
         scale: new Vector(1, 0.625),
         offset: new Vector(0, 0.375),
-        layer: 4
+        layer: 4,
+        kill: true
     },
 
     4: {
@@ -96,6 +100,8 @@ for (let level in LevelData) {
             block.tag = name;
             block.collidable = collidable;
             block.layer = layer;
+
+            if ("kill" in BlockDetails[tile]) block.collisionGroup = KillCollisionGroup;
 
             if (hasAnimation) {
                 let animation = new _Animation(Textures.blocks[name]);
