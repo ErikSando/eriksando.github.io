@@ -28,13 +28,11 @@ class Bullet extends UpdatesEachFrame {
 
     Update(delta) {
         let raycastInfo = new RaycastInfo([this.GameObject, this.parent], true);
-        let hit = Raycast(this.GameObject.center, this.GameObject.center.plus(this.GameObject.velocity.multiplied(delta)), raycastInfo);
+        let hit = Raycast(this.GameObject.center, this.GameObject.center.plus(this.GameObject.velocity.multiplied(delta)), this.GameObject.velocity.magnitude * delta, raycastInfo);
 
-        if (hit.hit && hit.hit.tag != this.parentTag) {
-            if (!hit.hit.hit) return;
-            
+        if (hit && hit.hit.onHit && hit.hit.tag != this.parentTag) {
             this.removed = true;
-            hit.hit.Invoke();
+            hit.hit.onHit.Invoke();
             World.Remove(this.GameObject);
             this.Remove();
         }

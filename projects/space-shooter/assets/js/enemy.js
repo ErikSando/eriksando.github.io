@@ -26,8 +26,8 @@ class Enemy extends UpdatesEachFrame {
         this.Hitbox.tag = "enemy";
         this.Hitbox.useGravity = false;
 
-        this.Hitbox.hit = new _Event();
-        this.Hitbox.hit.AddListener(() => this.Kill());
+        this.Hitbox.onHit = new _Event();
+        this.Hitbox.onHit.AddListener(() => this.Kill());
 
         this.Hitbox.TouchEnter.AddListener((gameObject) => {
             if (gameObject.tag == "border") this.Kill();
@@ -118,7 +118,7 @@ class Enemy extends UpdatesEachFrame {
             this.#timeSinceLastShot = 0;
 
             let bulletPosition = this.GameObject.center.plus(this.GameObject.direction.forward().multiplied(65)).minus(this.GameObject.direction.left().multiplied(3));
-            let bullet = new Bullet(bulletPosition, this.GameObject, "enemy", this.bulletSpeed, this.bulletSpread);
+            new Bullet(bulletPosition, this.GameObject, "enemy", this.bulletSpeed, this.bulletSpread);
         }
 
         this.GameObject.velocity = this.GameObject.direction.forward().multiplied(this.speed);
