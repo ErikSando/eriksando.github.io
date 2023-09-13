@@ -26,6 +26,11 @@ const shadowColour = "rgb(50, 50, 50)";
 Game.Settings.BackgroundColour = drawShadows ? shadowColour : backgroundColour;
 
 Game.Loaded.AddListener(() => {
+    Game.Camera.position = new Vector(
+        player.GameObject.position.x - (Game.Settings.NativeWidth - player.GameObject.scale.x) / 2,
+        player.GameObject.position.y - (Game.Settings.NativeHeight - player.GameObject.scale.y) / 2
+    );
+
     Game.CreateCanvas();
     Game.Start();
 });
@@ -41,7 +46,7 @@ Game.PostUpdate.AddListener((delta) => {
     Game.Camera.position = Vector.Lerp(
         Game.Camera.position,
         targetPosition,
-        10 * delta
+        5 * delta
     );
 });
 
@@ -132,7 +137,6 @@ Game.PreDraw.AddListener(() => {
         return a.angle - b.angle;
     });
 
-    // draw the visible portion of the world
     if (drawShadows && intersects.length) {
         ctx.fillStyle = backgroundColour;
         ctx.lineWidth = 2;

@@ -1,0 +1,4 @@
+wall running: raycast to check for walls on left and right
+
+sliding: disable movement, lower drag, make player smaller
+

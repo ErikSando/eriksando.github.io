@@ -18,6 +18,6 @@ class Player extends UpdatesEachFrame {
 
         if (Input.GetAxisRaw("Vertical") > 0 && this.GameObject.collision.below) this.GameObject.velocity.y = -this.jumpPower;
     
-        if (this.GameObject.position.y > 1500) this.GameObject.position = this.startPosition.copy();
+        if (this.GameObject.position.y > 1800) this.GameObject.position = this.startPosition.copy();
     }
 }
