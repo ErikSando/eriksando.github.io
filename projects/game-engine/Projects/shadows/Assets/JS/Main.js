@@ -17,8 +17,8 @@ Game.LoadScene(scene);
 
 const player = new Player(new Vector(500, 700), scene);
 
-const drawShadows = true;
-const drawLines = false;
+let drawShadows = true;
+let drawLines = false;
 
 const backgroundColour = "rgb(110, 120, 130)";
 const shadowColour = "rgb(50, 50, 50)";
@@ -108,7 +108,7 @@ Game.PreDraw.AddListener(() => {
         angles.push(angle - 0.00001, angle, angle + 0.00001);
     }
 
-    let intersects = [];
+    let intersections = [];
 
     for (let angle of angles) {
         let ray = new Ray(viewPoint, angle);
@@ -130,21 +130,20 @@ Game.PreDraw.AddListener(() => {
         if (!intersect) continue;
 
         intersect.angle = angle;
-        intersects.push(intersect);
+        intersections.push(intersect);
     }
 
-    intersects = intersects.sort(function (a, b) {
+    intersections = intersections.sort(function (a, b) {
         return a.angle - b.angle;
     });
 
-    if (drawShadows && intersects.length) {
+    if (drawShadows && intersections.length) {
         ctx.fillStyle = backgroundColour;
-        ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.moveTo(intersects[0].x, intersects[0].y);
+        ctx.moveTo(intersections[0].x, intersections[0].y);
 
-        for (let i = 1; i < intersects.length; i++) {
-            ctx.lineTo(intersects[i].x, intersects[i].y);
+        for (let i = 1; i < intersections.length; i++) {
+            ctx.lineTo(intersections[i].x, intersections[i].y);
         }
 
         ctx.fill();
@@ -154,10 +153,10 @@ Game.PreDraw.AddListener(() => {
         ctx.strokeStyle = "white";
         ctx.lineWidth = 1;
 
-		for(let i = 0; i < intersects.length; i++){
+		for(let i = 0; i < intersections.length; i++){
 			ctx.beginPath();
 			ctx.moveTo(viewPoint.x, viewPoint.y,);
-			ctx.lineTo(intersects[i].x, intersects[i].y);
+			ctx.lineTo(intersections[i].x, intersections[i].y);
 			ctx.stroke();
 		}
     }

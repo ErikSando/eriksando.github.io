@@ -1,5 +1,11 @@
 class ComputerPlayer extends UpdatesEachFrame {
+    constructor(position, ID, scene, animations, stats) {
+        super();
+    }
 
+    Update(delta) {
+        
+    }
 }
 
 class ComputerErik extends ComputerPlayer {

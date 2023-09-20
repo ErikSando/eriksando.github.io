@@ -105,13 +105,9 @@ class Player extends UpdatesEachFrame {
         }
 
         // Slow down if dashing
-        if (this.GO.velocity.x > this.speed) {
+        if (this.GO.velocity.x > this.speed || this.GO.velocity.x < -this.speed) {
             this.animation = "dash";
-            this.GO.velocity.x -= 50;
-        
-        } else if (this.GO.velocity.x < -this.speed) {
-            this.animation = "dash";
-            this.GO.velocity.x += 50;
+            this.GO.velocity.x = Lerp(this.GO.velocity.x, 0, 2.5 * delta);
         
         } else this.dashing = false;
 
@@ -137,14 +133,14 @@ class Player extends UpdatesEachFrame {
         this.#cooldownProgress.ability[1] = Clamp(this.#cooldownProgress.ability[1] + delta, 0, this.cooldowns.ability[1]);
         this.#cooldownProgress.ability[2] = Clamp(this.#cooldownProgress.ability[2] + delta, 0, this.cooldowns.ability[2]);
 
-        if (Input.GetKey(this.keybinds.dash) && this.#cooldownProgress.dash >= this.cooldowns.dash && !this.debounce) {
+        if (Input.GetKeyDown(this.keybinds.dash) && this.#cooldownProgress.dash >= this.cooldowns.dash && !this.debounce) {
             this.#cooldownProgress.dash = 0;
 
             this.GO.velocity.x = this.direction == "right" ? this.dashForce : -this.dashForce;
             this.dashing = true;
         }
 
-        if (Input.GetKey(this.keybinds.punch) && this.#cooldownProgress.punch >= this.cooldowns.punch && !this.debounce) {
+        if (Input.GetKeyDown(this.keybinds.punch) && this.#cooldownProgress.punch >= this.cooldowns.punch && !this.debounce) {
             this.#cooldownProgress.punch = 0;
 
             let punchHitbox;
