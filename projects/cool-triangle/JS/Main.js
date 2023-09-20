@@ -1,13 +1,22 @@
+const DegreesToRadians = Math.PI / 180;
+
 class Vector {
     constructor(x, y) {
         this.x = x;
         this.y = y;
     }
+
+    add(v) {
+        return new Vector(this.x + v.x, this.y + v.y);
+    }
+
+    multiply(n) {
+        return new Vector(this.x * n, this.y * n);
+    }
 }
 
-Vector.Midpoint = (v1, v2) => {
-    return new Vector((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
-}
+Vector.Midpoint = (v1, v2) => new Vector((v1.x + v2.x) / 2, (v1.y + v2.y) / 2);
+Vector.FromAngle = (angle) => new Vector(Math.cos((angle - 90) * DegreesToRadians), Math.sin((angle - 90) * DegreesToRadians));
 
 class Triangle {
     colour = "white";
@@ -73,19 +82,23 @@ window.addEventListener("load", () => {
     window.addEventListener("resize", Resize);
     Resize();
 
-    const triangleVertices = [
-        new Vector(960, 100),
-        new Vector(452, 980),
-        new Vector(1468, 980)
-    ]
+    let sideLength = 1000;
 
-    const triangle = new Triangle(triangleVertices[0], triangleVertices[1], triangleVertices[2]);
+    // equilaterial triangle
+    let a = new Vector(960, 100);
+    let b = Vector.FromAngle(150).multiply(sideLength).add(a);
+    let c = Vector.FromAngle(210).multiply(sideLength).add(a);
+
+    let triangleVertices = [a, b, c];
+
+    const triangle = new Triangle(a, b, c);
 
     let r1 = Math.random();
     let r2 = Math.random();
 
-    let firstPointX = (1 - Math.sqrt(r1)) * 960 + (Math.sqrt(r1) * (1 - r2)) * 452 + (Math.sqrt(r1) * r2) * 1468;
-    let firstPointY = (1 - Math.sqrt(r1)) * 100 + (Math.sqrt(r1) * (1 - r2)) * 980 + (Math.sqrt(r1) * r2) * 980;
+    // random point inside the triangle
+    let firstPointX = (1 - Math.sqrt(r1)) * a.x + (Math.sqrt(r1) * (1 - r2)) * b.x + (Math.sqrt(r1) * r2) * c.x;
+    let firstPointY = (1 - Math.sqrt(r1)) * a.y + (Math.sqrt(r1) * (1 - r2)) * b.y + (Math.sqrt(r1) * r2) * c.y;
 
     let firstPoint = new Circle(new Vector(firstPointX, firstPointY), 0.5);
 
@@ -93,15 +106,18 @@ window.addEventListener("load", () => {
 
     let lastPoint = firstPoint;
 
-    function Update() {
-        for (let i = 0; i < newPointsPerUpdate; i++) {
-            let vertex = triangleVertices[Math.floor(Math.random() * triangleVertices.length)];
-            let midpoint = Vector.Midpoint(lastPoint.position, vertex);
-            let newPoint = new Circle(midpoint, 0.5);
-            lastPoint = newPoint;
+    function GetNewPoint() {
+        // get the mid point of the last point and a random vertex of the triangle
+        let vertex = triangleVertices[Math.floor(Math.random() * triangleVertices.length)];
+        let midpoint = Vector.Midpoint(lastPoint.position, vertex);
+        let newPoint = new Circle(midpoint, 0.5);
+        lastPoint = newPoint;
+        objects.push(newPoint);   
+    }
 
-            objects.push(newPoint);
-        }
+    function Update() {
+        // get the mid point of the last point and a random vertex of the triangle
+        for (let i = 0; i < newPointsPerUpdate; i++) GetNewPoint();
         
         Draw();
 
