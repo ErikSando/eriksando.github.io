@@ -40,14 +40,14 @@ class Player extends UpdatesEachFrame {
         World.AddParticles(explosion);
 
         World.Remove(this.GameObject, this.Hitbox);
-        this.Remove();
+        this.RemoveFromGame();
         delete this;
     }
 
     Update(delta) {
         this.#timeSinceLastShot += delta;
 
-        this.GameObject.orientation += Input.GetAxisRaw("Horizontal") * this.steeringSpeed * delta;
+        this.GameObject.orientation += Input.GetAxisRaw("Horizontal") * this.steeringSpeed * delta * DegreesToRadians;
 
         this.speed = this.cruisingSpeed;
         if (Input.GetKey(KeyCode.KeyW) || Input.GetKey(KeyCode.ArrowUp)) {

@@ -2,6 +2,11 @@
     background:black;
 }
 
+html {
+    margin: 0;
+    padding: 0;
+}
+
 canvas {
     margin: auto;
     position: absolute;

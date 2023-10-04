@@ -48,7 +48,7 @@ particleObject.opacity = 1;
 particleObject.animation = particleAnimation;
 particleObject.tag = "Fire";
 
-const scene1 = new Scene("Main", [ground, block1, block2, block3, particleObject, player.GameObject], [FPS, ResetPositionButton]);
+const scene1 = new Scene([ground, block1, block2, block3, particleObject, player.GameObject], [FPS, ResetPositionButton]);
 
 Game.LoadScene(scene1);
 

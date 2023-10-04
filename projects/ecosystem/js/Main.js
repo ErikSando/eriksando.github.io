@@ -122,14 +122,9 @@ window.addEventListener("load", () => {
 
         Stopwatch.Update(delta);
 
-        for (let p of prey) {
-            p.Update(delta);
-        }
-
-        for (let p of predators) {
-            p.Update(delta);
-        }
-
+        for (let p of prey) p.Update(delta);
+        for (let p of predators) p.Update(delta);
+        
         if (timestamp - lastFood > 400 / foodSpawnRate / simulationSpeed) {
             let foodToSpawn = (timestamp - lastFood) / (400 / foodSpawnRate / simulationSpeed);
 
@@ -151,7 +146,7 @@ window.addEventListener("load", () => {
         totalPredators.textContent = SimulationInfo.totalPredators;
         runtime.textContent = Stopwatch.GetTime();
 
-        if (timestamp - lastAverageTest > 3000) {
+        if (timestamp - lastAverageTest > 3000 / simulationSpeed) {
             AddData();
 
             lastAverageTest = timestamp;
@@ -246,6 +241,7 @@ window.addEventListener("load", () => {
         let vision = 0;
         let energy = 0;
         let cloneTime = 0;
+        let total = 0;
 
         for (let p of prey) {
             if (p.energy <= 0) continue;
@@ -254,9 +250,8 @@ window.addEventListener("load", () => {
             vision += p.vision;
             energy += p.maxEnergy;
             cloneTime += p.cloneTime;
+            total++;
         }
-
-        total = prey.length;
 
         return {
             speed: Number((speed / total).toFixed(1)),
@@ -279,7 +274,7 @@ window.addEventListener("load", () => {
             cloneTime += p.cloneTime;
         }
 
-        total = predators.length;
+        let total = predators.length;
 
         return {
             speed: Number((speed / total).toFixed(1)),

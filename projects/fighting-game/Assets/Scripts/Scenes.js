@@ -252,5 +252,5 @@ const PlayUI = [
     dashCooldown2, dashCooldownText2, punchCooldown2, punchCooldownText2, ability1Text2, ability1Cooldown2, ability2Text2, ability2Cooldown2
 ];
 
-const StartMenu = new Scene("Start", [], StartMenuUI);
-const PlayScene = new Scene("Play", PlayGameObjects, PlayUI);
+const StartMenu = new Scene([], StartMenuUI);
+const PlayScene = new Scene(PlayGameObjects, PlayUI);

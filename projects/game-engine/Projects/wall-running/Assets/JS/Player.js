@@ -35,18 +35,20 @@ class Player extends UpdatesEachFrame {
 
         if (grounded) {
             this.GameObject.drag = this.groundDrag;
+
         } else {
             this.GameObject.drag = this.airDrag;
             speed *= this.airMultiplier;
         }
 
-        let sliding = Input.GetKey(KeyCode.ShiftLeft);
+        let slideKey = Input.GetKey(KeyCode.ShiftLeft);
+        let sliding = slideKey;
 
-        if (sliding) {
+        if (slideKey) {
             if (!this.slidingLast) {
                 this.GameObject.scale.y = 50;
                 this.GameObject.position.y += 50;
-                this.GameObject.velocity.x *= 1.2;
+                this.GameObject.velocity.x *= 1.1; // make it so sliding adds a force but u cant exit the slide with a high velocity to prevent super speed from sliding
             }
 
             this.GameObject.drag = this.slidingDrag;
@@ -54,12 +56,26 @@ class Player extends UpdatesEachFrame {
         
         } else {
             if (this.GameObject.scale.y < 100) {
-                // add check for object above player
+                let objectsAbove = GameObjectsInRect(
+                    new Rectangle(
+                        new Vector(this.GameObject.position.x, this.GameObject.position.y - this.GameObject.scale.y),
+                        this.GameObject.scale,
+                        [this.GameObject]
+                    )
+                );
 
-                this.GameObject.position.y -= 50;
+                if (!objectsAbove.length) {
+                    this.GameObject.position.y -= 50;
+                    this.GameObject.scale.y = 100;
+
+                    sliding = false;
+
+                } else {
+                    this.GameObject.drag = this.slidingDrag;
+                    speed *= this.slideMultiplier;
+                    sliding = true;
+                }
             }
-
-            this.GameObject.scale.y = 100;
         }
 
         this.slidingLast = sliding;
@@ -86,7 +102,7 @@ class Player extends UpdatesEachFrame {
             wallRunning = true;
         }
 
-        if (Input.GetAxisRaw("Vertical") > 0 && (grounded || wallRunning)) {
+        if (Input.GetAxisRaw("Vertical") > 0 && (grounded || wallRunning) && !sliding) {
             if (wallRunning) this.GameObject.velocity.y = 0;
 
             this.GameObject.velocity.add(jumpDirection.multiplied(this.jumpPower));

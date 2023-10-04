@@ -4,7 +4,7 @@ const obj1 = new GameObject(new Vector(500, 780), new Vector(100, 100), false, t
 const obj2 = new GameObject(new Vector(650, 780), new Vector(100, 100), false, true, true, true);
 const obj3 = new GameObject(new Vector(575, 680), new Vector(100, 100), false, true, true, true);
 
-const scene = new Scene("Main", [ground, obj1, obj2, obj3]);
+const scene = new Scene([ground, obj1, obj2, obj3]);
 
 Game.LoadScene(scene);
 

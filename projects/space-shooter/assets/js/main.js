@@ -32,7 +32,7 @@ BorderWarning3.opacity = 0.1;
 BorderWarning4.colour = "red";
 BorderWarning4.opacity = 0.1;
 
-const World = new Scene("World", [Border1, Border2, Border3, Border4, BorderWarning1, BorderWarning2, BorderWarning3, BorderWarning4]);
+const World = new Scene([Border1, Border2, Border3, Border4, BorderWarning1, BorderWarning2, BorderWarning3, BorderWarning4]);
 const player = new Player(new Vector(WorldSize.x / 2 - 52, WorldSize.y / 2 - 72));
 
 const enemies = [];

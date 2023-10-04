@@ -80,7 +80,7 @@ const OnWall = {
 }
 
 for (let level in LevelData) {
-    Levels[level] = new Scene(level);
+    Levels[level] = new Scene();
 
     let levelData = LevelData[level];
 
@@ -128,7 +128,7 @@ for (let level in LevelData) {
     }
 }
 
-const EndScene = new Scene("End");
+const EndScene = new Scene();
 
 for (let x = 0; x < Game.Settings.NativeWidth / blockSize; x++) {
     for (let y = 0; y < Game.Settings.NativeHeight / blockSize; y++) {

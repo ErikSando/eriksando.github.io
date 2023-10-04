@@ -1,0 +1,429 @@
+might want to add later
+
+class UIObject {
+    visible = true;
+    bgColour = "rgb(150, 150, 150)";
+    bgOpacity = 1;
+    outlineColour = "rgb(80, 80, 80)";
+    outlineThickness = 1;
+    outlineOpacity = 1;
+
+    constructor(position = Vector.zero(), scale = Vector.zero(), layer = 1) {
+        this.position = position;
+        this.scale = scale;
+        this.layer = layer;
+    }
+
+    Draw(ctx) {
+        if (this.outlineThickness > 0 && this.outlineOpacity > 0) {
+            ctx.globalAlpha = this.outlineOpacity;
+            ctx.strokeStyle = this.outlineColour;
+            ctx.lineWidth = this.outlineThickness;
+
+            ctx.strokeRect(
+                this.position.x - this.outlineThickness / 2,
+                this.position.y - this.outlineThickness / 2,
+                this.scale.x + this.outlineThickness,
+                this.scale.y + this.outlineThickness
+            );
+        }
+
+        ctx.globalAlpha = this.bgOpacity;
+        ctx.fillStyle = this.bgColour;
+        ctx.fillRect(this.position.x, this.position.y, this.scale.x, this.scale.y);
+    }
+}
+
+class Button extends UIObject {
+    enabled = true;
+
+    mouseover = false;
+
+    Mouse1Down = new _Event();
+    Mouse1Up = new _Event();
+
+    Mouse2Down = new _Event();
+    Mouse2Up = new _Event();
+
+    Mouse3Down = new _Event();
+    Mouse3Up = new _Event();
+
+    MouseEnter = new _Event();
+    MouseExit = new _Event();
+
+    TouchDown = new _Event();
+    TouchUp = new _Event();
+
+    TouchEnter = new _Event();
+    TouchExit = new _Event();
+
+    TouchStart = new _Event();
+    TouchEnd = new _Event();
+
+    constructor(position, scale, layer = 1) {
+        super(position, scale, layer);
+    }
+}
+
+class TextLabel extends UIObject {
+    font = "Arial";
+    textSize = 25;
+    textColour = "white";
+    textOpacity = 1;
+    textStrokeOpacity = 0;
+    textStrokeColour = "black";
+    textStrokeThickness = 1;
+    textAlignX = TextAlignX.Center;
+    textAlignY = TextAlignY.Center;
+
+    constructor(position, scale, text = "", layer = 1) {
+        super(position, scale, layer);
+
+        this.text = text;
+
+        this.bgOpacity = 0;
+        this.outlineOpacity = 0;
+    }
+
+    Draw(ctx) {
+        if (!this.visible) return;
+
+        super.Draw(ctx);
+
+        ctx.font = this.textSize + "px " + this.font;
+
+        let textW = Math.min(this.scale.x, ctx.measureText(this.text).width);
+        let textX = this.position.x + this.scale.x / 2 - textW / 2;
+
+        ctx.textBaseline = "middle";
+        let textY = this.position.y + this.scale.y / 2 + this.textSize / 15;
+
+        if (this.textAlignX == TextAlignX.Left) {
+            textX = this.position.x;
+
+        } else if (this.textAlignX == TextAlignX.Right) {
+            textX = this.position.x = this.scale.x - textW;
+        }
+
+        if (this.textAlignY == TextAlignY.Top) {
+            ctx.textBaseline = "top";
+            textY = this.position.y;
+
+        } else if (this.textAlignY == TextAlignY.Bottom) {
+            ctx.textBaseline = "bottom";
+            textY = this.position.y + this.scale.y;
+        }
+
+        ctx.globalAlpha = this.textStrokeOpacity;
+        ctx.strokeStyle = this.textStrokeColour;
+        ctx.lineWidth = this.textStrokeThickness * 2;
+        ctx.strokeText(this.text, textX, textY, this.scale.x);
+
+        ctx.globalAlpha = this.textOpacity;
+        ctx.fillStyle = this.textColour;
+        ctx.fillText(this.text, textX, textY, this.scale.x);
+    }
+}
+
+class TextButton extends Button {
+    font = "Arial";
+    textSize = 25;
+    textColour = "white";
+    textOpacity = 1;
+    textStrokeOpacity = 0;
+    textStrokeColour = "black";
+    textStrokeThickness = 1;
+    textAlignX = TextAlignX.Center;
+    textAlignY = TextAlignY.Center;
+
+    constructor(position, scale, text = "", layer = 1) {
+        super(position, scale, layer);
+
+        this.text = text;
+    }
+
+    Draw(ctx) {
+        if (!this.visible) return;
+
+        super.Draw(ctx);
+
+        ctx.font = this.textSize + "px " + this.font;
+
+        let textW = Math.min(this.scale.x, ctx.measureText(this.text).width);
+        let textX = this.position.x + this.scale.x / 2 - textW / 2;
+        
+        ctx.textBaseline = "middle";
+        let textY = this.position.y + this.scale.y / 2 + this.textSize / 15;
+
+        if (this.textAlignX == TextAlignX.Left) {
+            textX = this.position.x;
+
+        } else if (this.textAlignX == TextAlignX.Right) {
+            textX = this.position.x = this.scale.x - textW;
+        }
+
+        if (this.textAlignY == TextAlignY.Top) {
+            ctx.textBaseline = "top";
+            textY = this.position.y;
+
+        } else if (this.textAlignY == TextAlignY.Bottom) {
+            textY = this.position.y + this.scale.y;
+        }
+
+        ctx.globalAlpha = this.textStrokeOpacity;
+        ctx.strokeStyle = this.textStrokeColour;
+        ctx.lineWidth = this.textStrokeThickness;
+        ctx.strokeText(this.text, textX, textY, this.scale.x);
+
+        ctx.globalAlpha = this.textOpacity;
+        ctx.fillStyle = this.textColour;
+        ctx.fillText(this.text, textX, textY, this.scale.x);
+    }
+}
+
+class ImageLabel extends UIObject {
+    imageOpacity = 1;
+
+    constructor(position, scale, image = new Image(), layer = 1) {
+        super(position, scale, layer);
+
+        this.image = image;
+
+        this.bgOpacity = 0;
+        this.outlineThickness = 0;
+    }
+
+    Draw(ctx) {
+        if (!this.visible) return;
+
+        super.Draw(ctx);
+
+        ctx.globalAlpha = this.imageOpacity;
+        ctx.drawImage(this.image, this.position.x, this.position.y, this.scale.x, this.scale.y);
+    }
+}
+
+class ImageButton extends Button {
+    imageOpacity = 1;
+
+    constructor(position, scale, image = new Image(), layer = 1) {
+        super(position, scale, layer);
+
+        this.image = image;
+
+        this.bgOpacity = 0;
+        this.outlineThickness = 0;
+    }
+
+    Draw(ctx) {
+        if (!this.visible) return;
+
+        super.Draw(ctx);
+
+        ctx.globalAlpha = this.imageOpacity;
+        ctx.drawImage(this.image, this.position.x, this.position.y, this.scale.x, this.scale.y);
+    }
+}
+
+
+
+
+
+class Scene {
+    GameObjects = [];
+    #uiLayers = {}
+
+    //GameObjectsAdded = new _Event();      -> invokes with an array of all the game objects added
+    //GameObjectsRemoved = new _Event();    -> invokes with an array of all the game objects removed
+    //GameObjectsChanged = new _Event();    -> invokes with no arguments, just an indication of when a game object is added/removed.
+
+    constructor(GameObjects = [], UIObjects = []) {
+        this.GameObjects = GameObjects;
+
+        for (let uiObject of UIObjects) {
+            if (!this.#uiLayers[uiObject.layer]) this.#uiLayers[uiObject.layer] = [];
+
+            this.#uiLayers[uiObject.layer].push(uiObject);
+        }
+    }
+
+    Add(...gameObjects) {
+        let added = false;
+
+        for (let gameObject of gameObjects) {
+            if (!(gameObject instanceof GameObject)) continue;
+
+            this.GameObjects.push(gameObject);
+
+            added = true;
+        }
+
+        if (!added && gameObjects.length) console.error("Could not add game object/s.");
+    }
+
+    Remove(...gameObjects) {
+        let removed = false;
+
+        for (let gameObject of gameObjects) {
+            let index = this.GameObjects.indexOf(gameObject);
+
+            if (!this.GameObjects[index]) continue;
+
+            this.GameObjects[index].Destroying.Invoke();
+            this.GameObjects.splice(index, 1);
+
+            removed = true;
+        }
+
+        if (!removed && gameObjects.length) console.error("Could not find game object to remove.");
+    }
+
+    AddUI(...uiObjects) {
+        for (let uiObject of uiObjects) {
+            if (!(uiObject instanceof UIObject)) {
+                console.error("Specified UI object is not a UIObject, cannot add to scene.");
+                continue;
+            }
+
+            if (!this.#uiLayers[uiObject.layer]) this.#uiLayers[uiObject.layer] = [];
+            this.#uiLayers[uiObject.layer].push(uiObject);
+        }
+    }
+
+    RemoveUI(...uiObjects) {
+        let removed = false;
+
+        for (let uiObject of uiObjects) {
+            let index = this.#uiLayers[uiObject.layer].indexOf(uiObject);
+            let layer = uiObject.layer;
+
+            if (!this.#uiLayers[layer][index]) continue;
+            removed = true;
+
+            this.#uiLayers[layer].splice(index, 1);
+
+            if (!this.#uiLayers[layer].length) delete this.#uiLayers[layer];
+        }
+
+        if (!removed) console.error("Could not find game object to remove.");
+    }
+
+    ClearUI() {
+        this.#uiLayers = {}
+    }
+
+    ReplaceUI(...uiObjects) {
+        this.ClearUI();
+
+        for (let uiObject of uiObjects) this.AddUI(uiObject);
+    }
+
+    ReplaceUIArray(uiObjects) {
+        this.ClearUI();
+
+        for (let uiObject of uiObjects) this.AddUI(uiObject);
+    }
+
+    AddArray(gameObjects) {
+        for (let gameObject of gameObjects) this.Add(gameObject);
+    }
+
+    RemoveArray(gameObjects) {
+        for (let gameObject of gameObjects) this.Remove(gameObject);
+    }
+
+    AddUIArray(uiObjects) {
+        for (let uiObject of uiObjects) this.AddUI(uiObject);
+    }
+
+    RemoveUIArray(uiObjects) {
+        for (let uiObject of uiObjects) this.RemoveUI(uiObject);
+    }
+
+    FindGameObjectByTag(tag) {
+        for (let gameObject of this.GameObjects) {
+            if (gameObject.tag == tag) return gameObject;
+        }
+    }
+
+    get UIObjects() {
+        let uiObjects = [];
+
+        for (let layer in this.#uiLayers) {
+            for (let uiObject of this.#uiLayers[layer]) uiObjects.push(uiObject);
+        }
+
+        return uiObjects;
+    }
+}
+
+
+
+    #CheckButton = (mousePos, uiObject) => {
+        if (!(uiObject instanceof Button) || !uiObject.visible || !uiObject.enabled) return false;
+
+        let mouseRect = {
+            position: mousePos,
+            scale: Vector.one()
+        }
+
+        return RectIntersection(mouseRect, uiObject);
+    }
+
+    #CheckMouseOver(mousePos, uiObject) {
+        let MouseRect = {
+            position: mousePos,
+            scale: Vector.one()
+        }
+
+        if (!(uiObject instanceof Button) || !uiObject.visible || !uiObject.enabled) return;
+
+        if (RectIntersection(MouseRect, uiObject)) {
+            if (uiObject.mouseover == false) uiObject.MouseEnter.Invoke();
+            uiObject.mouseover = true;
+
+            return;
+        }
+
+        if (uiObject.mouseover) uiObject.MouseExit.Invoke();
+        uiObject.mouseover = false;
+    }
+
+    #MouseDown = (e) => {
+        if (e.button == "0") this.Mouse1Down.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+        else if (e.button == "2") this.Mouse2Down.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+        else if (e.button == "1") this.Mouse3Down.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+
+        for (let uiObject of Game.scene.UIObjects) {
+            if (!this.#CheckButton(this.#MousePos, uiObject)) continue;
+
+            if (e.button == "0") uiObject.Mouse1Down.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+            else if (e.button == "2") uiObject.Mouse2Down.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+            else if (e.button == "3") uiObject.Mouse3Down.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+        }
+    }
+
+    #MouseUp = (e) => {
+        if (e.button == "0") this.Mouse1Up.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+        else if (e.button == "2") this.Mouse2Up.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+        else if (e.button == "1") this.Mouse3Up.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+
+        for (let uiObject of Game.scene.UIObjects) {
+            if (!this.#CheckButton(this.#MousePos, uiObject)) continue;
+
+            if (e.button == "0") uiObject.Mouse1Up.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+            else if (e.button == "2") uiObject.Mouse2Up.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+            else if (e.button == "3") uiObject.Mouse3Up.Invoke(this.#MousePos.copy(), e.shiftKey, e.ctrlKey, e.altKey);
+        }
+    }
+
+    #MouseMove = (e) => {
+        let canvas = Game.canvas;
+        let rect = canvas.getBoundingClientRect();
+        let scale = Game.Settings.NativeWidth / canvas.width;
+
+        this.#MousePos = new Vector((e.clientX - rect.x), (e.clientY - rect.y)).multiplied(scale);
+        this.MouseMove.Invoke(e.button, e.shiftKey, e.ctrlKey, e.altKey);
+
+        for (let uiObject of Game.scene.UIObjects) this.#CheckMouseOver(this.#MousePos, uiObject);
+    }

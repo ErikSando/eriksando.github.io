@@ -47,11 +47,6 @@ echo * {
 echo     background:black;
 echo }
 echo.
-echo html {
-echo     margin: 0;
-echo     padding: 0;
-echo }
-echo.
 echo canvas {
 echo     margin: auto;
 echo     position: absolute;

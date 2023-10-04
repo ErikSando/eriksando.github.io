@@ -3,6 +3,8 @@ const ground = new GameObject(new Vector(200, 800), new Vector(600, 100), true);
 const wall1 = new GameObject(new Vector(800, 300), new Vector(100, 600), true);
 const wall2 = new GameObject(new Vector(520, 200), new Vector(100, 480), true);
 
+const wall3 = new GameObject(new Vector(120, 620), new Vector(300, 100), true);
+
 const platform = new GameObject(new Vector(800, 200), new Vector(500, 100), true)
 
 const FPS = new TextLabel(new Vector(15, 15), new Vector(150, 50), "... FPS");
@@ -10,13 +12,13 @@ FPS.textSize = 35;
 FPS.textAlignX = TextAlignX.Left;
 FPS.textAlignY = TextAlignY.Top;
 
-const scene = new Scene("Main", [ground, wall1, wall2, platform], [FPS]);
+const scene = new Scene([ground, wall1, wall2, wall3, platform], [FPS]);
 
 Game.LoadScene(scene);
 
 const player = new Player(new Vector(500, 700), scene);
 
-const backgroundColour = "rgb(110, 120, 130)";
+let backgroundColour = "rgb(110, 120, 130)";
 
 Game.Settings.BackgroundColour = backgroundColour;
 

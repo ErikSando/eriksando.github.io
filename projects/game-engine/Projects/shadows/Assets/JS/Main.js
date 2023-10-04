@@ -11,17 +11,19 @@ FPS.textSize = 35;
 FPS.textAlignX = TextAlignX.Left;
 FPS.textAlignY = TextAlignY.Top;
 
-const scene = new Scene("Main", [ground1, ground2, wall0, wall1, wall2, wall3], [FPS]);
+const scene = new Scene([ground1, ground2, wall0, wall1, wall2, wall3], [FPS]);
 
-Game.LoadScene(scene);
+Game.scene = scene;
 
 const player = new Player(new Vector(500, 700), scene);
 
 let drawShadows = true;
 let drawLines = false;
+let drawIntersections = false;
 
-const backgroundColour = "rgb(110, 120, 130)";
-const shadowColour = "rgb(50, 50, 50)";
+let backgroundColour = "rgb(110, 120, 130)";
+let shadowColour = "rgb(50, 50, 50)";
+let intersectionColour = "red";
 
 Game.Settings.BackgroundColour = drawShadows ? shadowColour : backgroundColour;
 
@@ -43,39 +45,21 @@ Game.PostUpdate.AddListener((delta) => {
         player.GameObject.position.y - (Game.Settings.NativeHeight - player.GameObject.scale.y) / 2
     );
 
-    Game.Camera.position = Vector.Lerp(
-        Game.Camera.position,
-        targetPosition,
-        5 * delta
-    );
+    Game.Camera.position.lerp(targetPosition, 5 * delta);
 });
 
-Game.PreDraw.AddListener(() => {
+Game.PreDraw.AddListener((ctx) => {
     let viewPoint = player.GameObject.center;
-    
-    let ctx = Game.ctx;
-
     let walls = [];
-    let vpVertices = Game.ViewPort.vertices;
 
-    for (let gameObject of Game.GetGameObjects()) {
+    for (let gameObject of Game.scene.GameObjects) {
         if (gameObject == player.GameObject) continue;
         if (!RectIntersection(gameObject, Game.ViewPort)) continue;
-
-        walls.push(
-            new Line(gameObject.vertices.topLeft(), gameObject.vertices.topRight()),
-            new Line(gameObject.vertices.topRight(), gameObject.vertices.bottomRight()),
-            new Line(gameObject.vertices.bottomRight(), gameObject.vertices.bottomLeft()),
-            new Line(gameObject.vertices.bottomLeft(), gameObject.vertices.topLeft())
-        );
+    
+        for (let side of gameObject.GetSides()) walls.push(side);
     }
 
-    walls.push(
-        new Line(vpVertices.topLeft(), vpVertices.topRight()),
-        new Line(vpVertices.topRight(), vpVertices.bottomRight()),
-        new Line(vpVertices.bottomRight(), vpVertices.bottomLeft()),
-        new Line(vpVertices.bottomLeft(), vpVertices.topLeft()),
-    )
+    for (let side of Game.ViewPort.GetSides()) walls.push(side);
 
     let allPoints = [];
     
@@ -104,7 +88,6 @@ Game.PreDraw.AddListener(() => {
 
     for (let point of points) {
         let angle = Math.atan2(point.y - viewPoint.y, point.x - viewPoint.x);
-        point.angle = angle;
         angles.push(angle - 0.00001, angle, angle + 0.00001);
     }
 
@@ -129,22 +112,18 @@ Game.PreDraw.AddListener(() => {
 
         if (!intersect) continue;
 
-        intersect.angle = angle;
+        intersect._angle = angle;
         intersections.push(intersect);
     }
 
-    intersections = intersections.sort(function (a, b) {
-        return a.angle - b.angle;
-    });
+    intersections = intersections.sort((a, b) => a._angle - b._angle);
 
     if (drawShadows && intersections.length) {
         ctx.fillStyle = backgroundColour;
         ctx.beginPath();
         ctx.moveTo(intersections[0].x, intersections[0].y);
 
-        for (let i = 1; i < intersections.length; i++) {
-            ctx.lineTo(intersections[i].x, intersections[i].y);
-        }
+        for (let i = 1; i < intersections.length; i++) ctx.lineTo(intersections[i].x, intersections[i].y);
 
         ctx.fill();
     }
@@ -153,11 +132,17 @@ Game.PreDraw.AddListener(() => {
         ctx.strokeStyle = "white";
         ctx.lineWidth = 1;
 
-		for(let i = 0; i < intersections.length; i++){
+		for (let i = 0; i < intersections.length; i++) {
 			ctx.beginPath();
 			ctx.moveTo(viewPoint.x, viewPoint.y,);
 			ctx.lineTo(intersections[i].x, intersections[i].y);
 			ctx.stroke();
 		}
+    }
+
+    if (drawIntersections && intersections.length) {
+        for (let i = 0; i < intersections.length; i++) {
+            fillCircle(new Circle(intersections[i], 5), ctx, intersectionColour, 1);
+        }
     }
 });

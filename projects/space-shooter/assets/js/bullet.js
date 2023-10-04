@@ -6,7 +6,7 @@ class Bullet extends UpdatesEachFrame {
         this.parent = parent;
 
         this.GameObject = new GameObject(position, new Vector(6, 16), false, false);
-        this.GameObject.orientation = parent.orientation + Random.Float() * spread;
+        this.GameObject.orientation = parent.orientation + Random.Float() * spread * DegreesToRadians;
         this.GameObject.velocity = this.GameObject.direction.forward().multiplied(this.speed);
         this.GameObject.colour = colour;
         this.GameObject.tag = "bullet";
@@ -20,7 +20,7 @@ class Bullet extends UpdatesEachFrame {
         setTimeout(() => {
             if (!this.removed) {
                 World.Remove(this.GameObject);
-                this.Remove();
+                this.RemoveFromGame();
             }
 
         }, 1800);
@@ -34,7 +34,7 @@ class Bullet extends UpdatesEachFrame {
             this.removed = true;
             hit.hit.onHit.Invoke();
             World.Remove(this.GameObject);
-            this.Remove();
+            this.RemoveFromGame();
         }
     }
 }

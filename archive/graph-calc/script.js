@@ -14,19 +14,16 @@ function factorial(n) {
 
 const pow = Math.pow;
 const sqrt = Math.sqrt;
-const mod = Math.abs;
+const abs = Math.abs;
 const sin = Math.sin;
 const cos = Math.cos;
 const tan = Math.tan;
 const ln = Math.log;
 
-function log(base, n) {
-    return Math.log(n) / Math.log(base);
-}
+const log = (base, n) => ln(n) / ln(base);
+const root = (n, root) => pow(n, 1 / root);
+const mod = (x, m) => x % m;
 
-function root(n, root) {
-    return pow(n, 1 / root);
-}
 
 // constants
 const e = Math.E;
@@ -125,6 +122,7 @@ window.onload = () => {
 
             try {
                 yPosition = eval(rule);
+
             } catch (e) {
                 console.log(e);
             }

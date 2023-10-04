@@ -54,7 +54,7 @@ class Enemy extends UpdatesEachFrame {
         World.AddParticles(explosion);
 
         RemoveEnemy(this);
-        this.Remove();
+        this.RemoveFromGame();
         delete this;
     }
 
@@ -73,7 +73,7 @@ class Enemy extends UpdatesEachFrame {
 
         this.#timeSinceLastShot += delta;
 
-        let direction = this.player.position.plus(this.player.direction.forward().multiplied(100)).minus(this.GameObject.position);
+        let direction = this.player.position.plus(this.player.direction.forward().multiplied(1)).minus(this.GameObject.position);
         let distance = direction.magnitude;
 
         let viewRect = new Rectangle(
@@ -113,6 +113,10 @@ class Enemy extends UpdatesEachFrame {
         }
 
         this.GameObject.orientation *= RadiansToDegrees;
+
+        // console.log(direction.angle);
+
+        // this.GameObject.orientation = direction.angle;
 
         if (this.#timeSinceLastShot > this.shootCooldown && distance < 600) {
             this.#timeSinceLastShot = 0;
