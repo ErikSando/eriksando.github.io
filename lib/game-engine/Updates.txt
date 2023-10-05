@@ -34,3 +34,11 @@ Added functions relating to rotated rectangles, more will come in the future
 
 2.5.1 (10/09/2023):
 Animations can now be flipped
+
+2.5.2 (4/10/2023):
+Added linear tweening
+Added macro functions for drawing shapes
+
+2.5.3 (5/10/2023):
+Small changes to engine design
+Added some basic functions relating to rectangles and game objects

@@ -1,3 +1,9 @@
+/*
+
+    A game engine made for rendering 2D worlds as pseudo 3D
+
+*/
+
 const TextAlignX = {
     Left: 1,
     Center: 2,
@@ -984,7 +990,9 @@ class Renderer {
 
                 let colour = closestIntersection.wallType == "h" ? closestIntersection.horizontalColour : closestIntersection.verticalColour;
 
-                let lineHeight = viewport.scale.y / closestDistance / camera.FOV / Math.cos(angle) * 50; // diving by the cosine 
+                // diving by the cosine causes warping on the outside of the camera, more noticable with high field of view
+                let lineHeight = viewport.scale.y / closestDistance / camera.FOV / Math.cos(angle) * 50;
+
                 let center = viewport.scale.y / 2 + camera.position.z / closestDistance;
                 let top = center - lineHeight / 2;
                 let bottom = center + lineHeight / 2;
