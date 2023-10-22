@@ -14,7 +14,7 @@ FPS.textAlignY = TextAlignY.Top;
 
 const scene = new Scene([ground, wall1, wall2, wall3, platform], [FPS]);
 
-Game.LoadScene(scene);
+Game.scene = scene;
 
 const player = new Player(new Vector(500, 700), scene);
 

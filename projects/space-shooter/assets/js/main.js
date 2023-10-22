@@ -77,7 +77,7 @@ ShootControl.textOpacity = 0.6;
 const UI = [BoostControl, ShootControl];
 
 World.AddUIArray(UI);
-Game.LoadScene(World);
+Game.scene = World;
 
 Game.Loaded.AddListener(() => {
     Game.Settings.BackgroundImage = Textures.background;

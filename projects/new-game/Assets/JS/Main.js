@@ -51,7 +51,7 @@ const GameStarted = new _Event();
 
 function LoadLevel(level) {
     let scene = Levels[level];
-    Game.LoadScene(scene);
+    Game.scene = scene;
     Game.scene.ReplaceUIArray(UI.Play);
 
     Game.Camera.position = new Vector(0, LevelData[level].length * blockSize - Game.Settings.NativeHeight);

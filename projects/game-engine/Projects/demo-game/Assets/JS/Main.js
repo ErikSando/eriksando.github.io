@@ -50,13 +50,12 @@ particleObject.tag = "Fire";
 
 const scene1 = new Scene([ground, block1, block2, block3, particleObject, player.GameObject], [FPS, ResetPositionButton]);
 
-Game.LoadScene(scene1);
+Game.scene = scene1;
+
+Game.Settings.BackgroundColour = "rgb(100, 200, 250)";
 
 Game.Loaded.AddListener(() => {
     Game.CreateCanvas();
-
-    Game.Settings.BackgroundColour = "rgb(100, 200, 250)";
-
     Game.Start();
 });
 
