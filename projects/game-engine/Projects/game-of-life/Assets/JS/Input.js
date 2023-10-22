@@ -40,7 +40,10 @@ Input.KeyDown.AddListener(keyCode => {
     console.log(keyCode, Input.GetKey(KeyCode.Digit5));
 
     switch (keyCode) {
-        case KeyCode.KeyP: CellHandler.paused = !CellHandler.paused; break;
+        case KeyCode.KeyP:
+            CellHandler.paused = !CellHandler.paused;
+            Toggle.text = CellHandler.paused ? "Play" : "Pause";
+            break;
         case KeyCode.KeyI:
             if (Input.GetKey(KeyCode.ShiftLeft)) return CellHandler.cellSize += 0.1;
             CellHandler.cellSize += 2;
@@ -49,6 +52,7 @@ Input.KeyDown.AddListener(keyCode => {
             if (Input.GetKey(KeyCode.ShiftLeft)) return CellHandler.cellSize -= 0.1;
             CellHandler.cellSize -= 2;
             break;
+        case KeyCode.KeyL: CellHandler.drawOutlines = !CellHandler.drawOutlines; break;
         case KeyCode.KeyT:
             numberString = "";
 

@@ -65,13 +65,15 @@ function Help() {
     message += "P: play/pause.\n";
     message += "===\n";
     message += "I: zoom in.\n";
-    message += "- Hold shift for a smaller increment.";
+    message += "- Hold shift for a smaller increment.\n";
     message += "===\n";
     message += "O: zoom out.\n";
-    message += "- Hold shift for a smaller increment.";
+    message += "- Hold shift for a smaller increment.\n";
     message += "===\n";
-    message += "T: set interval.";
-    message += "- Hold down a digit on your keyboard to set the interval time to that number in fifty-ths of a second e.g. 4 = 0.08 seconds.";
+    message += "L: enable/disable outlines.\n";
+    message += "===\n";
+    message += "T: set generation interval (time between cell updates).\n";
+    message += "- Hold down a digit on your keyboard to set the interval time to that number in fifty-ths of a second e.g. 4 = 4/50 = 0.08 seconds.\n";
     message += "===\n";
     message += "Shift + R: reset cells.\n";
     message += "===\n"
