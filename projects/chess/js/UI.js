@@ -41,8 +41,8 @@ const UI = {
         UI.LastMove = 0;
     },
 
-    Update(lastMove = 0) {
-        if (lastMove) UI.LastMove = lastMove;
+    Update(lastMove = NoMove) {
+        if (lastMove != NoMove) UI.LastMove = lastMove;
 
         UI.LastPieceToDraw.piece = Piece.None;
 

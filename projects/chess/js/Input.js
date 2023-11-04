@@ -96,6 +96,7 @@ function InitInput() {
 
         let square = Input.GetCurrentSquare();
         let willMove = false;
+        let move = NoMove;
 
         if (square != Square.None) {
             let from = UI.SelectedPieceSquare;
@@ -110,16 +111,16 @@ function InitInput() {
                 }
             }
 
-            let move = ParseMove(from, to, promoted);
+            move = ParseMove(from, to, promoted);
 
             if (move != NoMove && Board.MakeMove(move) && BotPlaying) willMove = true;
         }
 
         UI.SelectedPieceSquare = Square.None;
         UI.HighlightedSquares = [];
-        UI.Update();
+        UI.Update(move);
 
-        await Wait(0); // makes the piece place down before the engine starts thinking so im keeping it
+        await Wait(50); // makes the piece place down before the engine starts thinking so im keeping it
 
         if (willMove) MoveNow();
     });
