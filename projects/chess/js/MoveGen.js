@@ -327,13 +327,3 @@ Board.GenerateCaptures = () => {
 
     return list;
 }
-
-Board.MoveExists = (move) => {
-    let list = Board.GenerateMoves();
-
-    for (let _move of list) {
-        if (move.move == _move.move) return true;
-    }
-
-    return false;
-}

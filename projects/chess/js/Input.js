@@ -115,7 +115,7 @@ function InitInput() {
             }
 
             move = ParseMove(from, to, promoted);
-            moveLegal = Board.MakeMove(move);
+            moveLegal = move != NoMove ? Board.MakeMove(move) : false;
 
             if (move != NoMove && moveLegal && BotPlaying) willMove = true;
         }
