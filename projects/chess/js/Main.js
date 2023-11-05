@@ -44,11 +44,14 @@ function InitHashKeys() {
 }
 
 let BotPlaying = false;
+let BotThinking = false;
 
 let MoveTime;
 let Depth;
 
 function MoveNow() {
+    BotThinking = true;
+
     let time = MoveTime.value || DefaultSettings.Time;
     let depth = Depth.value || DefaultSettings.Depth;
 
@@ -56,7 +59,17 @@ function MoveNow() {
     let move = Search(info);
 
     Board.MakeMove(move);
-    UI.Update(move);
+
+    let moveType = MoveType.Quiet;
+
+    if ((move & MoveFlag.Castling)) moveType = MoveType.Castling;
+    else if (CapturedPiece(move) || (move & MoveFlag.EnPassant)) moveType = MoveType.Capture;
+
+    if (Board.SquareAttacked(Board.KingSquares[Board.Side], Board.Side ^ 1)) moveType = MoveType.Check;
+
+    UI.Update(move, true, moveType);
+
+    BotThinking = false;
 }
 
 const DefaultSettings = {
@@ -103,6 +116,7 @@ function Main() {
 
     document.getElementById("parse-fen").addEventListener("click", () => {
         Board.ParseFEN(FEN.value);
+        
         UI.Reset();
         UI.Update();
     });
@@ -111,6 +125,8 @@ function Main() {
         BotPlaying = true;
 
         Board.ParseFEN(StartFEN);
+
+        UI.Reset();
         UI.Update();
     });
 
@@ -118,6 +134,8 @@ function Main() {
         BotPlaying = true;
 
         Board.ParseFEN(StartFEN);
+
+        UI.Reset();
         UI.Update();
 
         await Wait(0);

@@ -31,18 +31,41 @@ const UI = {
     
     MoveSounds: {
         Quiet: new Audio(),
+        Castling: new Audio(),
         Capture: new Audio(),
         Check: new Audio(),
-        Promotion: new Audio(),
-        Checkmate: new Audio()
     },
 
     Reset() {
         UI.LastMove = 0;
     },
 
-    Update(lastMove = NoMove) {
+    Update(lastMove = NoMove, playSound = false, moveType = MoveType.Quiet) {
         if (lastMove != NoMove) UI.LastMove = lastMove;
+
+        if (playSound) {
+            switch (moveType) {
+                case MoveType.Quiet:
+                    UI.MoveSounds.Quiet.play();
+                    break;
+
+                case MoveType.Castling:
+                    UI.MoveSounds.Castling.play();
+                    break;
+
+                case MoveType.Capture:
+                    UI.MoveSounds.Capture.play();
+                    break;
+
+                case MoveType.Check:
+                    UI.MoveSounds.Check.play();
+                    break;
+
+                default:
+                    UI.MoveSounds.Quiet.play();
+                    break;
+            }
+        }
 
         UI.LastPieceToDraw.piece = Piece.None;
 
@@ -143,6 +166,10 @@ function InitUI() {
         canvas.width = canvas.height = size;
 
         UI.Update();
+    }
+
+    for (let moveType in UI.MoveSounds) {
+        UI.MoveSounds[moveType].src = "assets/sounds/" + moveType + ".mp3";
     }
 
     window.addEventListener("resize", Resize);

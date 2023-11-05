@@ -51,6 +51,8 @@ const Input = {
 
 function InitInput() {
     window.addEventListener("mousedown", (e) => {
+        if (BotThinking) return; // doesnt do anything, just here to remind me to find some other way
+
         Input.MouseDown = true;
         Input.GetMousePosition(e);
 
@@ -97,6 +99,7 @@ function InitInput() {
         let square = Input.GetCurrentSquare();
         let willMove = false;
         let move = NoMove;
+        let moveLegal = false;
 
         if (square != Square.None) {
             let from = UI.SelectedPieceSquare;
@@ -112,13 +115,21 @@ function InitInput() {
             }
 
             move = ParseMove(from, to, promoted);
+            moveLegal = Board.MakeMove(move);
 
-            if (move != NoMove && Board.MakeMove(move) && BotPlaying) willMove = true;
+            if (move != NoMove && moveLegal && BotPlaying) willMove = true;
         }
 
+        let moveType = MoveType.Quiet;
+
+        if ((move & MoveFlag.Castling)) moveType = MoveType.Castling;
+        else if (CapturedPiece(move) || (move & MoveFlag.EnPassant)) moveType = MoveType.Capture;
+
+        if (Board.SquareAttacked(Board.KingSquares[Board.Side], Board.Side ^ 1)) moveType = MoveType.Check;
+    
         UI.SelectedPieceSquare = Square.None;
         UI.HighlightedSquares = [];
-        UI.Update(move);
+        UI.Update(moveLegal ? move : NoMove, move != NoMove && moveLegal, moveType);
 
         await Wait(50); // makes the piece place down before the engine starts thinking so im keeping it
 

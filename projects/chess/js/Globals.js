@@ -132,6 +132,13 @@ const HashFlag = {
 
 const NoScore = InfBound + 1000;
 
+const MoveType = {
+    Quiet: 1,
+    Castling: 2,
+    Capture: 3,
+    Check: 4
+}
+
 function Wait(milliseconds) {
     return new Promise(resolve => { setTimeout(resolve, milliseconds) });
 }
