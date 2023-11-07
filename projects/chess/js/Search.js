@@ -62,15 +62,14 @@ function Quiescence(alpha, beta, info) {
         alpha = score;
     }
 
+    // Playing out captures to achieve a "quiet" position
     let list = Board.GenerateCaptures();
 
     for (let i = 0; i < list.length; i++) {
         OrderNextMove(i, list);
 
         if (!Board.MakeMove(list[i].move)) continue;
-
         let score = -Quiescence(-beta, -alpha, info);
-
         Board.TakeMove();
 
         if (info.Stopped) return 0;
@@ -86,6 +85,7 @@ function Quiescence(alpha, beta, info) {
 }
 
 function AlphaBeta(alpha, beta, depth, info, doNull = true) {
+    // Quiescence search
     if (depth <= 0) return Quiescence(alpha, beta, info);
     if (info.Nodes & 2047) CheckTimeUp(info);
 
@@ -102,6 +102,7 @@ function AlphaBeta(alpha, beta, depth, info, doNull = true) {
     let score;
     //let score = Board.HashTable.GetEntry(alpha, beta, depth);
 
+    // Return saved evaluation in transposition table
     //if (Board.Ply && score != NoScore && !pvNode) return score;
 
     let kingSquare = Board.KingSquares[Board.Side];
@@ -109,6 +110,7 @@ function AlphaBeta(alpha, beta, depth, info, doNull = true) {
 
     let extension = 0;
 
+    // Check extensions
     if (inCheck) extension = 1;
     else {
         let opponentKingSquare = Board.KingSquares[Board.Side ^ 1];
@@ -117,20 +119,19 @@ function AlphaBeta(alpha, beta, depth, info, doNull = true) {
         if (opponentInCheck) extension = 1;
     }
 
+    // Null move pruning
     if (doNull && !inCheck && depth >= 3 && Board.Ply && Board.BigPieces[Board.Side] > 1) {
         Board.MakeNullMove();
-
         score = -AlphaBeta(-beta, -beta + 1, depth - 1 - NullMoveReduction, info, false);
-
         Board.TakeNullMove();
 
         if (info.Stopped) return 0;
-
         if (score >= beta && Math.abs(score) < MateScore) return beta;
     }
 
     let list = Board.GenerateMoves();
 
+    // Scoring the PV move higher so it is searched first
     if (pvMove && Board.Ply <= Board.PVLength) {
         for (let i = 0; i < list.length; i++) {
             if (pvMove == list[i].move) {
@@ -143,6 +144,7 @@ function AlphaBeta(alpha, beta, depth, info, doNull = true) {
     let hashFlag = HashFlag.Alpha;
 
     for (let i = 0; i < list.length; i++) {
+        // Move ordering
         OrderNextMove(i, list);
 
         let move = list[i].move;
@@ -151,10 +153,12 @@ function AlphaBeta(alpha, beta, depth, info, doNull = true) {
 
         legalMoves++;
 
+        // PV search
         if (movesSearched == 0) {
             score = -AlphaBeta(-beta, -alpha, depth - 1 + extension, info);
         }
         else {
+            // Late move reductions
             if (!inCheck && movesSearched >= FullDepthMoves && depth >= ReductionLimit && list[i].score == 0) {
                 score = -AlphaBeta(-alpha - 1, -alpha, depth - 2 + extension, info);
             }
@@ -175,10 +179,13 @@ function AlphaBeta(alpha, beta, depth, info, doNull = true) {
 
         if (info.Stopped) return 0;
 
+        // Alpha beta pruning
         if (score > alpha) {
             if (score >= beta) {
+                // Store transposition table entry
                 //Board.HashTable.StoreEntry(move, beta, depth, HashFlag.Beta);
 
+                // Killer heuristic for move ordering
                 if (CapturedPiece(move) == Piece.None) {
                     Board.KillerMoves2[Board.Ply] = Board.KillerMoves1[Board.Ply];
                     Board.KillerMoves1[Board.Ply] = move;
@@ -194,6 +201,7 @@ function AlphaBeta(alpha, beta, depth, info, doNull = true) {
             Board.PVList[Board.Ply] = move;
             if (Board.Ply > Board.PVLength) Board.PVLength = Board.Ply;
         
+            // History heuristic for move ordering
             if (CapturedPiece(move) == Piece.None) {
                 Board.HistoryMoves[Square64[FromSquare(move)]][Square64[ToSquare(move)]] += depth;
             }
@@ -205,6 +213,7 @@ function AlphaBeta(alpha, beta, depth, info, doNull = true) {
         else return 0;
     }
 
+    // Store transposition table entry
     //Board.HashTable.StoreEntry(bestMove, alpha, depth, hashFlag);
 
     return alpha;
@@ -227,33 +236,35 @@ function Search(info) {
     let alpha = -InfBound;
     let beta = InfBound;
 
+    // Iterative deepening
     for (let depth = 1; depth <= info.Depth;) {
         let score = AlphaBeta(alpha, beta, depth, info);
 
         if (info.Stopped) break;
 
-        // if (score <= alpha) {
-        //     alpha = -InfBound;
-        //     continue;
-        // }
+        // Aspiration window
+        if (score <= alpha) {
+            alpha = -InfBound;
+            continue;
+        }
 
-        // if (score >= beta) {
-        //     beta = InfBound;
-        //     continue;
-        // }
+        if (score >= beta) {
+            beta = InfBound;
+            continue;
+        }
         
-        // alpha = score - Window;
-        // beta = score + Window;
+        alpha = score - Window;
+        beta = score + Window;
 
         let time = performance.now() - info.StartTime;
 
-        let pv = "";
+        // let pv = "";
 
-        for (let i = 0; i < Board.PVLength; i++) {
-            pv += MoveString(Board.PVList[i]);
+        // for (let i = 0; i < Board.PVLength; i++) {
+        //     pv += MoveString(Board.PVList[i]);
 
-            if (i < Board.PVLength - 1) pv += " ";
-        }
+        //     if (i < Board.PVLength - 1) pv += " ";
+        // }
 
         let eval = (score / 100).toFixed(2);
         
@@ -265,7 +276,6 @@ function Search(info) {
         Nodes.textContent = info.Nodes;
         Time.textContent = time;
         NodesPerSecond.textContent = time > 0 ? Math.round(info.Nodes / time * 1000) : "nil";
-        PVLine.textContent = pv;
         
         depth++;
     }

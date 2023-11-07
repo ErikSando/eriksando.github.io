@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Chess Engine</title>
+        <title>Chess</title>
         <link rel="stylesheet" href="style.css">
         <script src="js/Globals.js"></script>
         <script src="js/UI.js"></script>
@@ -24,11 +24,18 @@
                 <span id="title">Chess</span>
             </div>
             <hr> <br>
+            <b>How to promote a pawn</b> <br>
+            Hold down the key corresponding to the piece you want to promote to and move the pawn onto the promotion rank. The keys are: <br>
+            Knight: n <br>
+            Bishop: b <br>
+            Rook: r <br>
+            Queen: q <br> <br>
             <input id="movetime" type="number" placeholder="Move time in seconds (1)"> <br>
             <input id="max-depth" type="number" placeholder="Max Depth (64)"> <br> <br>
             <button id="new-game">New Game</button> <br>
             <button id="play-white">Play White</button> <br>
             <button id="play-black">Play Black</button> <br>
+            <button id="flip-board">Flip Board</button> (doesn't work yet) <br>
             <button id="move-now">Move Now</button> <br>
             <button id="take-move">Undo Move</button> <br> <br>
             Side: <span id="side-to-move">...</span> <br> <br>
@@ -38,9 +45,8 @@
             Evaluation: <span id="evaluation">...</span> <br>
             Depth: <span id="search-depth">...</span> <br>
             Nodes: <span id="nodes">...</span> <br>
-            Time: <span id="time">...</span> <br>
+            Time: <span id="time">...</span> ms <br>
             NPS: <span id="nps">...</span> <br>
-            PV: <span id="pv">...</span> <br>
         </div>
         <canvas id="canvas"></canvas>
     </body>

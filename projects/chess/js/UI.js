@@ -11,9 +11,11 @@ const UI = {
     DarkSquareColour: "#b58863",
     LastMoveColour: "yellow",
     LastMove: 0,
-    MoveColour: "red",
+    MoveColour: "rgb(0, 50, 200)",
+    CaptureColour: "rgb(220, 0, 0)",
     HighlightedSquares: [],
     SelectedPieceSquare: Square.None,
+    FlipBoard: false,
 
     SelectedPieceOffset: {
         x: 0,
@@ -41,6 +43,8 @@ const UI = {
     },
 
     Update(lastMove = NoMove, playSound = false, moveType = MoveType.Quiet) {
+        console.log(MoveString(lastMove));
+
         if (lastMove != NoMove) UI.LastMove = lastMove;
 
         if (playSound) {
@@ -74,12 +78,40 @@ const UI = {
 
         let squareSize = canvas.width / 8;
 
-        let y = 0;
+        let startRank = Rank.Rank8;
+        let finalRank = Rank.Rank1 - 1;
+        let rankIncrement = -1;
+        let startY = 0;
+        let y = startY;
+        let yIncrement = squareSize;
 
-        for (let rank = Rank.Rank8; rank >= Rank.Rank1; rank--) {
-            let x = 0;
+        let startFile = File.FileA;
+        let finalFile = File.FileH + 1;
+        let fileIncrement = 1;
+        let startX = 0;
+        let xIncrement = squareSize;
+
+        if (UI.FlipBoard) {
+            startRank = Rank.Rank1;
+            finalRank = Rank.Rank8 + 1;
+            rankIncrement = 1;
+            startY = squareSize * 7
+            y = startY;
+            yIncrement = -squareSize;
+
+            startFile = File.FileH;
+            finalFile = File.FileA = 1;
+            fileIncrement = -1;
+            startX = squareSize * 7;
+            xIncrement = -squareSize;
+        }
+
+        ctx.imageSmoothingEnabled = false; // so the squares will look sharper
+
+        for (let rank = startRank; rank != finalRank; rank += rankIncrement) {
+            let x = startX;
             
-            for (let file = File.FileA; file <= File.FileH; file++) {
+            for (let file = startFile; file != finalFile; file += fileIncrement) {
                 let square = GetSquare(file, rank);
                 let isLightSquare = (file + rank) % 2 != 0;
                 let squareColour = isLightSquare ? UI.LightSquareColour : UI.DarkSquareColour;
@@ -97,23 +129,32 @@ const UI = {
                 if (UI.HighlightedSquares.includes(square)) {
                     ctx.fillStyle = UI.MoveColour;
                     ctx.globalAlpha = 0.5;
+
+                    // draw the move indicators after the pieces to use circles
+                    /*
+                    ctx.beginPath();
+                    ctx.arc(x + squareSize / 2, y + squareSize / 2, squareSize / 5, 0, 2 * Math.PI);
+                    ctx.fill();
+                    */
+
                     ctx.fillRect(x, y, squareSize, squareSize);
                 }
 
-                x += canvas.width / 8;
+                x += xIncrement;
             }
 
-            y += canvas.height / 8;
+            y += yIncrement;
         }
 
         ctx.globalAlpha = 1;
+        ctx.imageSmoothingEnabled = true; // so the pieces don't look weird
 
-        y = 0;
+        y = startY;
 
-        for (let rank = Rank.Rank8; rank >= Rank.Rank1; rank--) {
-            let x = 0;
+        for (let rank = startRank; rank != finalRank; rank += rankIncrement) {
+            let x = startX;
             
-            for (let file = File.FileA; file <= File.FileH; file++) {
+            for (let file = startFile; file != finalFile; file += fileIncrement) {
                 let square = GetSquare(file, rank);
                 let piece = Board.Pieces[square];
 
@@ -131,10 +172,10 @@ const UI = {
                     }
                 }
 
-                x += squareSize;
+                x += xIncrement;
             }
 
-            y += squareSize;
+            y += yIncrement;
         }
 
         let lastPiece = UI.LastPieceToDraw.piece;

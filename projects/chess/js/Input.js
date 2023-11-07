@@ -39,6 +39,8 @@ const Input = {
         let file = Math.floor(Input.MousePos.x / squareSize);
         let rank = 7 - Math.floor(Input.MousePos.y / squareSize);
 
+        if (UI.FlipBoard) rank = 7 - rank;
+
         let square = Square.None;
 
         if (file >= File.FileA && file <= File.FileH && rank >= Rank.Rank1 && rank <= Rank.Rank8) {
@@ -87,6 +89,13 @@ function InitInput() {
 
             let to = ToSquare(move);
 
+            if (UI.FlipBoard) {
+                let file = 7 - SquareFiles[to];
+                let rank = 7 - SquareRanks[to];
+
+                to = GetSquare(file, rank);
+            }
+
             UI.HighlightedSquares.push(to);
         }
 
@@ -94,7 +103,10 @@ function InitInput() {
     });
     
     window.addEventListener("mouseup", async (e) => {
+        if (BotThinking) return;
+
         Input.MouseDown = false;
+        Input.GetMousePosition(e);
 
         let square = Input.GetCurrentSquare();
         let willMove = false;
@@ -111,6 +123,7 @@ function InitInput() {
             for (let key of Object.entries(Input.Keys)) {
                 if (key[1].pressed) {
                     promoted = promotionStart + key[1].pieceIndex;
+                    break;
                 }
             }
 

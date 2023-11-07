@@ -20,7 +20,8 @@ function ParseMove(from, to, promoted = Piece.None) {
 
         if (from == FromSquare(move) && to == ToSquare(move)) {
             let _promoted = PromotedPiece(move);
-            if (_promoted == Piece.None && _promoted == promoted) return move;
+            
+            if (_promoted == Piece.None || _promoted == promoted) return move;
         }
     }
 

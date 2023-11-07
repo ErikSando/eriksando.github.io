@@ -52,8 +52,19 @@ let Depth;
 function MoveNow() {
     BotThinking = true;
 
-    let time = MoveTime.value || DefaultSettings.Time;
-    let depth = Depth.value || DefaultSettings.Depth;
+    let timeSet = false;
+    let depthSet = false;
+
+    let time = MoveTime.value;
+    let depth = Depth.value;
+
+    if (depth) depthSet = true;
+    else depth = DefaultSettings.Depth;
+
+    if (time) timeSet = true;
+    else time = depthSet ? -1 : DefaultSettings.Time;
+
+    if (depth > 64) depth = 64;
 
     let info = new SearchInfo(time, depth);
     let move = Search(info);
@@ -106,7 +117,7 @@ function Main() {
         Board.TakeMove();
 
         if (Board.HistoryPly) {
-            UI.Update(Board.History[Board.HistoryPly - 1].move);
+            UI.Update(Board.History[Board.HistoryPly - 1].Move);
         }
         else {
             UI.Reset();
@@ -141,6 +152,11 @@ function Main() {
         await Wait(0);
 
         MoveNow();
+    });
+
+    document.getElementById("flip-board").addEventListener("click", () => {
+        UI.FlipBoard = !UI.FlipBoard;
+        UI.Update();
     });
 
     document.getElementById("move-now").addEventListener("click", MoveNow);

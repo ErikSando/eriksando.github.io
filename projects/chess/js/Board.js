@@ -175,6 +175,12 @@ Board.ParseFEN = (fen) => {
     Board.GeneratePieceList();
 }
 
+Board.GetFEN = () => {
+    let fen = "";
+
+    return fen;
+}
+
 Board.SquareAttacked = (square, side) => {
     for (let i = 0; i < 4; i++) {
         let direction = BishopDirections[i];
