@@ -35,14 +35,14 @@ exit
 set projname=""
 echo Select example
 echo.
-echo [1] Platformer
+echo [1] Character controller
 echo [2] Shadows (line of sight)
 echo [3] Multiplayer
 echo.
 choice /c 123 >nul
 if errorlevel 3 set projname="multiplayer"
 if errorlevel 2 set projname="shadows"
-if errorlevel 1 set projname="platformer"
+if errorlevel 1 set projname="basic"
 cls
 set /p name=Project name (no spaces): 
 echo.
