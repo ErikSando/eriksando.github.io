@@ -227,7 +227,7 @@ function InitSearch() {
     Nodes = document.getElementById("nodes");
     Time = document.getElementById("time");
     NodesPerSecond = document.getElementById("nps");
-    PVLine = document.getElementById("pv");
+    PVLine = document.getElementById("pv"); // not using this rn
 }
 
 function Search(info) {
@@ -242,7 +242,6 @@ function Search(info) {
 
         if (info.Stopped) break;
 
-        // Aspiration window
         if (score <= alpha) {
             alpha = -InfBound;
             continue;
@@ -252,7 +251,8 @@ function Search(info) {
             beta = InfBound;
             continue;
         }
-        
+
+        // Aspiration window        
         alpha = score - Window;
         beta = score + Window;
 
@@ -281,7 +281,7 @@ function Search(info) {
     }
 
     let time = performance.now() - info.StartTime;
-    Time.textContent = time;
+    //Time.textContent = time;
 
     return Board.PVList[0];
 }

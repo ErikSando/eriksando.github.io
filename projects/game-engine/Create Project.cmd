@@ -2,63 +2,61 @@
 color 0f
 title Create Project
 
-:start
+echo Select option
+echo.
+echo [1] New project
+echo [2] Start with example
+echo.
+choice /c 12 >nul
+cls
+if errorlevel 2 goto example
+if errorlevel 1 goto newproj
+
+:newproj
+set /p name=Project name (no spaces): 
+echo.
+if "%name%" == " " goto start
+if not exist "Projects" mkdir Projects
+cd Projects
+if not exist "%name%" mkdir %name%
+cd %name%
+if not exist "Assets" mkdir Assets
+cd ../..
+xcopy /e /q "examples\blank" "Projects\%name%"
+cls
+echo Created project "%name%" (find in Projects/%name%)
+echo You can play the game by opening index.html found in the project directory
+echo.
+echo Press any key to close
+pause >nul
+exit
+
+:example
+set projname=""
+echo Select example
+echo.
+echo [1] Platformer
+echo [2] Shadows (line of sight)
+echo [3] Multiplayer
+echo.
+choice /c 123 >nul
+if errorlevel 3 set projname="multiplayer"
+if errorlevel 2 set projname="shadows"
+if errorlevel 1 set projname="platformer"
 cls
 set /p name=Project name (no spaces): 
 echo.
-
 if "%name%" == " " goto start
-
-if exist "Projects" goto CreateProject
-mkdir Projects
-
-:CreateProject
+if not exist "Projects" mkdir Projects
 cd Projects
 if not exist "%name%" mkdir %name%
-
 cd %name%
 if not exist "Assets" mkdir Assets
-
-cd Assets
-
-echo // Runs once the engine is finished setting up> Main.js
-echo Game.Loaded.AddListener(() =^> {>> Main.js
-echo     Game.CreateCanvas();>> Main.js
-echo     Game.Start();>> Main.js
-echo });>> Main.js
-
-cd ..
-
-(
-echo ^<html^>
-echo 	^<head^>
-echo 		^<title^>Game^</title^>
-echo 		^<link rel="stylesheet" type="text/css" href="style.css"^>
-echo 		^<script src="https://eriksando.github.io/lib/game-engine/Engine.js"^>^</script^>
-echo 		^<script src="Assets/Main.js"^>^</script^>
-echo 	^</head^>
-echo 	^<body^>
-echo 	^</body^>
-echo ^</html^>
-)> index.html
-
-(
-echo * {
-echo     background:black;
-echo }
-echo.
-echo canvas {
-echo     margin: auto;
-echo     position: absolute;
-echo     top: 0;
-echo     bottom: 0;
-echo     left: 0;
-echo     right: 0;
-echo }
-)> style.css
-
-echo Successfully created project "%name%" (find in directory Projects/%name%)
-echo You can play the game by running "index.html" found in the project directory
+cd ../..
+xcopy /e /q "examples\%projname%" "Projects\%name%"
+cls
+echo Created project "%name%" (find in Projects/%name%)
+echo You can play the game by opening index.html found in the project directory
 echo.
 echo Press any key to close
 pause >nul

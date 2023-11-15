@@ -1,4 +1,12 @@
+// An EXTREMELY SIMPLE evaluation
+// JavaScript does not natively support 64 bit numbers, so bitboards are out of the questions.
+// This makes detecting isolated, stacked and passed pawns difficult without losing performance (at least I think this to be the case, I haven't bothered trying).
+// The piece square tables are enough for semi-decent play, so I'll leave the evaluation it as it is.
+// I've also included a mop up evaluation for winning end game positions where the mate is too far into the future for the bot to see.
+
 const MirrorSquare64 = (square64) => square64 ^ 56;
+
+const BishopPairBonus = 30;
 
 const PawnMgTable = [
     0,   0,   0,   0,   0,   0,   0,   0,
@@ -116,6 +124,17 @@ const EgTables = new Array(13);
 
 const GamePhaseIncrement = [ 0, 0, 1, 1, 2, 4, 0, 0, 1, 1, 2, 4, 0 ];
 
+const CenterManhattenDistance = [
+	6, 5, 4, 3, 3, 4, 5, 6,
+	5, 4, 3, 2, 2, 3, 4, 5,
+	4, 3, 2, 1, 1, 2, 3, 4,
+	3, 2, 1, 0, 0, 1, 2, 3,
+	3, 2, 1, 0, 0, 1, 2, 3,
+	4, 3, 2, 1, 1, 2, 3, 4,
+	5, 4, 3, 2, 2, 3, 4, 5,
+	6, 5, 4, 3, 3, 4, 5, 6
+];
+
 function InitPieceSquareTables() {
     for (let piece = Piece.wP; piece <= Piece.wK; piece++) {
         MgTables[piece] = new Array(64);
@@ -143,6 +162,11 @@ function MaterialDraw() {
     return false;
 }
 
+function ManhattenDistance(square1, square2) {
+    return Math.abs(SquareRanks[square2] - SquareRanks[square1])
+         + Math.abs(SquareFiles[square2] - SquareFiles[square1]);
+}
+
 function Evaluate() {
     if (MaterialDraw()) return 0;
 
@@ -164,6 +188,8 @@ function Evaluate() {
 
         mgScore += MgTables[piece][square];
         egScore += EgTables[piece][square];
+
+        pawns++;
     }
 
     piece = Piece.bP;
@@ -175,6 +201,8 @@ function Evaluate() {
 
         mgScore -= MgTables[piece][square];
         egScore -= EgTables[piece][square];
+
+        pawns++;
     }
 
     piece = Piece.wN;
@@ -208,6 +236,8 @@ function Evaluate() {
 
         mgScore += MgTables[piece][square];
         egScore += EgTables[piece][square];
+
+        bishops[Side.White]++;
     }
 
     piece = Piece.bB;
@@ -219,6 +249,8 @@ function Evaluate() {
 
         mgScore -= MgTables[piece][square];
         egScore -= EgTables[piece][square];
+
+        bishops[Side.Black]++;
     }
 
     piece = Piece.wR;
@@ -265,10 +297,14 @@ function Evaluate() {
         egScore -= EgTables[piece][square];
     }
 
+    let wKingSquare;
+    let bKingSquare;
+
     piece = Piece.wK;
 
     for (let i = 0; i < Board.PieceCount[piece]; i++) {
         let square = Square64[Board.PieceList[PieceIndex(piece, i)]];
+        wKingSquare = square;
 
         gamePhase += GamePhaseIncrement[piece];
 
@@ -280,12 +316,29 @@ function Evaluate() {
 
     for (let i = 0; i < Board.PieceCount[piece]; i++) {
         let square = Square64[Board.PieceList[PieceIndex(piece, i)]];
+        bKingSquare = square;
 
         gamePhase += GamePhaseIncrement[piece];
 
         mgScore -= MgTables[piece][square];
         egScore -= EgTables[piece][square];
     }
+
+    // Mop up evaluation
+    if (pawns == 0) {
+        // Favour positions where the enemy king is close to the corner and the kings are close together
+        if (egScore > 0) {
+            score += 4.7 * CenterManhattenDistance[bKingSquare];
+            score += 1.6 * (14 - ManhattenDistance(wKingSquare, bKingSquare));
+        }
+        else {
+            score -= 4.7 * CenterManhattenDistance[wKingSquare];
+            score -= 1.6 * (14 - ManhattenDistance(wKingSquare, bKingSquare));
+        }
+    }
+
+    if (bishops[Side.White] > 0) score += BishopPairBonus;
+    if (bishops[Side.Black] > 0) score -= BishopPairBonus;
 
     let mgPhase = gamePhase;
     if (mgPhase > 24) mgPhase = 24;

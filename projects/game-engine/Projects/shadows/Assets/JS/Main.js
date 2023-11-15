@@ -37,7 +37,7 @@ Game.Loaded.AddListener(() => {
     Game.Start();
 });
 
-Game.PostUpdate.AddListener((delta) => {
+Game.PreUpdate.AddListener((delta) => {
     FPS.text = Game.GetFPS() + " FPS";
     
     let targetPosition = new Vector(
