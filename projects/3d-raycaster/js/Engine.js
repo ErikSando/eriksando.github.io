@@ -151,6 +151,18 @@ class Vector {
     get inversed() {
         return new Vector(-this.x, -this.y);
     }
+    
+    get dot() {
+        return this.x * v.x + this.y * v.y;
+    }
+
+    get cross() {
+        return this.x * v.y - this.y * v.x;
+    }
+
+    get angle() {
+        return -Math.atan2(-this.y, this.x);
+    }
 
     multiplied(v) {
         if (v instanceof Vector) return new Vector(this.x * v.x, this.y * v.y);
@@ -214,18 +226,6 @@ class Vector {
             this.x -= v;
             this.y -= v;
         }
-    }
-
-    get dot() {
-        return this.x * v.x + this.y * v.y;
-    }
-
-    get cross() {
-        return this.x * v.y - this.y * v.x;
-    }
-
-    get angle() {
-        return -Math.atan2(-this.y, this.x);
     }
 
     equals = (v) => this.x == v.x && this.y == v.y;
@@ -821,7 +821,8 @@ class Ray {
         }
     }
 
-    cast(wall) { // probably not the best way to do it for tiled worlds
+    // OPTIMIZE THIS FOR TILED WORLDS
+    cast(wall) {
         let x1 = wall.start.x;
         let y1 = wall.start.y;
         let x2 = wall.end.x;

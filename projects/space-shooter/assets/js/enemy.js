@@ -2,9 +2,9 @@ class Enemy extends UpdatesEachFrame {
     cruisingSpeed = 300;
     boostingSpeed = 400;
     speed = 250;
-    steeringSpeed = 60;
+    steeringSpeed = 75;
     bulletSpeed = 1000;
-    bulletSpread = 3;
+    bulletSpread = 2.5;
 
     shootCooldown = 0.4;
     #timeSinceLastShot = 0;
@@ -60,7 +60,7 @@ class Enemy extends UpdatesEachFrame {
 
     Update(delta) {
         if (!this.player.alive) {
-            this.GameObject.orientation += this.steeringSpeed * this.steeringDirection * delta;
+            this.GameObject.orientation += this.steeringSpeed * this.steeringDirection * delta * DegreesToRadians;
 
             // avoid borders
 
@@ -94,16 +94,16 @@ class Enemy extends UpdatesEachFrame {
         this.speed = this.boostingSpeed;
 
         if (direction.x > 0 && direction.y < 0) { // up and right
-            this.GameObject.orientation = 2 * Math.PI - Math.atan(Math.abs(direction.x) / direction.y);
+            this.GameObject.orientation = Math.atan(direction.x / Math.abs(direction.y));
 
         } else if (direction.x > 0 && direction.y > 0) { // down and right
-            this.GameObject.orientation = Math.PI - Math.atan(direction.x / Math.abs(direction.y));
+            this.GameObject.orientation = Math.PI - Math.atan(direction.x / direction.y);
 
         } else if (direction.x < 0 && direction.y > 0) { // down and left
-            this.GameObject.orientation = Math.PI + Math.atan(Math.abs(direction.x) / Math.abs(direction.y));
+            this.GameObject.orientation = Math.PI + Math.atan(Math.abs(direction.x) / direction.y);
 
         } else if (direction.x < 0 && direction.y < 0) { // up and left
-            this.GameObject.orientation = 2 * Math.PI - Math.atan(direction.x / direction.y);
+            this.GameObject.orientation = 2 * Math.PI - Math.atan(Math.abs(direction.x) / Math.abs(direction.y));
         
         } else if (direction.x == 0) {
             this.GameObject.orientation = (direction.y > 0) ? 180 : 0;
@@ -112,7 +112,7 @@ class Enemy extends UpdatesEachFrame {
             this.GameObject.orientation = (direction.x >= 0) ? 90 : 270;
         }
 
-        this.GameObject.orientation *= RadiansToDegrees;
+        //this.GameObject.orientation *= RadiansToDegrees;
 
         // console.log(direction.angle);
 

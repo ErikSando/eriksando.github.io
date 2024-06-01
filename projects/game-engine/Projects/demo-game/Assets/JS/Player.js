@@ -50,7 +50,7 @@ class Player extends UpdatesEachFrame {
 
         let grounded = this.GameObject.collision.below;
 
-        if (Input.GetAxisRaw("Vertical") > 0 && grounded) this.GameObject.velocity.y = -this.jumpForce;
+        if (Input.GetAxisRaw("Vertical") < 0 && grounded) this.GameObject.velocity.y = -this.jumpForce;
 
         if (this.GameObject.velocity.x > 0) this.direction = "right";
         else if (this.GameObject.velocity.x < 0) this.direction = "left";

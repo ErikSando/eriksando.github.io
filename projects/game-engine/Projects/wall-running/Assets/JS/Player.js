@@ -102,7 +102,7 @@ class Player extends UpdatesEachFrame {
             wallRunning = true;
         }
 
-        if (Input.GetAxisRaw("Vertical") > 0 && (grounded || wallRunning) && !sliding) {
+        if (Input.GetAxisRaw("Vertical") < 0 && (grounded || wallRunning) && !sliding) {
             if (wallRunning) this.GameObject.velocity.y = 0;
 
             this.GameObject.velocity.add(jumpDirection.multiplied(this.jumpPower));

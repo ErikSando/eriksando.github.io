@@ -271,7 +271,7 @@ function Search(info) {
         if (score > MateScore) eval = "+M" + Math.ceil((InfBound - score) / 2);
         else if (score < -MateScore) eval = "-M" + Math.ceil((InfBound + score) / 2);
 
-        Evaluation.textContent = eval;
+        Evaluation.textContent = Board.Side == Side.White ? eval : -eval;
         SearchDepth.textContent = depth;
         Nodes.textContent = info.Nodes;
         Time.textContent = time;

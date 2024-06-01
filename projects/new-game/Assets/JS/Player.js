@@ -110,7 +110,7 @@ class Player extends UpdatesEachFrame {
 
         let grounded = this.GameObject.collision.below;
 
-        if ((Input.GetAxisRaw("Vertical") > 0 || this.#mobileJumping)/* || JumpButton.mouseover */ && grounded) {
+        if ((Input.GetAxisRaw("Vertical") < 0 || this.#mobileJumping)/* || JumpButton.mouseover */ && grounded) {
             this.GameObject.velocity.y = -this.jumpPower;
             this.grounded = false;
         }

@@ -44,7 +44,7 @@ const NonLocalPlayers = new class {
 }
 
 Game.Loaded.AddListener(() => {
-    const socket = io("10.0.0.4");
+    const socket = io("10.0.0.5");
 
     let localPlayer;
 

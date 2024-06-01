@@ -1,0 +1,2 @@
+Unfinished project (may not be finished)
+Development is very slow as I am moving away from JavaScript

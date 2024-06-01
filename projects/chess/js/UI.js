@@ -43,8 +43,6 @@ const UI = {
     },
 
     Update(lastMove = NoMove, playSound = false, moveType = MoveType.Quiet) {
-        console.log(MoveString(lastMove));
-
         if (lastMove != NoMove) UI.LastMove = lastMove;
 
         if (playSound) {

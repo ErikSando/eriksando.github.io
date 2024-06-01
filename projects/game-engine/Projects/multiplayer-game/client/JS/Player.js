@@ -48,7 +48,7 @@ class LocalPlayer extends Player {
         this.GameObject.velocity.x = Input.GetAxisRaw("Horizontal") * this.speed;
 
         let grounded = this.GameObject.collision.below;
-        if (Input.GetAxisRaw("Vertical") > 0 && grounded) this.GameObject.velocity.y = -this.jumpPower;
+        if (Input.GetAxisRaw("Vertical") < 0 && grounded) this.GameObject.velocity.y = -this.jumpPower;
 
         if (this.GameObject.velocity.x > 0) this.direction = "right";
         else if (this.GameObject.velocity.x < 0) this.direction = "left";

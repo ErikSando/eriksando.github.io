@@ -16,7 +16,7 @@ class Player extends UpdatesEachFrame {
     Update(delta) {
         this.GameObject.velocity.x = Input.GetAxisRaw("Horizontal") * this.speed;
 
-        if (Input.GetAxisRaw("Vertical") > 0 && this.GameObject.collision.below) this.GameObject.velocity.y = -this.jumpPower;
+        if (Input.GetAxisRaw("Vertical") < 0 && this.GameObject.collision.below) this.GameObject.velocity.y = -this.jumpPower;
     
         if (this.GameObject.position.y > 1800) this.GameObject.position = this.startPosition.copy();
     }

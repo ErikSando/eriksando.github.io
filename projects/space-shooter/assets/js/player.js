@@ -2,9 +2,9 @@ class Player extends UpdatesEachFrame {
     cruisingSpeed = 300;
     boostingSpeed = 600;
     speed = 400;
-    steeringSpeed = 80;
+    steeringSpeed = 100;
     bulletSpeed = 1000;
-    bulletSpread = 0;
+    bulletSpread = 1;
 
     shootCooldown = 0.25;
     #timeSinceLastShot = 0;

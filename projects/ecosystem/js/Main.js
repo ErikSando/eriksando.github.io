@@ -15,13 +15,11 @@ const SimulationInfo = {
 
 const AddPrey = (p) => {
     prey.push(p);
-
     SimulationInfo.totalPrey++;
 }
 
 const AddPredator = (p) => {
     predators.push(p);
-
     SimulationInfo.totalPredators++;
 }
 
@@ -219,6 +217,7 @@ window.addEventListener("load", () => {
         AddData();
 
         lastUpdate = timestamp;
+        lastFood = timestamp;
         state = GameState.Run;
     }
 

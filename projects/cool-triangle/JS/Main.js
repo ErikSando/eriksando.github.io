@@ -101,23 +101,32 @@ window.addEventListener("load", () => {
     let firstPointY = (1 - Math.sqrt(r1)) * a.y + (Math.sqrt(r1) * (1 - r2)) * b.y + (Math.sqrt(r1) * r2) * c.y;
 
     let firstPoint = new Circle(new Vector(firstPointX, firstPointY), 0.5);
+    let lastPoint = firstPoint;
+
+    // remove first few points
+    for (let i = 0; i < 3; i++) {
+        firstPoint = GetNewPoint();
+    }
 
     const objects = [triangle, firstPoint];
 
-    let lastPoint = firstPoint;
-
-    function GetNewPoint() {
+    function GetNewPoint(point) {
         // get the mid point of the last point and a random vertex of the triangle
         let vertex = triangleVertices[Math.floor(Math.random() * triangleVertices.length)];
         let midpoint = Vector.Midpoint(lastPoint.position, vertex);
-        let newPoint = new Circle(midpoint, 0.5);
+
+        return new Circle(midpoint, 0.5);
+    }
+
+    function AddNewPoint() {
+        let newPoint = GetNewPoint();
         lastPoint = newPoint;
         objects.push(newPoint);   
     }
 
     function Update() {
         // get the mid point of the last point and a random vertex of the triangle
-        for (let i = 0; i < newPointsPerUpdate; i++) GetNewPoint();
+        for (let i = 0; i < newPointsPerUpdate; i++) AddNewPoint();
         
         Draw();
 
