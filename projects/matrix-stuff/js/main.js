@@ -5,11 +5,11 @@ let key = [
     [3, 7]
 ]
 
-let message = "Hello, this message includes punctuation! Question mark? Numbers: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10. Some smybols: !@#$%^&*()-=_+[]{}</>.\\\"';~`|";
+let veryepiccoolmessage = "Hello, this message includes punctuation! Question mark? Numbers: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10. Some smybols: !@#$%^&*()-=_+[]{}</>.\\\"';~`|";
 
-let encoded = EncodeMessage2(message, key);
-let decoded = DecodeMessage2(encoded, key);
+let veryepiccoolencodedmessage = EncodeMessage2(veryepiccoolmessage, key);
+let veryepiccooldecodedmessage = DecodeMessage2(veryepiccoolencodedmessage, key);
 
-console.log(FormatMessage(encoded));
+console.log(FormatMessage(veryepiccoolencodedmessage));
 
-console.log(encoded, decoded);
+console.log(veryepiccoolencodedmessage, veryepiccooldecodedmessage);
