@@ -5,7 +5,7 @@ let key = [
     [3, 7]
 ]
 
-let message = "Hello, this message includes punctuation! Question mark? Numbers: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10. Some smybols: !@#$%^&*()-=_+[]{}<>/\\\"';";
+let message = "Hello, this message includes punctuation! Question mark? Numbers: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10. Some smybols: !@#$%^&*()-=_+[]{}</>.\\\"';~`|";
 
 let encoded = EncodeMessage2(message, key);
 let decoded = DecodeMessage2(encoded, key);

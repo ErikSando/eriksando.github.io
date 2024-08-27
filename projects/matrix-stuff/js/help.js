@@ -45,6 +45,8 @@ InstructionsMessage += "Encoding and Decoding Messages\n";
 InstructionsMessage += "==============================\n\n";
 InstructionsMessage += "EncodeMessage(message, key): encodes the message (a string) using the key matrix. The output of this function is an array of numbers.\n\n"
 InstructionsMessage += "DecodeMessage(message, key): decodes the message (an array of numbers) using the key matrix. The key matrix is automatically inverted, so use the same matrix that was used to encode the message. The output of this function is a string.\n\n";
+InstructionsMessage += "EncodeMessage2(message, key): same as EncodeMessage, but you can use all sorts of characters.\n\n"
+InstructionsMessage += "DecodeMessage2(message, key): decodes a message encoded by EncodeMessage2().\n\n";
 InstructionsMessage += "There are some more encoding and decoding functions but not all are completed and I'm too lazy to write any more here.";
 
 console.log(InstructionsMessage);
