@@ -5,12 +5,10 @@ let key = [
     [3, 7]
 ]
 
-let message = "THISISAVERYCOOLMESSAGETHATWILLNEVEREVERBEDECODED";
+let message = "Hello, this message includes punctuation! Question mark? Numbers: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10. Some smybols: !@#$%^&*()-=_+[]{}<>/\\\"';";
 
-console.log(message.length);
-
-let encoded = EncodeMessage(message, key);
-let decoded = DecodeMessage(encoded, key);
+let encoded = EncodeMessage2(message, key);
+let decoded = DecodeMessage2(encoded, key);
 
 console.log(FormatMessage(encoded));
 

@@ -135,8 +135,8 @@ Matrix.Identity = (size) => {
 // FIX MULTIPLICATION !!!!!!!!!
 
 Matrix.Multiply = (m1, m2) => {
-    //if (!(m1 instanceof Matrix)) m1 = new Matrix(m1.length, m1[0].length, m1);
-    //if (!(m2 instanceof Matrix)) m2 = new Matrix(m1.length, m2[0].length, m2);
+    if (!(m1 instanceof Matrix)) m1 = new Matrix(m1.length, m1[0].length, m1);
+    if (!(m2 instanceof Matrix)) m2 = new Matrix(m2.length, m2[0].length, m2);
 
     if (m1.columns != m2.rows) return console.error("Cannot multiply, number of columns in matrix 1 not equal to the number of rows in matrix 2.");
 
