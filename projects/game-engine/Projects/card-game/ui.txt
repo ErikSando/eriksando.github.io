@@ -1,0 +1,25 @@
+Title in top middle
+
+Can make private or public lobby
+
+Buttons:
+Create Lobby
+Join Lobby
+Play against computer
+
+Create lobby:
+Public/Private
+Players: 2-4
+Time per move: 5 to 60 seconds
+Timeout: pick up stack, disqualify, play lowest card available, play highest card available
+Private lobbies have a join key
+
+Join Lobby:
+Lists all public lobbies and the player count, player limit, and time per move
+
+Play against computer:
+Number of computers: 1-3
+Difficulty: easy, medium, hard
+Start
+
+Background image is poker table i guess

@@ -26,7 +26,7 @@ NewGameButton.MouseExit.AddListener(() => {
 NewGameButton.Mouse1Down.AddListener(() => {
     NewGameButton.bgColour = "rgb(160, 40, 0)";
 
-    TileManager.Init();
+    TileManager.GenerateField();
 });
 
 NewGameButton.Mouse1Up.AddListener(() => {

@@ -8,6 +8,7 @@ const TileID = {
 const TileManager = new class {
     bombs = [];
     tiles = [];
+    revealed = [];
     tileSize = 32;
 
     width = 30;
@@ -17,7 +18,7 @@ const TileManager = new class {
     #gameStarted = false;
 
     Init() {
-        this.#GenerateEmptyField();
+        this.GenerateField();
     }
 
     UpdateCameraPos() {
@@ -40,6 +41,8 @@ const TileManager = new class {
             this.GenerateField(this.width, this.height, x, y);
         }
 
+        this.revealed[y][x] = 1;
+
         if (this.bombs[y][x]) {
             this.tiles[y][x] = TileID.BombClicked;
 
@@ -47,59 +50,97 @@ const TileManager = new class {
                 for (let i = 0; i < this.width; i++) {
                     if (j == y && i == x) continue;
 
+                    this.revealed[j][i] = 1;
+
                     if (this.bombs[j][i]) {
                         this.tiles[j][i] = TileID.Bomb;
                     }
                     else {
-                        this.tiles[j][i] = TileID.Empty;
+                        //this.tiles[j][i] = TileID.Empty;
                     }
                 }
             }
         }
-        else {
-            this.tiles[y][x] = TileID.Empty;
-        }
+        // else {
+        //     this.tiles[y][x] = TileID.Empty;
+        // }
     }
 
-    #GenerateEmptyField = (width = this.width, height = this.height) => {
+    #GenerateEmptyField = (width, height) => {
         this.width = width;
         this.height = height;
 
         this.bombs = new Array(height);
+        this.tiles = new Array(height);
+        this.revealed = new Array(height);
 
         for (let j = 0; j < height; j++) {
             this.bombs[j] = new Array(width);
             this.tiles[j] = new Array(width);
+            this.revealed[j] = new Array(width);
 
             for (let i = 0; i < width; i++) {
                 this.bombs[j][i] = 0;
                 this.tiles[j][i] = 0;
+                this.revealed[j][i] = 0;
             }
         }
 
         this.UpdateCameraPos();
     }
 
-    GenerateField(width = this.width, height = this.height, startX, startY) {
-        this.#GenerateEmptyField(width, height);
-
-        let bombChance = width * height / this.bombCount * 4;
-        let bombs = 0;
+    #GenerateBombs(width, height) {
+        let bombLocations = []
+        let bombs = 0
 
         while (bombs < this.bombCount) {
-            for (let j = 0; j < height; j++) {
-                for (let i = 0; i < width; i++) {
-                    if (i == startX && j == startY) continue;
+            let location = [ Random.Integer(0, height - 1), Random.Integer(0, width - 1) ]
+            if (bombLocations.includes(location)) continue;
+            bombLocations.push(location);
+            bombs++;
 
-                    if (Random.Integer(1, bombChance) == 1) {
-                        this.bombs[j][i] = 1;
-                        bombs++;
-                    }
+            this.bombs[location[0]][location[1]] = 1;
+        }
+    }
 
-                    if (bombs >= this.bombCount) break;
+    #GenerateNumbers(width, height) {
+        for (let j = 0; j < height; j++) {
+            for (let i = 0; i < width; i++) {
+                if (this.bombs[j][i]) continue;
+
+                let bombCount = 0;
+                let adjacentTiles = []
+
+                let above = [ j - 1, i ]
+                let below = [ j + 1, i ]
+                let left  = [ j, i - 1 ]
+                let right = [ j, i + 1 ]
+
+                if (j > 0)          adjacentTiles.push(above); // above
+                if (j < height - 1) adjacentTiles.push(below); // below
+                if (i > 0)          adjacentTiles.push(left); // left
+                if (i < width - 1)  adjacentTiles.push(right); // right
+
+                if (adjacentTiles.includes(above) && adjacentTiles.includes(left)) adjacentTiles.push([ j - 1, i - 1 ]);
+                if (adjacentTiles.includes(above) && adjacentTiles.includes(right)) adjacentTiles.push([ j - 1, i + 1 ]);
+                if (adjacentTiles.includes(below) && adjacentTiles.includes(left)) adjacentTiles.push([ j + 1, i - 1 ]);
+                if (adjacentTiles.includes(below) && adjacentTiles.includes(right)) adjacentTiles.push([ j + 1, i + 1 ]);
+            
+                console.log(adjacentTiles)
+
+                for (let tile of adjacentTiles) {
+                    if (this.bombs[tile[0]][tile[1]]) bombCount++;
                 }
+
+                this.tiles[j][i] = bombCount;
             }
         }
+    }
+
+    GenerateField(width = this.width, height = this.height, startX, startY) {
+        this.#GenerateEmptyField(width, height);
+        this.#GenerateBombs(width, height);
+        this.#GenerateNumbers(width, height);
     }
 
     Draw() {
@@ -113,29 +154,31 @@ const TileManager = new class {
                 let tile = this.tiles[i][j];
                 let image = Images.Tile;
 
-                switch (tile) {
-                    case 1:
-                    case 2:
-                    case 3:
-                    case 4:
-                    case 5:
-                    case 6:
-                    case 7:
-                    case 8:
-                        image = Images.Number[tile];
-                        break;
+                if (this.revealed[i][j]) {
+                    switch (tile) {
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                        case 8:
+                            image = Images.Number[tile];
+                            break;
 
-                    case TileID.Bomb:
-                        image = Images.Bomb;
-                        break;
-                    
-                    case TileID.BombClicked:
-                        image = Images.BombClicked;
-                        break;
+                        case TileID.Bomb:
+                            image = Images.Bomb;
+                            break;
+                        
+                        case TileID.BombClicked:
+                            image = Images.BombClicked;
+                            break;
 
-                    case TileID.Empty:
-                        image = Images.Empty;
-                        break;
+                        case TileID.Empty:
+                            image = Images.Empty;
+                            break;
+                    }
                 }
 
                 ctx.drawImage(image, j * this.tileSize, i * this.tileSize, this.tileSize, this.tileSize);

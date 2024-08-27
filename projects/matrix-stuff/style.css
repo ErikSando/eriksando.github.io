@@ -1,0 +1,14 @@
+* {
+    background: black;
+    color: white;
+}
+
+html {
+    width: 60vw;
+    margin: auto;
+}
+
+.title {
+    font-size: 30px;
+    text-align: center;
+}

@@ -1,0 +1,38 @@
+shithead card game (a.k.a. palace i think)
+
+Each player starts with:
+3 cards placed face down (hidden palace).
+3 cards placed face up on top of the face down cards (other players can see, upper palace).
+3 cards in hand.
+
+Can swap any card in upper palace with face up cards at the start of the game.
+
+Must have at least 3 cards in hand at all times (unless there are no cards to pick up).
+Pick up a card (or multiple if multiple cards are played) after each turn.
+
+The face up cards are played once the player runs out of cards.
+
+The face down cards are played once the player runs out of face up cards.
+
+Player with lowest card goes first.
+
+Every next card played must be higher than the last.
+Order of cards: 
+- 3, 4, 5, 6, 7, 8, 9, J, Q, K, A, magic cards
+Order of suites
+- clubs, spades, diamonds, hearts
+Ace is highest.
+
+Special cards:
+7  - next card must be lower (can be another 7 if the suite is lower)
+8  - skip (3+ players)
+9  - reverse (3+ players)
+
+Magic cards:
+2  - reset (any card can be played on top)
+10 - clear stack
+
+If 4 cards of the same number are played consecutively, the stack is cleared.
+3 6's in a row clears the stack.
+
+Once all of a player's cards are gone, they win.

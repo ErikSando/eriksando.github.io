@@ -1,0 +1,1 @@
+//const BackgroundImage = new ImageLabel(new Vector(2611, 1960), new Vector(345.5, 440), Images.Background);

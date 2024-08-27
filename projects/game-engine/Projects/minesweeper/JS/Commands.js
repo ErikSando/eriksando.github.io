@@ -38,4 +38,4 @@ function bombs(n) {
     TileManager.bombCount = n;
 }
 
-console.log("\n=== COMMANDS ===\n\ndifficulty(d: difficulty) -> set the difficulty (easy, intermediate, expert)\n\nwidth(w: integer) -> set the width\n\nheight(h: integer) -> set the height\n\n================\n");
+console.log("\n=== COMMANDS ===\n\ndifficulty(d: difficulty) -> set the difficulty (easy, intermediate, expert)\n\nwidth(w: integer) -> set the width\n\nheight(h: integer) -> set the height\n\nbombs(b: bombs) -> set the number of bombs\n\n================\n");

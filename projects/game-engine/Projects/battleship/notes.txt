@@ -1,0 +1,12 @@
+Ships:
+
+OO    OOO    OOO     OOOO     OOO      OOOOO
+              O                OOO
+
+Weapons:
+
+Standard: one hit
+
+Sonar: 3x3 scan
+
+Air strike: 
