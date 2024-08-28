@@ -168,8 +168,6 @@ function EncodeMessageOfNumbers2(message, key) {
     return encodedMessage;
 }
 
-// THERE IS A PROBLEM WITH THE DECODING!!!! OR ENCODING IDK
-
 function DecodeMessage(message, key) {
     if (key instanceof Matrix)  key = key.Inverse();
     else key = new Matrix(2, 2, key).Inverse();
@@ -282,4 +280,28 @@ function FormatMessage(message) {
     formatted += message[message.length - 1];
 
     return formatted;
+}
+
+function UnFormatMessage(message) {
+    let currentNum = "";
+    let unformatted = [];
+
+    for (let i = 0; i < message.length; i++) {
+        let char = message[i];
+        if (char == " ") continue;
+
+        if (char == "," || char == ";") {
+            let num = Number(currentNum);
+            unformatted.push(num);
+            currentNum = "";
+            continue;
+        }
+
+        currentNum += char;
+    }
+
+    let num = Number(currentNum);
+    unformatted.push(num);
+
+    return unformatted;
 }
