@@ -1,11 +1,12 @@
 let alphabet = ["Z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y"]
 
-let alphabet2 = [
-    "Z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y",
-    "z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y",
-    "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "!", "@", "#", "$", "%", "^", "&", "*", "(", ")",
-    " ", ",", ".", "/", "<", ">", "?", ";", "'", ":", "\"", "[", "]", "{", "}", "-", "=", "_", "+", "\\", "|", "`", "~"
-]
+let ascii = [];
+
+for (let i = 32; i < 128; i++) {
+    ascii.push(String.fromCharCode(i));
+}
+
+console.log(ascii);
 
 function Format(n) {
     while (n < 0) n += alphabet.length;
@@ -13,8 +14,8 @@ function Format(n) {
 }
 
 function Format2(n) {
-    while (n < 0) n += alphabet2.length;
-    return n % alphabet2.length;
+    while (n < 0) n += ascii.length;
+    return n % ascii.length;
 }
 
 function EncodeMessage(message, key) {
@@ -82,7 +83,7 @@ function EncodeMessageOfNumbers(message, key) {
         if (typeof c == "undefined") c = b;
         if (typeof d == "undefined") d = c;
 
-        let matrix = new Matrix(2, 2, [[Format(a), Format(b)], [Format(c), Format(d)]]); // i donh think i need to format here, but ill do it anyway
+        let matrix = new Matrix(2, 2, [[a, b], [c, d]]);
         let encoded = Matrix.Multiply(matrix, key);
         
         encodedMessage += alphabet[Format(encoded.Get(1, 1))] + alphabet[Format(encoded.Get(1, 2))] + alphabet[Format(encoded.Get(2, 1))] + alphabet[Format(encoded.Get(2, 2))]
@@ -106,10 +107,10 @@ function EncodeMessage2(message, key) {
         if (typeof _c == "undefined") _c = _b;
         if (typeof _d == "undefined") _d = _c;
 
-        let a = alphabet2.indexOf(_a),
-        b = alphabet2.indexOf(_b),
-        c = alphabet2.indexOf(_c),
-        d = alphabet2.indexOf(_d);
+        let a = ascii.indexOf(_a),
+        b = ascii.indexOf(_b),
+        c = ascii.indexOf(_c),
+        d = ascii.indexOf(_d);
 
         let matrix = new Matrix(2, 2, [[a, b], [c, d]]);
         let encoded = Matrix.Multiply(matrix, key);
@@ -133,15 +134,15 @@ function EncodeMessageIntoLetters2(message, key) {
         _c = message[i + 2] || _b,
         _d = message[i + 3] || _c;
 
-        let a = alphabet2.indexOf(_a.toUpperCase()),
-        b = alphabet2.indexOf(_b.toUpperCase()),
-        c = alphabet2.indexOf(_c.toUpperCase()),
-        d = alphabet2.indexOf(_d.toUpperCase());
+        let a = ascii.indexOf(_a.toUpperCase()),
+        b = ascii.indexOf(_b.toUpperCase()),
+        c = ascii.indexOf(_c.toUpperCase()),
+        d = ascii.indexOf(_d.toUpperCase());
 
-        let matrix = new Matrix(2, 2, [[Format2(a), Format2(b)], [Format2(c), Format2(d)]]); // i donh think i need to format here, but ill do it anyway
+        let matrix = new Matrix(2, 2, [[a, b], [c, d]]);
         let encoded = Matrix.Multiply(matrix, key);
         
-        encodedMessage += alphabet2[Format2(encoded.Get(1, 1))] + alphabet2[Format2(encoded.Get(1, 2))] + alphabet2[Format2(encoded.Get(2, 1))] + alphabet2[Format2(encoded.Get(2, 2))]
+        encodedMessage += ascii[Format2(encoded.Get(1, 1))] + ascii[Format2(encoded.Get(1, 2))] + ascii[Format2(encoded.Get(2, 1))] + ascii[Format2(encoded.Get(2, 2))]
     }
 
     return encodedMessage;
@@ -158,10 +159,10 @@ function EncodeMessageOfNumbers2(message, key) {
         c = message[i + 2] || b,
         d = message[i + 3] || c;
 
-        let matrix = new Matrix(2, 2, [[Format2(a), Format2(b)], [Format2(c), Format2(d)]]); // i donh think i need to format here, but ill do it anyway
+        let matrix = new Matrix(2, 2, [[a, b], [c, d]]);
         let encoded = Matrix.Multiply(matrix, key);
         
-        encodedMessage += alphabet2[Format2(encoded.Get(1, 1))] + alphabet2[Format2(encoded.Get(1, 2))] + alphabet2[Format2(encoded.Get(2, 1))] + alphabet2[Format2(encoded.Get(2, 2))]
+        encodedMessage += ascii[Format2(encoded.Get(1, 1))] + ascii[Format2(encoded.Get(1, 2))] + ascii[Format2(encoded.Get(2, 1))] + ascii[Format2(encoded.Get(2, 2))]
     }
 
     return encodedMessage;
@@ -211,7 +212,7 @@ function DecodeMessageOfLetters(message, key) {
         c = alphabet.indexOf(_c.toUpperCase()),
         d = alphabet.indexOf(_d.toUpperCase());
 
-        let matrix = new Matrix(2, 2, [[Format(a), Format(b)], [Format(c), Format(d)]]);
+        let matrix = new Matrix(2, 2, [[a, b], [c, d]]);
         let decoded = Matrix.Multiply(matrix, key);
 
         decodedMessage += alphabet[Format(decoded.Get(1, 1))] + alphabet[Format(decoded.Get(1, 2))] + alphabet[Format(decoded.Get(2, 1))] + alphabet[Format(decoded.Get(2, 2))]
@@ -239,7 +240,7 @@ function DecodeMessage2(message, key) {
         let matrix = new Matrix(2, 2, [[a, b], [c, d]]);
         let decoded = Matrix.Multiply(matrix, key);
 
-        decodedMessage += alphabet2[Format2(decoded.Get(1, 1))] + alphabet2[Format2(decoded.Get(1, 2))] + alphabet2[Format2(decoded.Get(2, 1))] + alphabet2[Format2(decoded.Get(2, 2))]
+        decodedMessage += ascii[Format2(decoded.Get(1, 1))] + ascii[Format2(decoded.Get(1, 2))] + ascii[Format2(decoded.Get(2, 1))] + ascii[Format2(decoded.Get(2, 2))]
     }
 
     return decodedMessage;
@@ -257,15 +258,15 @@ function DecodeMessageOfNumbers2(message, key) {
         _c = message[i + 2] || _b,
         _d = message[i + 3] || _c;
 
-        let a = alphabet2.indexOf(_a.toUpperCase()),
-        b = alphabet2.indexOf(_b.toUpperCase()),
-        c = alphabet2.indexOf(_c.toUpperCase()),
-        d = alphabet2.indexOf(_d.toUpperCase());
+        let a = ascii.indexOf(_a.toUpperCase()),
+        b = ascii.indexOf(_b.toUpperCase()),
+        c = ascii.indexOf(_c.toUpperCase()),
+        d = ascii.indexOf(_d.toUpperCase());
 
-        let matrix = new Matrix(2, 2, [[Format2(a), Format2(b)], [Format2(c), Format2(d)]]);
+        let matrix = new Matrix(2, 2, [[a, b], [c, d]]);
         let decoded = Matrix.Multiply(matrix, key);
 
-        decodedMessage += alphabet2[Format2(decoded.Get(1, 1))] + alphabet2[Format2(decoded.Get(1, 2))] + alphabet2[Format2(decoded.Get(2, 1))] + alphabet2[Format2(decoded.Get(2, 2))]
+        decodedMessage += ascii[Format2(decoded.Get(1, 1))] + ascii[Format2(decoded.Get(1, 2))] + ascii[Format2(decoded.Get(2, 1))] + ascii[Format2(decoded.Get(2, 2))]
     }
 
     return decodedMessage;
@@ -275,7 +276,7 @@ function FormatMessage(message) {
     let formatted = "";
     
     for (let i = 0; i < message.length - 1; i++) {
-        formatted += message[i] + ";";
+        formatted += message[i] + "; ";
     }
 
     formatted += message[message.length - 1];

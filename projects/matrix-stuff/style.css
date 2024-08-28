@@ -1,6 +1,12 @@
 * {
     background: black;
     color: white;
+    font-size: 25px;
+}
+
+hr {
+    margin-top: 30px;
+    margin-bottom: 30px;
 }
 
 html {
@@ -9,6 +15,14 @@ html {
 }
 
 .title {
-    font-size: 30px;
+    font-size: 40px;
     text-align: center;
+}
+
+.matrix-element {
+    width: 40px;
+}
+
+#message {
+    width: 40vw;
 }

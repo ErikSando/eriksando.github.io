@@ -11,8 +11,16 @@
     <script src="js/main.js"></script>
 </head>
 <body>
-    <div class="title">Matrix Stuff</div>
+    <br>
+    <div class="title">Encoding And Decoding Messages Using Matrix Multiplication</div>
     <hr>
-    I'm too lazy to make a GUI, press F12 to open developer console and use that to play with matrices. Instructions included.
+    Message: <input type="text" id="message"> <br> <br>
+    Encoder matrix: <br>
+    <input type="number" id="1-1" class="matrix-element"> <input type="number" id="1-2" class="matrix-element"> <br>
+    <input type="number" id="2-1" class="matrix-element"> <input type="number" id="2-2" class="matrix-element"> <br> <br>
+    Full character list: <input type="checkbox" id="full-character-list"> <br> <br>
+    <button id="encode">Encode</button> <br>
+    <button id="decode">Decode</button> * the message must be a string of numbers seperated by a semi colon or a comma. <br> <br>
+    Output: <span id="output"></span>
 </body>
 </html>
