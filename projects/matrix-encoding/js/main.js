@@ -2,6 +2,7 @@ window.addEventListener("load", () => {
     let messageInput = document.getElementById("message");
     let fullCharacterList = document.getElementById("full-character-list");
     let output = document.getElementById("output");
+    let separator = document.getElementById("separator");
     let matrixElems = {
         "1-1": document.getElementById("1-1"),
         "1-2": document.getElementById("1-2"),
@@ -25,9 +26,23 @@ window.addEventListener("load", () => {
         let func = EncodeMessage;
         if (fullCharacterList.checked) func = EncodeMessage2;
 
-        console.log(fullCharacterList.value);
+        let separatorCharacter = ";"
+
+        switch (separator.value) {
+            // case "Semi colons":
+            //     separatorCharacter = ";";
+            // break;
+
+            case "Commas":
+                separatorCharacter = ",";
+            break;
+
+            default:
+                separatorCharacter = ";";
+            break;
+        }
     
-        output.textContent = FormatMessage(func(message, key));
+        output.textContent = FormatMessage(func(message, key), separatorCharacter);
     });
     
     document.getElementById("decode").addEventListener("mousedown", () => {

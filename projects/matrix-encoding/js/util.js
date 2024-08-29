@@ -270,11 +270,11 @@ function DecodeMessageOfNumbers2(message, key) {
     return decodedMessage;
 }
 
-function FormatMessage(message) {
+function FormatMessage(message, seperator = ";") {
     let formatted = "";
     
     for (let i = 0; i < message.length - 1; i++) {
-        formatted += message[i] + "; ";
+        formatted += message[i] + seperator + " ";
     }
 
     formatted += message[message.length - 1];
