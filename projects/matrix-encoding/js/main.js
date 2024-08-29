@@ -29,11 +29,11 @@ window.addEventListener("load", () => {
         let separatorCharacter = ";"
 
         switch (separator.value) {
-            // case "Semi colons":
+            // case "Semicolon":
             //     separatorCharacter = ";";
             // break;
 
-            case "Commas":
+            case "Comma":
                 separatorCharacter = ",";
             break;
 
