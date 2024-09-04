@@ -2,7 +2,7 @@ let alphabet = ["Z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L",
 
 let ascii = [];
 
-for (let i = 32; i < 128; i++) {
+for (let i = 32; i < 127; i++) {
     ascii.push(String.fromCharCode(i));
 }
 
