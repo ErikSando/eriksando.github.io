@@ -7,7 +7,7 @@ obj1.useGravity = false;
 
 let obj2 = new GameObject(new Vector(380, 380), new Vector(200, 200), true);
 
-Game.LoadScene(new Scene([obj1, obj2]));
+Game.scene = new Scene([obj1, obj2]);
 
 Game.Loaded.AddListener(() => {
     Game.CreateCanvas();

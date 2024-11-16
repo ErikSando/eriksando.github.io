@@ -1,8 +1,8 @@
 const CellHandler = new class extends UpdatesEachFrame {
     interval = 0.1; // time inbetween generations in seconds
     #totalDelta = this.interval;
-    columns = Clamp(GetData("columns", 200), 2000);
-    rows = Clamp(GetData("rows", 200), 2000);
+    columns = Clamp(GetData("columns", 200), 5, 2000);
+    rows = Clamp(GetData("rows", 200), 5, 2000);
     #cells = new Array(this.rows);
     cellSize = 20;
     paused = true;

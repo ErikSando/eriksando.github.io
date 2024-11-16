@@ -123,9 +123,10 @@ const KeyCode = {
     Period: "Period"
 }
 
-const DegreesToRadians = Math.PI / 180;
-const RadiansToDegrees = 180 / Math.PI;
-const TwoPI = 2 * Math.PI;
+const PI = Math.PI;
+const TwoPI = 2 * PI;
+const DegreesToRadians = PI / 180;
+const RadiansToDegrees = 180 / PI;
 
 const TileSize = 50;
 
@@ -197,7 +198,7 @@ class Vector {
     }
 
     plus(v) {
-        if (v instanceof Vector) return new Vector(this.x +v.x, this.y + v.y);
+        if (v instanceof Vector) return new Vector(this.x + v.x, this.y + v.y);
         else return new Vector(this.x + v, this.y + v);
     }
 
@@ -820,103 +821,118 @@ class Ray {
             this.angle = direction;
         }
     }
+}
 
-    // OPTIMIZE THIS FOR TILED WORLDS
-    cast(wall) {
-        let x1 = wall.start.x;
-        let y1 = wall.start.y;
-        let x2 = wall.end.x;
-        let y2 = wall.end.y;
+function HorizontalRaycast(start, angle, maxDistance = Infinity, ctx) { // doesnt work properly
+    if (angle instanceof Vector) angle = angle.angle;
 
-        let x3 = this.position.x;
-        let y3 = this.position.y;
-        let x4 = this.position.x + this.direction.x;
-        let y4 = this.position.y + this.direction.y;
+    let yStep = TileSize;
+    let firstY = Math.floor(start.y / TileSize) * TileSize - 0.01;
 
-        let denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-    
-        if (denominator == 0) return;
+    let yDir = 0;
 
-        let t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominator;
-        let u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denominator;
-    
-        if (t > 0 && t < 1 && u > 0) {
+    if (angle > 0 && angle < PI) {
+        firstY += TileSize + 0.01;
+    }
+    else if (angle > PI && angle < TwoPI) {
+        yStep = -TileSize;
+    }
+    else {
+        return {
+            position: null,
+            distance: Infinity
+        }
+    }
+
+    let xStep = yStep / Math.tan(angle);
+    let firstX = start.x + (firstY - start.y) / Math.tan(angle);
+
+    let tileMap = Game.scene.TileMap;
+
+    for (
+        let y = firstY, x = firstX;
+        y >= 0 && y <= tileMap.length * TileSize && x >= 0 && x <= tileMap[0].length * TileSize;
+        y += yStep, x += xStep)
+    {
+        let yIndex = Math.floor(y / TileSize);
+        let xIndex = Math.floor(x / TileSize);
+
+        let tile = tileMap[yIndex][xIndex];
+
+        if (tile) {
+            let pos = new Vector(x, y);
+
             return {
-                point: new Vector(x1 + t * (x2 - x1), y1 + t * (y2 - y1)),
-                distance: u
-            }
-        
-        } else return;
-    }
-}
-
-function HorizontalRaycast(start, angle, maxDistance = Infinity) { // doesnt work properly
-    if (angle instanceof Vector) angle = angle.angle;
-
-    let ys = TileSize;
-    let xs = ys / Math.tan(angle);
-
-    let yn = Math.floor(start.y / TileSize) * TileSize;
-    let xn = Math.floor(start.x / TileSize) * TileSize;
-
-    let tileMap = Game.scene.TileMap;
-
-    for (let i = yn; i >= 0 && i < tileMap.length * TileSize; i += ys) {
-        for (let j = xn; j >= 0 && j < tileMap[0].length * TileSize; j += xs) {
-            let tileMapY = Math.floor(i / TileSize);
-            let tileMapX = Math.floor(j / TileSize);
-        
-            let tile = tileMap[tileMapY][tileMapX];
-
-            if (tile) {
-                let position = new Vector(j, i);
-                let distance = Vector.DistanceBetween(start, position)
-
-                return {
-                    position: position,
-                    distance: distance
-                }
+                position: pos,
+                distance: Vector.DistanceBetween(start, pos),
+                wallType: "h"
             }
         }
     }
-}
 
-function VerticalRaycast(start, angle, maxDistance = Infinity) { // doesnt work properly
-    if (angle instanceof Vector) angle = angle.angle;
-
-    let xs = TileSize;
-    let ys = xs / Math.tan(angle);
-
-    let xn = Math.floor(start.x / TileSize) * TileSize;
-    let yn = Math.floor(start.y / TileSize) * TileSize;
-
-    let tileMap = Game.scene.TileMap;
-
-    for (let i = yn; i >= 0 && i < tileMap.length * TileSize; i += ys) {
-        for (let j = xn; j >= 0 && j < tileMap[0].length * TileSize; j += xs) {
-            let tileMapY = Math.floor(i / TileSize);
-            let tileMapX = Math.floor(j / TileSize);
-            
-            let tile = tileMap[tileMapY][tileMapX];
-
-            if (tile) {
-                let position = new Vector(j, i);
-                let distance = Vector.DistanceBetween(start, position)
-
-                return {
-                    position: position,
-                    distance: distance
-                }
-            }
-        }
+    return {
+        position: null,
+        distance: Infinity
     }
 }
 
-function Raycast(start, angle, maxDistance = Infinity) {
+function VerticalRaycast(start, angle, maxDistance = Infinity, ctx) { // doesnt work properly
     if (angle instanceof Vector) angle = angle.angle;
     
-    let hitH = HorizontalRaycast(start, angle);
-    let hitV = VerticalRaycast(start, angle);
+    let xStep = TileSize;
+    let firstX = Math.floor(start.x / TileSize) * TileSize - 0.01;
+
+    if ((angle > 3 * PI / 2 && angle <= TwoPI) || (angle >= 0 && angle < PI / 2)) {
+        firstX += TileSize + 0.01;
+    }
+    else if (angle > PI / 2 && angle < 3 * PI / 2) {
+        xStep = -TileSize;
+    }
+    else {
+        return {
+            position: null,
+            distance: Infinity
+        }
+    }
+
+    let yStep = xStep * Math.tan(angle);
+    let firstY = start.y + (firstX - start.x) * Math.tan(angle);
+
+    let tileMap = Game.scene.TileMap;
+
+    for (let y = firstY, x = firstX;
+        y >= 0 && y <= tileMap.length * TileSize && x >= 0 && x <= tileMap[0].length * TileSize;
+        y += yStep, x += xStep)
+    {
+        let yIndex = Math.floor(y / TileSize);
+        let xIndex = Math.floor(x / TileSize);
+
+        let tile = tileMap[yIndex][xIndex];
+
+        if (tile) {
+            let pos = new Vector(x, y);
+
+            return {
+                position: pos,
+                distance: Vector.DistanceBetween(start, pos),
+                wallType: "v"
+            }
+        }
+    }
+
+    return {
+        position: null,
+        distance: Infinity
+    }
+}
+
+function Raycast(start, angle, maxDistance = Infinity, ctx) {
+    if (angle instanceof Vector) angle = angle.angle;
+    
+    let hitH = HorizontalRaycast(start, angle, maxDistance, ctx);
+    let hitV = VerticalRaycast(start, angle, maxDistance, ctx);
+
+    if (hitH.distance == Infinity && hitV.distance == Infinity) return null;
 
     return hitH.distance < hitV.distance ? hitH : hitV;
 }
@@ -941,15 +957,45 @@ class Camera {
 
 class Renderer {
     lightAngles = [Vector.down().angle, Vector.left().angle]; // the bottom and left sides of game objects will be lighter
-    lightColour = "green";
-    darkColour = "darkgreen";
+    horizontalColour = "rgb(0, 180, 0)";
+    verticalColour = "rgb(0, 200, 0)";
+    resolution = 1;
 
-    Render(ctx, scene, camera, viewport) {
+    Render(ctx, camera, viewport) {
+        //ctx.lineWidth = 2;
+
+        //let mult = 1.4;
+        //let offset = { x: 500, y: 120 }
+        
+        // ctx.strokeStyle = "grey";
+
+        // for (let i = 0; i < worldData.length; i++) {
+        //     for (let j = 0; j < worldData[i].length; j++) {
+        //         if (worldData[i][j]) {
+        //             ctx.fillStyle = "white";
+        //             ctx.fillRect(j * TileSize * mult + offset.x, i * TileSize * mult + offset.y, TileSize * mult, TileSize * mult);
+        //         }
+        //         else {
+        //             ctx.fillStyle = "black";
+        //             ctx.fillRect(j * TileSize * mult + offset.x, i * TileSize * mult + offset.y, TileSize * mult, TileSize * mult);
+        //         }
+
+        //         ctx.strokeRect(j * TileSize * mult + offset.x, i * TileSize * mult + offset.y, TileSize * mult, TileSize * mult);
+        //     }
+        // }
+        
+        //let camPos = new Vector(camera.position.x * mult + offset.x, camera.position.y * mult + offset.y);
+
         let rays = [];
         let column = 0;
-
-        for (let angle = camera.orientation - camera.FOV / 2; angle <= camera.orientation + camera.FOV / 2; angle += camera.FOV / viewport.scale.x) {
-            let ray = new Ray(camera.position, angle);
+        
+        for (let angle = camera.orientation - camera.FOV / 2; angle <= camera.orientation + camera.FOV / 2; angle += camera.FOV / viewport.scale.x * this.resolution) {
+            let formattedAngle = angle;
+            
+            while (formattedAngle > TwoPI) formattedAngle -= TwoPI;
+            while (formattedAngle < 0) formattedAngle += TwoPI;
+            
+            let ray = new Ray(camera.position, formattedAngle);
             ray.column = column;
 
             column++;
@@ -958,53 +1004,49 @@ class Renderer {
         }
 
         for (let ray of rays) {
-            let intersections = [];
+            let intersection = Raycast(camera.position, ray.angle, Infinity, ctx);
 
-            for (let gameObject of scene.GameObjects) {
-                let sides = gameObject.GetSides();
-
-                for (let i = 0; i < sides.length; i++) {
-                    let side = sides[i];
-                    let intersection = ray.cast(side);
-
-                    if (intersection) {
-                        intersection.wallType = (side.end.minus(side.start).x != 0) ? "h" : "v";
-                        intersection.horizontalColour = gameObject.horizontalColour;
-                        intersection.verticalColour = gameObject.verticalColour;
-                        intersections.push(intersection);
-                    }
-                }
-            }
-
-            if (intersections.length) {
-                let closestIntersection = intersections[0];
-                let closestDistance = closestIntersection.distance;
-
-                for (let i = 1; i < intersections.length; i++) {
-                    if (intersections[i].distance < closestDistance) {
-                        closestIntersection = intersections[i];
-                        closestDistance = intersections[i].distance;
-                    }
-                }
-
+            if (intersection) {
                 let angle = camera.orientation - ray.angle;
 
-                let colour = closestIntersection.wallType == "h" ? closestIntersection.horizontalColour : closestIntersection.verticalColour;
+                let colour = intersection.wallType == "h" ? this.horizontalColour : this.verticalColour;
 
-                // diving by the cosine causes warping on the outside of the camera, more noticable with high field of view
-                let lineHeight = viewport.scale.y / closestDistance / camera.FOV / Math.cos(angle) * 50;
+                //dividing by the cosine causes warping on the outside of the camera, more noticable with high field of view
+                let lineHeight = viewport.scale.y / intersection.distance / camera.FOV / Math.cos(angle) * 50;
 
-                let center = viewport.scale.y / 2 + camera.position.z / closestDistance;
+                let center = viewport.scale.y / 2 + camera.position.z / intersection.distance;
                 let top = center - lineHeight / 2;
                 let bottom = center + lineHeight / 2;
 
                 ctx.strokeStyle = colour;
-                ctx.lineWidth = 5;
+                ctx.lineWidth = this.resolution + 1;
                 ctx.beginPath();
-                ctx.moveTo(ray.column, top);
-                ctx.lineTo(ray.column, bottom);
+                ctx.moveTo(ray.column * this.resolution, top);
+                ctx.lineTo(ray.column * this.resolution, bottom);
                 ctx.stroke();
-            }
+
+                // ctx.lineWidth = 1;
+                // ctx.strokeStyle = "red";
+                // ctx.beginPath()
+                // ctx.moveTo(camPos.x, camPos.y);
+                // ctx.lineTo(intersection.position.x * mult + offset.x, intersection.position.y * mult + offset.y);
+                // ctx.stroke();
+           }
+
+            // let dotSize = 4 * 2;
+            
+            // ctx.fillStyle = "yellow";
+            // ctx.fillRect(camPos.x - dotSize / 2, camPos.y - dotSize / 2, dotSize, dotSize);
+
+            // let pointerLength = 20;
+            // let pointerEnd = camPos.plus(Vector.FromAngle(camera.orientation).multiplied(pointerLength));
+    
+            // ctx.lineWidth = 2;
+            // ctx.strokeStyle = "yellow";
+            // ctx.beginPath();
+            // ctx.moveTo(camPos.x, camPos.y);
+            // ctx.lineTo(pointerEnd.x, pointerEnd.y);
+            // ctx.stroke();
         }
     }
 }
@@ -1148,7 +1190,7 @@ const Game = new class {
 
         this.PreDraw.Invoke(this.ctx);
 
-        this.renderer.Render(this.ctx, this.scene, this.camera, new Rectangle(new Vector(0, 0), new Vector(this.Settings.NativeWidth, this.Settings.NativeHeight)));
+        this.renderer.Render(this.ctx, this.camera, new Rectangle(new Vector(0, 0), new Vector(this.Settings.NativeWidth, this.Settings.NativeHeight)));
 
         for (let uiObject of this.scene.UIObjects) if (uiObject.visible) uiObject.Draw(this.ctx);
 

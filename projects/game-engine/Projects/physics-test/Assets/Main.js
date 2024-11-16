@@ -6,7 +6,7 @@ const obj3 = new GameObject(new Vector(575, 680), new Vector(100, 100), false, t
 
 const scene = new Scene([ground, obj1, obj2, obj3]);
 
-Game.LoadScene(scene);
+Game.scene = scene;
 
 Game.Settings.BackgroundColour = "rgb(110, 120, 130)";
 

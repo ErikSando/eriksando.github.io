@@ -24,6 +24,14 @@ class Player extends UpdatesEachFrame {
         if (Input.GetKey(KeyCode.ArrowRight)) rotation++;
 
         Game.camera.orientation += rotation * this.sensitivity * delta;
+        
+        while (Game.camera.orientation < 0) {
+            Game.camera.orientation += TwoPI;
+        }
+
+        while (Game.camera.orientation > TwoPI) {
+            Game.camera.orientation -= TwoPI;
+        }
 
         if (Input.GetKey(KeyCode.KeyQ)) Game.camera.position.z += this.speed * delta * 250;
         if (Input.GetKey(KeyCode.KeyE)) Game.camera.position.z -= this.speed * delta * 250;
