@@ -18,6 +18,9 @@ class Player extends UpdatesEachFrame {
 
         Game.camera.position.add(direction.normalised.multiplied(this.speed * delta));
 
+        Game.camera.position.x = Clamp(Game.camera.position.x, TileSize + 0.1, (Game.scene.TileMap.length - 1) * TileSize - 0.1);
+        Game.camera.position.y = Clamp(Game.camera.position.y, TileSize + 0.1, (Game.scene.TileMap[0].length - 1) * TileSize - 0.1);
+
         let rotation = 0;
 
         if (Input.GetKey(KeyCode.ArrowLeft)) rotation--;

@@ -1,6 +1,7 @@
 /*
 
     A game engine made for rendering 2D worlds as pseudo 3D
+    I added a lot of stuff that isn't used because why not
 
 */
 
@@ -823,13 +824,11 @@ class Ray {
     }
 }
 
-function HorizontalRaycast(start, angle, maxDistance = Infinity, ctx) { // doesnt work properly
+function HorizontalRaycast(start, angle, maxDistance = Infinity) {
     if (angle instanceof Vector) angle = angle.angle;
 
     let yStep = TileSize;
     let firstY = Math.floor(start.y / TileSize) * TileSize - 0.01;
-
-    let yDir = 0;
 
     if (angle > 0 && angle < PI) {
         firstY += TileSize + 0.01;
@@ -876,7 +875,7 @@ function HorizontalRaycast(start, angle, maxDistance = Infinity, ctx) { // doesn
     }
 }
 
-function VerticalRaycast(start, angle, maxDistance = Infinity, ctx) { // doesnt work properly
+function VerticalRaycast(start, angle, maxDistance = Infinity) {
     if (angle instanceof Vector) angle = angle.angle;
     
     let xStep = TileSize;
@@ -926,11 +925,11 @@ function VerticalRaycast(start, angle, maxDistance = Infinity, ctx) { // doesnt 
     }
 }
 
-function Raycast(start, angle, maxDistance = Infinity, ctx) {
+function Raycast(start, angle, maxDistance = Infinity) {
     if (angle instanceof Vector) angle = angle.angle;
     
-    let hitH = HorizontalRaycast(start, angle, maxDistance, ctx);
-    let hitV = VerticalRaycast(start, angle, maxDistance, ctx);
+    let hitH = HorizontalRaycast(start, angle, maxDistance);
+    let hitV = VerticalRaycast(start, angle, maxDistance);
 
     if (hitH.distance == Infinity && hitV.distance == Infinity) return null;
 
