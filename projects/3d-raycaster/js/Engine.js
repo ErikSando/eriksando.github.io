@@ -956,9 +956,19 @@ class Camera {
 
 class Renderer {
     lightAngles = [Vector.down().angle, Vector.left().angle]; // the bottom and left sides of game objects will be lighter
+    //horizontalColour = "rgb(180, 180, 180)";
+    //verticalColour = "rgb(190, 190, 190)";
     horizontalColour = "rgb(0, 180, 0)";
     verticalColour = "rgb(0, 200, 0)";
     resolution = 1;
+    lineHeightMultiplier = 80;
+
+    Settings = {
+        //BackgroundColour: "rgb(100, 200, 250)",
+        //GroundColour: "rgb(100, 100, 100)"
+        BackgroundColour: "rgb(255, 255, 255)",
+        GroundColour: "rgb(0, 0, 255)"
+    }
 
     Render(ctx, camera, viewport) {
         //ctx.lineWidth = 2;
@@ -984,6 +994,12 @@ class Renderer {
         // }
         
         //let camPos = new Vector(camera.position.x * mult + offset.x, camera.position.y * mult + offset.y);
+
+        ctx.fillStyle = this.Settings.BackgroundColour;
+        ctx.fillRect(0, 0, viewport.scale.x, viewport.scale.y);
+
+        ctx.fillStyle = this.Settings.GroundColour;
+        ctx.fillRect(0, viewport.scale.y / 2, viewport.scale.x, viewport.scale.y / 2);
 
         let rays = [];
         let column = 0;
@@ -1011,7 +1027,7 @@ class Renderer {
                 let colour = intersection.wallType == "h" ? this.horizontalColour : this.verticalColour;
 
                 //dividing by the cosine causes warping on the outside of the camera, more noticable with high field of view
-                let lineHeight = viewport.scale.y / intersection.distance / camera.FOV / Math.cos(angle) * 50;
+                let lineHeight = viewport.scale.y / intersection.distance / camera.FOV / Math.cos(angle) * this.lineHeightMultiplier;
 
                 let center = viewport.scale.y / 2 + camera.position.z / intersection.distance;
                 let top = center - lineHeight / 2;
@@ -1074,11 +1090,10 @@ const Game = new class {
     camera = new Camera();
 
     Settings = {
-        BackgroundColour: "white",
-        GroundColour: "blue",
         NativeWidth: 1920,
         NativeHeight: 1080,
-        ImageSmoothing: false
+        ImageSmoothing: false,
+        Gravity: 50
     }
 
     #ResizeCanvas = () => {
@@ -1318,8 +1333,17 @@ const Input = new class {
         let rect = canvas.getBoundingClientRect();
         let scale = Game.Settings.NativeWidth / canvas.width;
 
+        let previousPosition = this.GetMousePosition();
+
         this.#MousePos = new Vector((e.clientX - rect.x), (e.clientY - rect.y)).multiplied(scale);
-        this.MouseMove.Invoke(e.button, e.shiftKey, e.ctrlKey, e.altKey);
+
+        let info = {
+            position: this.GetMousePosition(),
+            previousPosition: previousPosition,
+            movement: new Vector(e.movementX, e.movementY)
+        }
+
+        this.MouseMove.Invoke(info, e.button, e.shiftKey, e.ctrlKey, e.altKey);
     }
 
     GetKey = (keyCode) => this.#KeysDown[keyCode];

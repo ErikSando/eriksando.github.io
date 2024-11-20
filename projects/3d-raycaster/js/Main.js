@@ -19,11 +19,15 @@ FPS.textAlignX = TextAlignX.Left;
 FPS.textAlignY = TextAlignY.Top;
 FPS.textColour = "black";
 
-let CameraControls = new TextLabel(new Vector(10, 1040), new Vector(350, 30), "Arrow L/R: Rotate Camera");
-CameraControls.textAlignX = TextAlignX.Left;
-CameraControls.textAlignY = TextAlignY.Bottom;
+let MouseControl = new TextLabel(new Vector(10, 1040), new Vector(350, 30), "Right Shift: Lock/Unlock Mouse");
+MouseControl.textAlignX = TextAlignX.Left;
+MouseControl.textAlignY = TextAlignY.Bottom;
 
-let MoveControls = new TextLabel(new Vector(10, 1000), new Vector(350, 30), "WASD: Move");
+let JumpControl = new TextLabel(new Vector(10, 1000), new Vector(350, 30), "Space: Jump");
+JumpControl.textAlignX = TextAlignX.Left;
+JumpControl.textAlignY = TextAlignY.Bottom;
+
+let MoveControls = new TextLabel(new Vector(10, 960), new Vector(350, 30), "WASD: Move");
 MoveControls.textAlignX = TextAlignX.Left;
 MoveControls.textAlignY = TextAlignY.Bottom;
 
@@ -32,7 +36,7 @@ Game.PostUpdate.AddListener(() => {
 });
 
 Game.scene = LoadTilemap(worldData, 50);
-Game.scene.AddUI(FPS, CameraControls, MoveControls);
+Game.scene.AddUI(FPS, MouseControl, JumpControl, MoveControls);
 
 Game.Settings.BackgroundColour = "rgb(200, 220, 240)";
 
