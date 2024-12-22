@@ -1,0 +1,53 @@
+HTML Design:
+
+Start Menu:
+- Select side to play
+- Select difficulty
+- Begin game
+
+Two different bots:
+- Player one
+- Player two
+
+* RANDOM, GENDERED NAMES FOR EACH CHARACTER TAKEN FROM SOME KIND OF DATABASE
+
+Two seperate UIs depending on if you are player one or player two
+
+Both UIs:
+- Time available
+- Cards available
+
+Player 1 UI:
+- All character information
+- False information is indicated (maybe written in red?)
+- Specific UI for falsifying information
+- UI to tell where fake gold is planted, and where the real gold is (buried or in the thieve's house)
+
+Player 2 UI:
+- All information gathered (thief information, character information, gold located, gold verified)
+- Information that has been verified as false is either indicated (maybe written in red?) or changed (i.e. 'has' is replaced with 'does not have')
+
+For now, the webpage will start by asking if the user wants to play as the thief or the detective
+The opponent will be a computer, with variable difficulty
+
+Difficulty ratings:
+
+Easy:
+- Makes completely random choices
+
+Medium:
+- Can not use guess thief card until close to the end
+- Uses up as much time balance as possible
+
+Hard:
+- Makes logically perfect choices (or as close as I can program it)
+- Only uses guess thief cards once all other cards are used up (to maximise information)
+
+
+
+Some things I want to add:
+- You select cards to play, and the time balance changes accordingly
+- You press a confirm button to play the cards
+- You can play more cards if you still have the time available. This allows you to change what you play depending on feedback from the card just played.
+
+- Duplicate cards are stacked on each other to save space

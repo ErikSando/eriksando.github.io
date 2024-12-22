@@ -1,0 +1,23 @@
+Split into a new project to keep the basic raycaster
+
+Stop player from walking through walls
+
+Add a gun in hand with animations
+
+Add NPCs (with healthbar)
+
+Add shooting mechanic that can kill NPCs
+
+Make NPCs attack the player
+
+Add a second, larger tile map for loot crates, spikes, landmines and stuff
+- Rendering this stuff will just mean moving the lines down in the world so that it is on the floor and below the line of sight of the player.
+- Will also need to find out how to render the top of the box (could be very difficult)
+
+Game concept:
+- Infinite wave survival of zombies or whatever the NPCs will be
+- Get money from killing NPCs to buy better equipment.
+
+And Finally:
+
+Translate all of this into the C++ raycaster project
