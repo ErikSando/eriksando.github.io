@@ -1,9 +1,10 @@
 const CellHandler = new class extends PostDrawGroup {
-    thickness = 3;
+    thickness = 2;
     #cells;
     #size;
     cellsize;
     #dampening = 10;
+    #max = 255;
 
     get size() {
         return (this.#size + 1) - 1; // not sure if I need to do this, I am trying to avoid allowing the caller to edit #size;
@@ -56,14 +57,14 @@ const CellHandler = new class extends PostDrawGroup {
 
         for (let c = 0; c < this.#size; c++) {
             for (let r = 0; r < this.#size; r++) {
-                let distance = Math.sqrt((exact_column - (c + 0.5)) * (exact_column - (c + 0.5)) + (exact_row - (r + 0.5)) * (exact_row - (r + 0.5)));
+                let distance = Math.sqrt((exact_column - (c + 0.5)) * (exact_column - (c + 0.5)) + (exact_row - (r + 0.5)) * (exact_row - (r + 0.5))) / this.thickness;
                 distance = Clamp(distance, 0, 1);
 
-                let roll_off = 1//Math.E ** -(distance ** 2);
-                let increase = sign * this.thickness * roll_off * multiplier * (1 - (distance)) / this.#dampening;
+                let roll_off = Math.E ** -(distance ** 2);
+                let increase = sign * roll_off * multiplier * this.#max * (1 - (distance)) / this.#dampening;
                 
                 let current_val = this.#cells[r][c];
-                this.#cells[r][c] = Clamp(current_val + increase, 0, 1);
+                this.#cells[r][c] = Clamp(current_val + increase, 0, 255);
             }
         }
     }
@@ -98,7 +99,7 @@ const CellHandler = new class extends PostDrawGroup {
             for (let c = 0; c < this.#size; c++) {
                 let cell_value = this.#cells[r][c];
                 let rect = new Rectangle(new Vector(top_left.x + c * this.cellsize, top_left.y + r * this.cellsize), new Vector(this.cellsize, this.cellsize));
-                fillRect(ctx, rect, "white", cell_value);
+                fillRect(ctx, rect, "white", cell_value / this.#max);
             }
         }
     }

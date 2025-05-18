@@ -1,6 +1,6 @@
 // Runs once the engine is finished setting up
 Game.Loaded.AddListener(() => {
-    CellHandler.Init(20, 45);
+    CellHandler.Init(28, 32);
 
     let export_button = new TextButton(new Vector(650, 980), new Vector(140, 70), "Export");
     let import_button = new TextButton(new Vector(870, 980), new Vector(140, 70), "Import");
@@ -48,16 +48,27 @@ Game.Loaded.AddListener(() => {
     let mouse1down = false;
     let mouse2down = false;
 
-    Input.Mouse1Down.AddListener(() => {
+    Input.Mouse1Down.AddListener((pos) => {
         mouse1down = true;
+
+        let true_pos = { x: pos.x + Game.Camera.position.x, y: pos.y + Game.Camera.position.y }
+        CellHandler.DrawAtLocation(true_pos.x, true_pos.y, 10);
     });
 
     Input.Mouse1Up.AddListener(() => {
         mouse1down = false;
-    })
+    });
 
-    Input.Mouse2Down.AddListener(() => {
+    Input.Mouse2Down.AddListener((pos) => {
         mouse2down = true;
+
+        let true_pos = { x: pos.x + Game.Camera.position.x, y: pos.y + Game.Camera.position.y }
+        if (soft_erase_enabled) {
+            CellHandler.DrawAtLocation(true_pos.x, true_pos.y, 10, true);
+        }
+        else {
+            CellHandler.Erase(true_pos.x, true_pos.y);
+        }
     });
 
     Input.Mouse2Up.AddListener(() => {

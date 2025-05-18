@@ -3,7 +3,7 @@ function ExportData(data) {
 
     for (let row of data) {
         for (let pixel of row) {
-            output += pixel + " ";
+            output += Math.round(pixel) + " ";
         }
 
         output += "\n";
