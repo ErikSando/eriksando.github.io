@@ -11,6 +11,13 @@ const maxEnergy = 1200 * lifeMultiplier;
 const minCloneTime = 20 * lifeMultiplier;
 const maxCloneTime = 100 * lifeMultiplier;
 
+let GetUrgency = (d, wall = false) => {
+    let m = wall ? -100 : -20;
+    let u = Math.pow(Math.E, m * (d / this.vision));
+
+    return wall ? u / 2 : u;
+}
+
 class Entity {
     constructor(position, orientation = 0, image, speed = Random.Integer(minSpeed, maxSpeed), vision = Random.Integer(100, 200), energy = Random.Integer(500, 1000) * lifeMultiplier, cloneTime = Random.Integer(20, 30) * lifeMultiplier) {
         this.position = position;
@@ -120,9 +127,7 @@ class Prey extends Entity {
     Update(delta) {
         if (this.energy <= 0) {
             this.timeSinceDeath += delta;
-
-            if (this.timeSinceDeath > 10) this.Remove();
-
+            if (this.timeSinceDeath >= 10) this.Remove();
             return;
         }
 
@@ -163,13 +168,6 @@ class Prey extends Entity {
         let predatorsInVision = []
 
         let totalUrgency = 0;
-
-        let GetUrgency = (d, wall = false) => {
-            let m = wall ? -100 : -20;
-            let u = Math.pow(Math.E, m * (d / this.vision));
-
-            return wall ? u / 2 : u;
-        }
 
         for (let p of predators) {
             let distance = Vector.DistanceFrom(this.position, p.position);

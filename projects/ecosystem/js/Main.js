@@ -170,15 +170,47 @@ window.addEventListener("load", () => {
         let preyStats = GetPreyStats();
         let predatorStats = GetPredatorStats();
 
-        avgPreySpeed.textContent = String(preyStats.speed) + " (" + String((preyStats.speed - startPreyStats.speed).toFixed(1)) + ")";
-        avgPreyVision.textContent = String(preyStats.vision) + " (" + String((preyStats.vision - startPreyStats.vision).toFixed(1)) + ")";
-        avgPreyEnergy.textContent = String(preyStats.energy) + " (" + String((preyStats.energy - startPreyStats.energy).toFixed(1)) + ")";
-        avgPreyReproduction.textContent = String(preyStats.cloneTime) + " (" + String((preyStats.cloneTime - startPreyStats.cloneTime).toFixed(1)) + ")";
+        let _, change;
 
-        avgPredatorSpeed.textContent = String(predatorStats.speed) + " (" + String((predatorStats.speed - startPredatorStats.speed).toFixed(1)) + ")";
-        avgPredatorVision.textContent = String(predatorStats.vision) + " (" + String((predatorStats.vision - startPredatorStats.vision).toFixed(1)) + ")";
-        avgPredatorEnergy.textContent = String(predatorStats.energy) + " (" + String((predatorStats.energy - startPredatorStats.energy).toFixed(1)) + ")";
-        avgPredatorReproduction.textContent = String(predatorStats.cloneTime) + " (" + String((predatorStats.cloneTime - startPredatorStats.cloneTime).toFixed(1)) + ")";
+        _ = "";
+        change = (preyStats.speed - startPreyStats.speed).toFixed(1);
+        if (change > 0) _ = "+";
+        avgPreySpeed.textContent = preyStats.speed + " (" + _ + change + ")";
+
+        _ = "";
+        change = (preyStats.vision - startPreyStats.vision).toFixed(1);
+        if (change > 0) _ = "+";
+        avgPreyVision.textContent = preyStats.vision + " (" + _ + change + ")";
+
+        _ = "";
+        change = (preyStats.energy - startPreyStats.energy).toFixed(1);
+        if (change > 0) _ = "+";
+        avgPreyEnergy.textContent = preyStats.energy + " (" + _ + change + ")";
+
+        _ = "";
+        change = (preyStats.cloneTime - startPreyStats.cloneTime).toFixed(1);
+        if (change > 0) _ = "+";
+        avgPreyReproduction.textContent = preyStats.cloneTime + " (" + _ + change + ")";
+
+        _ = "";
+        change = (predatorStats.speed - startPredatorStats.speed).toFixed(1);
+        if (change > 0) _ = "+";
+        avgPredatorSpeed.textContent = predatorStats.speed + " (" + _ + change + ")";
+
+        _ = "";
+        change = (predatorStats.vision - startPredatorStats.vision).toFixed(1);
+        if (change > 0) _ = "+";
+        avgPredatorVision.textContent = predatorStats.vision + " (" + _ + change + ")";
+
+        _ = "";
+        change = (predatorStats.energy - startPredatorStats.energy).toFixed(1);
+        if (change > 0) _ = "+";
+        avgPredatorEnergy.textContent = predatorStats.energy + " (" + _ + change + ")";
+
+        _ = "";
+        change = (predatorStats.cloneTime - startPredatorStats.cloneTime).toFixed(1);
+        if (change > 0) _ = "+";
+        avgPredatorReproduction.textContent = predatorStats.cloneTime + " (" + _ + change + ")";
 
         let currentPreyStats = JSON.parse(window.localStorage.getItem("PreyStats"));
         let currentPredatorStats = JSON.parse(window.localStorage.getItem("PredatorStats"))
