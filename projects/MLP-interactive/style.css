@@ -1,0 +1,63 @@
+body {
+    padding: 0;
+    margin: auto;
+    font-size: large;
+    background: rgb(0, 30, 60);
+    color: white;
+}
+
+button {
+    font-size: larger;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+input {
+    margin-bottom: 5px;
+    margin-top: 5px;
+    font-size: large;
+    ;
+}
+
+input[type="checkbox"] {
+    transform: scale(1.5);
+}
+
+h3 {
+    margin-top: 0px;
+    margin-bottom: 10px;
+}
+
+#canvas {
+    width: min(70vw, 98vh);
+    height: min(70vw, 98vh);
+    margin: auto;
+    position: absolute;
+    right: max(1vh, calc((70vw - min(70vw, 98vh)) / 2));
+    top: 1vh;
+    /* bottom: 0; */
+}
+
+#settings {
+    padding: 15px;
+    width: 30vw;
+    background: rgb(0, 35, 70);
+    overflow-y: scroll;
+}
+
+#label {
+    width: 50px;
+}
+
+#interval-time {
+    width: 70px;
+}
+
+#output-canvas {
+    width: 30vw;
+    height: 30vw;
+}
+
+#error {
+    color: red;
+}

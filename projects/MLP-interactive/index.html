@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>MLP</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="js/matrix.js"></script>
+        <script src="js/vector.js"></script>
+        <script src="js/layer.js"></script>
+        <script src="js/context.js"></script>
+        <script src="js/softmax.js"></script>
+        <script src="js/mlp.js"></script>
+        <script src="js/default.js"></script>
+        <script src="js/import.js"></script>
+        <script src="js/event.js"></script>
+        <script src="js/vector2.js"></script>
+        <script src="js/input.js"></script>
+        <script src="js/grid.js"></script>
+        <script src="js/main.js"></script>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+        <div id="settings">
+            <button id="import">Import Model</button> <br>
+            <input type="file" id="file-input" accept="" style="display: none;">
+            <br>
+            <div id="options">
+                <h3>Options</h3>
+                Label: <input type="number" id="label"> <br>
+                Grid lines: <input id="show-grid" type="checkbox" checked="true">
+                Colour: <input id="grid-colour" type="color" value="#ddeeff"> <br>
+                <button id="clear">Clear</button> <br>
+                Interval enabled: <input id="interval-checkbox" type="checkbox"> <br>
+                Interval time (ms): <input id="interval-time" type="number" value="500">
+            </div> <br>
+            <div id="model">
+                <h3>Model Output</h3>
+                <button id="classify">Classify</button> <br>
+                Classification: <span id="class">...</span> <br>
+                Loss: <span id="loss">...</span> <br> <br>
+                <canvas id="output-canvas"></canvas>
+                <span id="error"></span>
+            </div>
+        </div>
+    </body>
+</html>
